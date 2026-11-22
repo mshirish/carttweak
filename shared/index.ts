@@ -15,3 +15,4 @@ export * from './receipt.ts';
 export * from './ocrRows.ts';
 export * from './nutriscore.ts';
 export * from './haul.ts';
+export * from './produce.ts';

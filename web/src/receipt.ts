@@ -53,6 +53,15 @@ export interface MatchRow {
   candidates: MatchCard[];
   reason?: string;
   locked: boolean;
+  /** P2: fresh-produce guess for an unmatched line ("Is this Bananas?") */
+  produceGuess?: { term: string; label: string } | null;
+  produceCandidates?: Array<{ fdcId: number; description: string }>;
+  /** set only when the shopper taps a candidate; never automatic */
+  produceConfirmed?: { fdcId: number; description: string } | null;
+  produceDismissed?: boolean;
+  /** P2: excluded from the score; nonFoodGuess = pre-marked by keyword (undoable) */
+  nonFood?: boolean;
+  nonFoodGuess?: boolean;
 }
 
 export interface ReceiptState {

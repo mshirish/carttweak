@@ -131,3 +131,27 @@ describe('duplicate receipt lines', () => {
     expect(paidLabel(p)).toBe('You paid $5.04 for 2 on Feb 3, 2020 at Walmart #1711');
   });
 });
+
+describe('P2: produce confirm + non-food', () => {
+  const base = { code: null, quantity: 1, priceCents: 100, status: 'unmatched' as const, matchMethod: 'unmatched' as const, candidates: [], locked: false };
+  it('produce: "Is this bananas?" never auto-confirms; tapping a USDA record labels it', () => {
+    const rows: MatchRow[] = [{ ...base, id: 'p', name: 'BANANAS', code: '000000004011', produceGuess: { term: 'bananas raw', label: 'Bananas' }, produceCandidates: [{ fdcId: 1105314, description: 'Bananas, raw' }] }];
+    render(<MatchHarness initial={rows} walmart={{ available: false, reason: null }} />);
+    expect(screen.getByText('Is this bananas?')).toBeTruthy();
+    expect(screen.queryByText('USDA generic record, you confirmed')).toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Bananas, raw' }));
+    expect(screen.getByText('USDA generic record, you confirmed')).toBeTruthy();
+  });
+  it('non-food: pre-marked "Not food?" can be undone; any unmatched line can be marked "Not food"', () => {
+    const rows: MatchRow[] = [
+      { ...base, id: 'd', name: 'TIDE DETERGENT', nonFood: true, nonFoodGuess: true },
+      { ...base, id: 'x', name: 'MYSTERY ITEM' },
+    ];
+    render(<MatchHarness initial={rows} walmart={{ available: false, reason: null }} />);
+    expect(screen.getByText('Not food?')).toBeTruthy();
+    fireEvent.click(screen.getAllByRole('button', { name: 'Undo' })[0]!);
+    expect(screen.queryByText('Not food?')).toBeNull();
+    fireEvent.click(screen.getAllByRole('button', { name: 'Not food' })[1]!);
+    expect(screen.getByText('Not food', { selector: '.chip' })).toBeTruthy();
+  });
+});

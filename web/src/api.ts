@@ -30,6 +30,8 @@ export const api = {
   demoList: () => call<DemoList>('/api/demo-list'),
   resolve: (locationId: string, items: Array<{ id: string; query: string; quantity: number }>) =>
     call<{ branch: Branch; items: ResolveItem[] }>('/api/resolve', { method: 'POST', body: JSON.stringify({ locationId, items }) }),
+  produceCandidates: (term: string) => call<{ term: string; candidates: Array<{ fdcId: number; description: string; dataType: string }> }>('/api/produce/candidates', { method: 'POST', body: JSON.stringify({ term }) }),
+  produceScore: (fdcId: number) => call<{ fdcId: number; description: string; result: any }>('/api/produce/score', { method: 'POST', body: JSON.stringify({ fdcId }) }),
   scoreHaul: (body: unknown) => call<{ items: any[]; method: string }>('/api/haul/items', { method: 'POST', body: JSON.stringify(body) }),
   matchReceipt: (body: unknown) =>
     call<{ walmart: { available: boolean; reason: string | null }; zip: string | null; items: any[] }>('/api/receipt/match', { method: 'POST', body: JSON.stringify(body) }),

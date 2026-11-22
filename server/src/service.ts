@@ -33,7 +33,7 @@ import {
   type Resolution,
   type TripItem,
 } from '@carttweak/shared';
-import { cacheStats, UpstreamError } from './cache.ts';
+import { cachedJson, cacheStats, TTL, UpstreamError } from './cache.ts';
 import { lookupByGtin14, lookupByUpc } from './fdc.ts';
 import * as kroger from './kroger.ts';
 import {
@@ -833,7 +833,55 @@ export function createService(cfg: ServiceConfig) {
     return { branch: b, items: out, method: 'Nutri-Score, original 2017 algorithm (not an official Nutri-Score label)' };
   }
 
-  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList, walmartStatus, matchReceipt, planWalmart, scoreHaul, nutriFor };
+  // ---------- generic produce (USDA Foundation / SR Legacy) ----------
+  const FDC_BASE = 'https://api.nal.usda.gov/fdc/v1';
+  /** Candidates for "Is this <guess>?". The shopper must confirm one; never automatic. */
+  async function produceCandidates(body: any) {
+    const term = String(body?.term ?? '').trim().slice(0, 60);
+    if (!term) throw new ServiceError(400, 'bad_term', 'term is required');
+    const url = `${FDC_BASE}/foods/search?api_key=${encodeURIComponent(cfg.fdcApiKey)}&query=${encodeURIComponent(term)}&dataType=Foundation,SR%20Legacy&pageSize=12`;
+    const r = await cachedJson<any>('fdc-generic', url, {}, TTL.fdc, { service: 'fdc' });
+    const foods: any[] = r.ok ? r.body?.foods ?? [] : [];
+    const word = term.split(' ')[0]!.toLowerCase().replace(/s$/, '');
+    const cands = foods
+      .filter((f) => String(f.description ?? '').toLowerCase().includes(word))
+      // SR Legacy first: Foundation records can lack saturated fat (seen: "Bananas, ripe and slightly ripe, raw")
+      .sort((a, b) => Number(b.dataType === "SR Legacy") - Number(a.dataType === "SR Legacy") || Number(/\braw\b/i.test(b.description)) - Number(/\braw\b/i.test(a.description)) || String(a.description).length - String(b.description).length)
+      .slice(0, 4)
+      .map((f) => ({ fdcId: f.fdcId, description: f.description, dataType: f.dataType }));
+    return { term, candidates: cands };
+  }
+  /** Score a confirmed USDA generic record (per 100 g, fruit/veg share 100%). */
+  async function produceScore(body: any) {
+    const fdcId = Number(body?.fdcId);
+    if (!Number.isInteger(fdcId) || fdcId <= 0) throw new ServiceError(400, 'bad_fdc', 'fdcId is required');
+    const r = await cachedJson<any>('fdc-food', `${FDC_BASE}/food/${fdcId}?api_key=${encodeURIComponent(cfg.fdcApiKey)}`, {}, TTL.fdc, { service: 'fdc' });
+    if (!r.ok) throw new ServiceError(404, 'fdc_not_found', `USDA record ${fdcId} not found`);
+    const fn: any[] = r.body?.foodNutrients ?? [];
+    const get = (...nums: string[]) => {
+      for (const n of nums) {
+        const x = fn.find((f) => String(f?.nutrient?.number ?? f?.nutrientNumber) === n);
+        const v = x?.amount ?? x?.value;
+        if (typeof v === 'number' && Number.isFinite(v) && v >= 0) return v;
+      }
+      return null;
+    };
+    const result = nutriScore(
+      {
+        energyKcal: get('208', '958', '957'),
+        totalSugars_g: get('269', '269.3'),
+        satFat_g: get('606'),
+        sodium_mg: get('307'),
+        fiber_g: get('291'),
+        protein_g: get('203'),
+        fvlPercent: 100,
+      },
+      'food',
+    );
+    return { fdcId, description: r.body?.description ?? '', dataType: r.body?.dataType ?? null, result };
+  }
+
+  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList, walmartStatus, matchReceipt, planWalmart, scoreHaul, nutriFor, produceCandidates, produceScore };
 }
 
 export type Service = ReturnType<typeof createService>;

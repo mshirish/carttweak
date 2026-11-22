@@ -294,7 +294,27 @@ export function ReceiptMatchScreen({
                   {r.product?.sizeLabel ? ` · ${r.product.sizeLabel}` : ''}
                 </div>
                 {r.status === 'matched' && r.via === 'fdc' ? <div className="item-meta">Barcode found in the USDA label database.</div> : null}
-                {r.status === 'unmatched' && r.reason ? <div className="item-meta">{r.reason}. Kept on your list, never swapped.</div> : null}
+                {r.status === 'unmatched' && r.reason && !r.produceConfirmed && !r.nonFood ? <div className="item-meta">{r.reason}. Kept on your list, never swapped.</div> : null}
+                {r.produceConfirmed ? (
+                  <div className="item-meta">
+                    <span className="chip matched">USDA generic record, you confirmed</span> {r.produceConfirmed.description}{' '}
+                    <button type="button" className="btn ghost small" onClick={() => set(r.id, { produceConfirmed: null })}>
+                      Undo
+                    </button>
+                  </div>
+                ) : null}
+                {r.status === 'unmatched' && r.nonFood ? (
+                  <div className="item-meta">
+                    <span className="chip no_barcode">{r.nonFoodGuess ? 'Not food?' : 'Not food'}</span> Not scored.{' '}
+                    <button type="button" className="btn ghost small" onClick={() => set(r.id, { nonFood: false, nonFoodGuess: false })}>
+                      Undo
+                    </button>
+                  </div>
+                ) : r.status === 'unmatched' && !r.produceConfirmed ? (
+                  <button type="button" className="btn ghost small" onClick={() => set(r.id, { nonFood: true, nonFoodGuess: false })}>
+                    Not food
+                  </button>
+                ) : null}
               </div>
               {r.status === 'matched' ? (
                 <button type="button" className="lock" aria-pressed={r.locked} onClick={() => set(r.id, { locked: !r.locked })}>
@@ -303,6 +323,25 @@ export function ReceiptMatchScreen({
                 </button>
               ) : null}
             </div>
+            {r.status === 'unmatched' && !r.nonFood && !r.produceConfirmed && !r.produceDismissed && r.produceGuess && r.produceCandidates?.length ? (
+              <div data-testid="produce-confirm">
+                <div className="item-meta" style={{ marginTop: 6 }}>
+                  <strong>Is this {r.produceGuess.label.toLowerCase()}?</strong> Pick the closest USDA generic food so we can score it.
+                </div>
+                <ul className="pick-list" aria-label={`USDA options for ${r.name}`}>
+                  {r.produceCandidates.map((c) => (
+                    <li key={c.fdcId}>
+                      <button type="button" className="choice" onClick={() => set(r.id, { produceConfirmed: c })}>
+                        {c.description}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+                <button type="button" className="btn ghost small" onClick={() => set(r.id, { produceDismissed: true })}>
+                  No, leave it unscored
+                </button>
+              </div>
+            ) : null}
             {r.status === 'needs_confirm' ? (
               <>
                 <ul className="pick-list" aria-label={`Options for ${r.name}`}>

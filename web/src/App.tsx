@@ -14,7 +14,7 @@ import { StoreScreen } from './screens/StoreScreen.tsx';
 import { HomeScreen, LoginScreen } from './screens/HomeScreens.tsx';
 import { OverviewScreen, type HaulRow } from './screens/OverviewScreen.tsx';
 import { profileStore, type Profile } from './profiles.ts';
-import { coverageLine, haulScore } from '@carttweak/shared';
+import { coverageLine, haulScore, nonFoodGuess, produceGuess } from '@carttweak/shared';
 import { buildRevisedList, newId, tripStore, type SavedItem, type SavedTrip } from './storage.ts';
 import type { Branch, Goals, PlanProgress, PlanResponse, Row, SwapOption } from './types.ts';
 
@@ -184,7 +184,7 @@ export default function App() {
   }
 
   /** Score the haul lines (Kroger demo branch + USDA labels) and open the overview. */
-  async function openOverview(lines: Array<Omit<HaulRow, 'result' | 'regularCents'> & { regularCents?: number | null }>, meta: { storeLabel: string; date: string | null; source: 'receipt' | 'list' }) {
+  async function openOverview(lines: Array<Omit<HaulRow, 'result' | 'regularCents'> & { regularCents?: number | null; presetResult?: HaulRow['result'] }>, meta: { storeLabel: string; date: string | null; source: 'receipt' | 'list' }) {
     const target = defaultBranch ?? branch;
     if (!target) return;
     setScoring(true);
@@ -199,7 +199,7 @@ export default function App() {
           const regular = x?.regularCents ?? l.regularCents ?? null;
           // typed lists are weighted by the Kroger regular price
           const spend = meta.source === 'list' ? (regular != null ? regular * l.quantity : null) : l.spendCents;
-          return { ...l, regularCents: regular, spendCents: spend, result: x ? x.result : null, name: l.name };
+          return { ...l, regularCents: regular, spendCents: spend, result: x ? x.result : l.presetResult ?? null, name: l.name };
         }),
       );
       setHaulMeta(meta);
@@ -233,19 +233,34 @@ export default function App() {
     );
   }
 
-  function overviewFromReceipt() {
+  async function overviewFromReceipt() {
     setTripSource('receipt');
     setPlanTarget('kroger');
     const m = receiptMeta.current;
     const merged = mergeMatchedRows(matchRows);
     const unmatched = matchRows.filter((r) => productKey(r) == null);
+    // confirmed USDA generic produce -> scored with fruit/veg 100%
+    const produce = new Map<string, HaulRow['result']>();
+    await Promise.all(
+      unmatched
+        .filter((r) => r.produceConfirmed && !r.nonFood)
+        .map(async (r) => {
+          try {
+            produce.set(r.id, (await api.produceScore(r.produceConfirmed!.fdcId)).result);
+          } catch {
+            /* stays unscored */
+          }
+        }),
+    );
     void openOverview(
       [...merged, ...unmatched].map((r) => ({
+        presetResult: produce.get(r.id) ?? null,
+        nonFood: !!r.nonFood && r.status !== 'matched',
         id: r.id,
-        name: r.product?.description ?? r.name,
         quantity: r.quantity,
         spendCents: r.priceCents,
-        matchMethod: r.status === 'matched' ? r.matchMethod : ('unmatched' as const),
+        matchMethod: r.status === 'matched' ? r.matchMethod : produce.has(r.id) ? ('usda_generic' as const) : ('unmatched' as const),
+        name: produce.has(r.id) && r.produceConfirmed ? `${r.name} (${r.produceConfirmed.description})` : r.product?.description ?? r.name,
         krogerProductId: r.status === 'matched' ? r.product?.krogerProductId ?? null : null,
       })),
       { storeLabel: m.storeNumber ? `Walmart #${m.storeNumber.replace(/^0+(?=\d)/, '')}` : 'Walmart', date: m.date, source: 'receipt' },
@@ -441,6 +456,23 @@ export default function App() {
                   return { ...it, quantity: src.quantity, priceCents: src.priceCents, candidates: it.candidates ?? [], locked: false } as MatchRow;
                 }),
               );
+              // P2: pre-mark obvious non-food; look up produce candidates (the shopper must confirm)
+              setMatchRows((rs) =>
+                rs.map((x) => {
+                  if (x.status !== 'unmatched') return x;
+                  const nf = nonFoodGuess(x.name);
+                  return { ...x, nonFood: nf, nonFoodGuess: nf, produceGuess: nf ? null : produceGuess(x.name, x.code) };
+                }),
+              );
+              for (const it of r.items as any[]) {
+                if (it.status !== 'unmatched') continue;
+                const g = nonFoodGuess(it.name) ? null : produceGuess(it.name, it.code);
+                if (!g) continue;
+                api
+                  .produceCandidates(g.term)
+                  .then((c) => setMatchRows((rs) => rs.map((x) => (x.id === it.id ? { ...x, produceCandidates: c.candidates } : x))))
+                  .catch(() => {});
+              }
               go({ name: 'receipt-match' });
             } catch (e) {
               setMatchError(e instanceof ApiError ? e.message : 'Matching failed.');
@@ -499,7 +531,7 @@ export default function App() {
             setResp(null);
             go({ name: 'goals' });
           }}
-          onPlanFallback={overviewFromReceipt}
+          onPlanFallback={() => void overviewFromReceipt()}
           busy={scoring}
           error={scoreError}
         />
