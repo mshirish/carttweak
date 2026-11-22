@@ -179,3 +179,50 @@ describe('several receipts in one photo', () => {
     expect(picked.items.map((i: any) => i.name)).toEqual(['SAMPLE JAM', 'SAMPLE TEA']);
   });
 });
+
+describe('self-check and grouped check screen (synthetic)', () => {
+  const DIGITAL = [
+    'Digital Receipt',
+    'Item    Qty    Price',
+    'Sample Milk, 1 gal    1    $3.00',
+    'Sample Pasta    1    $2.20',
+    'Kroger Savings    -$0.20',
+    'Subtotal    $5.00',
+    'Tax (8.00%)    $0.40',
+    'Total    $5.40',
+  ].map((text) => ({ text, confidence: 95 }));
+  it('items - savings = subtotal: "matching the receipt subtotal ✓"', async () => {
+    const { receiptFromOcr, checkNumbers, checkNumbersText } = await import('../receipt.ts');
+    const { state } = receiptFromOcr(DIGITAL);
+    expect(checkNumbersText(checkNumbers(state))).toBe('Items add up to $5.00, matching the receipt subtotal ✓');
+  });
+  it('a missing line shows the gap, highlights unread rows, and the count check speaks up', async () => {
+    const { receiptFromOcr } = await import('../receipt.ts');
+    const { state } = receiptFromOcr(
+      ['SAMPLE OATS    3.00 F', 'S4MPLE ??? 2.0O SAMPLE 9', 'TAX    0.10', '**** BALANCE    5.10', 'TOTAL NUMBER OF ITEMS SOLD = 2'].map((text) => ({ text, confidence: 90 })),
+    );
+    render(<CheckHarness initial={state} />);
+    expect(screen.getByTestId('recon').textContent).toBe('Items add up to $3.00; the receipt says $5.00, so $2.00 is missing; look for an unread line.');
+    expect(screen.getByTestId('count-check').textContent).toBe('The receipt says 2 items sold; we read 1.');
+    const unread = within(screen.getByTestId('unread-group')).getAllByTestId('receipt-row');
+    expect(unread[0]!.className).toContain('look');
+    expect(within(unread[0]!).getByText('Could this be the missing $2.00?')).toBeTruthy();
+    fireEvent.change(within(unread[0]!).getByLabelText('Name'), { target: { value: 'SAMPLE JAM' } });
+    fireEvent.change(within(unread[0]!).getByLabelText('Price'), { target: { value: '2.00' } });
+    expect(screen.getByTestId('recon').textContent).toBe('Items add up to $5.00, matching the receipt total before tax ✓');
+    expect(screen.queryByTestId('count-check')).toBeNull();
+  });
+  it('"Not products" are collapsed; "This is actually an item" moves one into the items', async () => {
+    const { receiptFromOcr } = await import('../receipt.ts');
+    const { state } = receiptFromOcr(DIGITAL);
+    render(<CheckHarness initial={state} />);
+    const box = screen.getByTestId('not-products');
+    expect(box.hasAttribute('open')).toBe(false);
+    expect(within(screen.getByTestId('items-group')).getAllByTestId('receipt-row')).toHaveLength(2);
+    const row = within(box).getByText('Kroger Savings -$0.20').closest('li')!;
+    fireEvent.click(within(row).getByText('This is actually an item'));
+    const items = within(screen.getByTestId('items-group')).getAllByTestId('receipt-row');
+    expect(items).toHaveLength(3);
+    expect((within(items[2]!).getByLabelText('Name') as HTMLInputElement).value).toBe('Kroger Savings');
+  });
+});

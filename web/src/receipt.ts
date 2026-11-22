@@ -75,6 +75,62 @@ export interface ReceiptState {
   /** sensitive lines removed while parsing (counts only) */
   dropped: number;
   subtotalCents: number | null;
+  /** rows that are not products (savings, totals, payment, marketing), shown collapsed; the shopper can turn one into an item */
+  notProducts?: NotProductRow[];
+  /** the receipt's own numbers, for the self-check */
+  numbers?: { targetCents: number | null; targetLabel: string | null; tripSavingsCents: number; itemsSold: number | null };
+}
+
+export interface NotProductRow {
+  id: string;
+  text: string;
+  kind: string;
+  amountCents: number | null;
+}
+
+const KIND_LABEL: Record<string, string> = { savings: 'Savings', total: 'Total', payment: 'Payment', marketing: 'Store message', header: 'Store info', unknown: 'Other' };
+export const notProductLabel = (k: string) => KIND_LABEL[k] ?? 'Other';
+
+export interface NumbersCheck {
+  itemsCents: number;
+  targetCents: number | null;
+  targetLabel: string | null;
+  matches: boolean | null;
+  /** target - items: positive means money is missing (an unread line?) */
+  gapCents: number | null;
+  itemsSold: number | null;
+  itemsCounted: number;
+  countMatches: boolean | null;
+}
+
+/** Do the rows (as the shopper sees and edits them) add up to the receipt's own numbers? Within $0.02. */
+export function checkNumbers(s: ReceiptState): NumbersCheck {
+  const n = s.numbers ?? { targetCents: s.subtotalCents, targetLabel: s.subtotalCents != null ? 'subtotal' : null, tripSavingsCents: 0, itemsSold: null };
+  const itemsCents = s.rows.reduce((t, r) => t + (priceCents(r.price) ?? 0), 0) - n.tripSavingsCents;
+  const gap = n.targetCents == null ? null : n.targetCents - itemsCents;
+  const itemsCounted = s.rows.filter((r) => r.name.trim() && priceCents(r.price) != null).reduce((t, r) => t + (r.weighted ? 1 : Math.max(1, Math.round(Number(r.quantity) || 1))), 0);
+  return {
+    itemsCents,
+    targetCents: n.targetCents,
+    targetLabel: n.targetLabel,
+    matches: gap == null ? null : Math.abs(gap) <= 2,
+    gapCents: gap,
+    itemsSold: n.itemsSold,
+    itemsCounted,
+    countMatches: n.itemsSold == null ? null : n.itemsSold === itemsCounted,
+  };
+}
+
+const usd = (c: number) => `$${(Math.abs(c) / 100).toFixed(2)}`;
+/** "Items add up to $19.25, matching the receipt subtotal ✓" / "... so $3.49 is missing; look for an unread line" */
+export function checkNumbersText(c: NumbersCheck): string | null {
+  if (c.targetCents == null || c.matches == null) return null;
+  const what = c.targetLabel === 'subtotal' ? 'subtotal' : c.targetLabel === 'total minus tax' ? 'total before tax' : 'total';
+  if (c.matches) return `Items add up to ${usd(c.itemsCents)}, matching the receipt ${what} ✓`;
+  const gap = c.gapCents!;
+  return gap > 0
+    ? `Items add up to ${usd(c.itemsCents)}; the receipt says ${usd(c.targetCents)}, so ${usd(gap)} is missing; look for an unread line.`
+    : `Items add up to ${usd(c.itemsCents)}; the receipt says ${usd(c.targetCents)}, so ${usd(gap)} too much; look for a misread price or a line that is not an item.`;
 }
 
 const dollarsText = (c: number | null) => (c == null ? '' : (c / 100).toFixed(2));
@@ -152,8 +208,21 @@ export function receiptFromParsed(parsed: ParsedReceipt): { state: ReceiptState;
       rows,
       dropped: Object.values(parsed.dropped).reduce((a, b) => a + b, 0),
       subtotalCents: parsed.subtotalCents,
+      notProducts: (parsed.rows ?? [])
+        .filter((r) => r.amountCents != null && ['savings', 'total', 'payment', 'marketing'].includes(r.kind))
+        .map((r, k) => ({ id: `x${String(k + 1).padStart(2, '0')}`, text: r.text, kind: r.kind, amountCents: r.amountCents })),
+      numbers: { targetCents: parsed.check.targetCents, targetLabel: parsed.check.targetLabel, tripSavingsCents: parsed.tripSavingsCents ?? 0, itemsSold: parsed.check.itemsSold ?? null },
     },
   };
+}
+
+/** "This is actually an item": move a not-product row into the item rows (name from its text, price from its amount). */
+export function promoteNotProduct(s: ReceiptState, id: string): ReceiptState {
+  const x = s.notProducts?.find((r) => r.id === id);
+  if (!x) return s;
+  const name = x.text.replace(/\(?-?\$?\s?\d+[.,]\d{2}\)?-?.*$/, '').replace(/^\W+/, '').trim();
+  const row: ReceiptRow = { id: `p${id}`, name, code: '', quantity: '1', price: dollarsText(x.amountCents == null ? null : Math.abs(x.amountCents)), confidence: null, needsLook: true, reviewed: false, issues: ['moved from "Not products" by you'], fromUnparsed: false };
+  return { ...s, rows: [...s.rows, row], notProducts: s.notProducts!.filter((r) => r.id !== id) };
 }
 
 export function rowNeedsLook(r: ReceiptRow): boolean {

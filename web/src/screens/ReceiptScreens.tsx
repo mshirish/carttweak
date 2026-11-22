@@ -3,7 +3,7 @@ import { dollars, shortName, type ParsedReceipt } from '@carttweak/shared';
 import { Heart } from '../components/Icons.tsx';
 import { DEFAULT_PREP, preprocess, type Prep } from '../ocr.ts';
 import { readReceiptImage } from '../receiptPipeline.ts';
-import { priceCents, receiptFromParsed, rowNeedsLook, type MatchCard, type MatchRow, type ReceiptRow, type ReceiptState } from '../receipt.ts';
+import { checkNumbers, checkNumbersText, notProductLabel, priceCents, promoteNotProduct, receiptFromParsed, rowNeedsLook, type MatchCard, type MatchRow, type ReceiptRow, type ReceiptState } from '../receipt.ts';
 import { go } from '../router.ts';
 import type { Branch } from '../types.ts';
 
@@ -184,9 +184,66 @@ export function ReceiptCheckScreen({ state, setState, onContinue, busy, error }:
   const setH = (k: keyof ReceiptState['header'], v: string) => setState((s) => ({ ...s, header: { ...s.header, [k]: v } }));
   const total = state.rows.reduce((t, r) => t + (priceCents(r.price) ?? 0), 0);
   const zipOk = /^\d{5}$/.test(state.header.zip.trim());
+  const nums = checkNumbers(state);
+  const numsText = checkNumbersText(nums);
+  const missing = nums.matches === false && (nums.gapCents ?? 0) > 0;
+  const itemRows = state.rows.filter((r) => !r.fromUnparsed);
+  const unread = state.rows.filter((r) => r.fromUnparsed);
+  const notProducts = state.notProducts ?? [];
+  const rowEl = (r: ReceiptRow, gapHint: boolean) => {
+    const look = rowNeedsLook(r);
+    return (
+      <li key={r.id} className={`item rrow${look || gapHint ? ' look' : ''}`} data-testid="receipt-row">
+        <div className="rrow-grid">
+          <label className="rname">
+            <span className="sr-only">Name</span>
+            <input type="text" value={r.name} placeholder="Item name" onChange={(e) => setRow(r.id, { name: e.target.value })} />
+          </label>
+          <label className="rcode">
+            <span className="sr-only">Item code</span>
+            <input type="text" inputMode="numeric" value={r.code} placeholder="Item code" onChange={(e) => setRow(r.id, { code: e.target.value })} />
+          </label>
+          <label className="rqty">
+            <span className="sr-only">Quantity</span>
+            <input type="text" inputMode="numeric" value={r.quantity} onChange={(e) => setRow(r.id, { quantity: e.target.value })} />
+          </label>
+          <label className="rprice">
+            <span className="sr-only">Price</span>
+            <input type="text" inputMode="decimal" value={r.price} placeholder="0.00" onChange={(e) => setRow(r.id, { price: e.target.value })} />
+          </label>
+        </div>
+        <div className="row small" style={{ marginTop: 4 }}>
+          <span className={`badge${r.confidence != null && r.confidence < 80 ? ' warn' : ''}`} title="How sure the reader is about this line">
+            {r.confidence == null ? 'typed' : `read ${r.confidence}%`}
+          </span>
+          {gapHint ? <span className="muted">Could this be the missing {dollars(nums.gapCents!)}?</span> : null}
+          {look && r.issues.length ? <span className="muted">{r.issues.join('; ')}</span> : null}
+          <span className="spacer" />
+          {look ? (
+            <button type="button" className="btn ghost small" onClick={() => setRow(r.id, {})}>
+              Looks right
+            </button>
+          ) : null}
+          <button type="button" className="btn ghost small" onClick={() => remove(r.id)}>
+            Remove
+          </button>
+        </div>
+      </li>
+    );
+  };
   return (
     <section>
       <h1>Check what we read</h1>
+      {numsText ? (
+        <p className={nums.matches ? 'notice ok' : 'notice warn'} role="status" data-testid="recon">
+          {numsText}
+        </p>
+      ) : null}
+      {nums.countMatches === false ? (
+        <p className="notice warn" data-testid="count-check">
+          The receipt says {nums.itemsSold} item{nums.itemsSold === 1 ? '' : 's'} sold; we read {nums.itemsCounted}.
+        </p>
+      ) : null}
       <p className="lede">
         <strong className="num" data-testid="need-look">
           {need} of {state.rows.length} lines need a look.
@@ -210,48 +267,38 @@ export function ReceiptCheckScreen({ state, setState, onContinue, busy, error }:
         </label>
       </fieldset>
       {error ? <p className="error" role="alert">{error}</p> : null}
-      <ul className="items receipt-rows">
-        {state.rows.map((r) => {
-          const look = rowNeedsLook(r);
-          return (
-            <li key={r.id} className={`item rrow${look ? ' look' : ''}`} data-testid="receipt-row">
-              <div className="rrow-grid">
-                <label className="rname">
-                  <span className="sr-only">Name</span>
-                  <input type="text" value={r.name} placeholder="Item name" onChange={(e) => setRow(r.id, { name: e.target.value })} />
-                </label>
-                <label className="rcode">
-                  <span className="sr-only">Item code</span>
-                  <input type="text" inputMode="numeric" value={r.code} placeholder="Item code" onChange={(e) => setRow(r.id, { code: e.target.value })} />
-                </label>
-                <label className="rqty">
-                  <span className="sr-only">Quantity</span>
-                  <input type="text" inputMode="numeric" value={r.quantity} onChange={(e) => setRow(r.id, { quantity: e.target.value })} />
-                </label>
-                <label className="rprice">
-                  <span className="sr-only">Price</span>
-                  <input type="text" inputMode="decimal" value={r.price} placeholder="0.00" onChange={(e) => setRow(r.id, { price: e.target.value })} />
-                </label>
-              </div>
-              <div className="row small" style={{ marginTop: 4 }}>
-                <span className={`badge${r.confidence != null && r.confidence < 80 ? ' warn' : ''}`} title="How sure the reader is about this line">
-                  {r.confidence == null ? 'typed' : `read ${r.confidence}%`}
-                </span>
-                {look && r.issues.length ? <span className="muted">{r.issues.join('; ')}</span> : null}
-                <span className="spacer" />
-                {look ? (
-                  <button type="button" className="btn ghost small" onClick={() => setRow(r.id, {})}>
-                    Looks right
-                  </button>
-                ) : null}
-                <button type="button" className="btn ghost small" onClick={() => remove(r.id)}>
-                  Remove
-                </button>
-              </div>
-            </li>
-          );
-        })}
+      <h2>Items</h2>
+      <ul className="items receipt-rows" data-testid="items-group">
+        {itemRows.map((r) => rowEl(r, false))}
       </ul>
+      {unread.length ? (
+        <>
+          <h2>Unread rows</h2>
+          <p className="small muted">We could not read these lines. Fix them if they are items, or remove them.</p>
+          <ul className="items receipt-rows" data-testid="unread-group">
+            {unread.map((r) => rowEl(r, missing && priceCents(r.price) == null))}
+          </ul>
+        </>
+      ) : null}
+      {notProducts.length ? (
+        <details className="panel" data-testid="not-products" style={{ marginTop: 12 }}>
+          <summary>
+            Not products ({notProducts.length}): savings, totals, payment
+          </summary>
+          <ul className="plain">
+            {notProducts.map((x) => (
+              <li key={x.id} className="row small" style={{ alignItems: 'center', padding: '4px 0' }}>
+                <span className="badge">{notProductLabel(x.kind)}</span>
+                <span style={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}>{x.text}</span>
+                <span className="num">{x.amountCents != null ? `${x.amountCents < 0 ? '−' : ''}${dollars(Math.abs(x.amountCents))}` : ''}</span>
+                <button type="button" className="btn ghost small" onClick={() => setState((s) => promoteNotProduct(s, x.id))}>
+                  This is actually an item
+                </button>
+              </li>
+            ))}
+          </ul>
+        </details>
+      ) : null}
       <div className="row" style={{ marginTop: 10 }}>
         <button type="button" className="btn small" onClick={add}>
           + Add a line
@@ -259,7 +306,6 @@ export function ReceiptCheckScreen({ state, setState, onContinue, busy, error }:
         <span className="spacer" />
         <span className="num small muted">
           Lines add up to {dollars(total)}
-          {state.subtotalCents != null ? ` · receipt subtotal ${dollars(state.subtotalCents)}` : ''}
         </span>
       </div>
       <div className="actions">
