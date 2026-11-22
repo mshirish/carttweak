@@ -1,4 +1,23 @@
-import { dollars, explainSwap, GOALS, NUTRIENT_LABEL, NUTRIENT_UNIT, relativeTime, shortName, type SwapOption } from '@carttweak/shared';
+import { dollars, explainSwap, GOALS, NUTRIENT_LABEL, NUTRIENT_UNIT, relativeTime, shortName, type PriceObservation, type SwapOption } from '@carttweak/shared';
+
+/** Human label for where a price came from. Walmart API prices are online prices for a ZIP, never a shelf price. */
+export function priceSourceLabel(p: { source: string; branch?: string; date: string | null; stale?: boolean }, now: string): string {
+  const checked = `checked ${relativeTime(p.date, now)}`;
+  if (p.source === 'walmart_api') {
+    const zip = /ZIP (\d{5})/.exec(p.branch ?? '')?.[1] ?? '';
+    return `Walmart.com price for ZIP ${zip} (${checked})`;
+  }
+  if (p.source === 'kroger_api') return `Kroger API, ${p.branch}, ${checked}`;
+  return `${p.source}, ${p.branch ?? ''}, ${checked}`;
+}
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+/** "You paid $2.48 on Feb 3, 2026 at Walmart #1711" */
+export function paidLabel(p: PriceObservation): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(p.observedAt);
+  const when = m ? ` on ${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}` : '';
+  return `You paid ${dollars(p.regularCents)}${p.quantity && p.quantity > 1 ? ` for ${p.quantity}` : ''}${when} at ${p.branch.name}`;
+}
 
 const FLAG_TEXT: Record<string, string> = {
   label_outdated: 'Label may be outdated',
@@ -51,9 +70,11 @@ export interface SwapCardProps {
   busy?: boolean;
   onAccept?: () => void;
   onReject?: () => void;
+  /** what the shopper paid for the original (receipt); context only */
+  paid?: PriceObservation | null;
 }
 
-export function SwapCard({ swap: s, now, accepted, busy, onAccept, onReject }: SwapCardProps) {
+export function SwapCard({ swap: s, now, accepted, busy, onAccept, onReject, paid }: SwapCardProps) {
   const g = GOALS[s.goal.goal];
   const unit = NUTRIENT_UNIT[s.goal.nutrient];
   const priceSrc = s.sources.filter((x) => x.kind === 'price');
@@ -73,8 +94,14 @@ export function SwapCard({ swap: s, now, accepted, busy, onAccept, onReject }: S
               <div className="pname">{shortName(p.description)}</div>
               <div className="psize num">
                 {p.sizeLabel ?? 'size unknown'} · {dollars(Math.round(cents))}
+                {price?.source === 'walmart_api' ? ' on Walmart.com' : ''}
                 {price?.stale ? ' (cached)' : ''}
               </div>
+              {role === 'original' && paid ? (
+                <div className="psize num" data-testid="paid-line">
+                  {paidLabel(paid)}
+                </div>
+              ) : null}
             </div>
           );
         })}
@@ -150,10 +177,11 @@ export function SwapCard({ swap: s, now, accepted, busy, onAccept, onReject }: S
         <ul>
           {priceSrc.map((p) => (
             <li key={`p-${p.role}`}>
-              {p.role === 'original' ? 'Current item' : 'Swap'} price: Kroger API, {p.branch}, checked {relativeTime(p.date, now)}
+              {p.role === 'original' ? 'Current item' : 'Swap'} price: {priceSourceLabel(p, now)}
               {p.stale ? ' (served from cache; live price unavailable)' : ''}
             </li>
           ))}
+          {paid ? <li key="paid">Receipt: {paidLabel(paid)} (what you paid; not used to compare prices)</li> : null}
           {nutSrc.map((n) => {
             const fdcId = n.source === 'fdc' ? n.sourceRef.replace(/^fdc:/, '') : null;
             return (

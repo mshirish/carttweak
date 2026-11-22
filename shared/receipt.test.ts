@@ -115,6 +115,9 @@ describe('OCR noise', () => {
     expect(r.subtotalCents).toBe(300);
     expect(r.check.matches).toBe(true);
   });
+  it('store number survives OCR noise ("STH# 0042 OP# ...")', () => {
+    expect(parseWalmartReceipt('STH# 0042 OP# 1 TE# 2 TR# 3').header.storeNumber).toBe('0042');
+  });
   it('a header without a ZIP leaves zip null (the shopper can fill it in)', () => {
     expect(parseWalmartReceipt('SAMPLEVILLE, MI\nST# 0001 OP# 1').header).toMatchObject({ city: 'SAMPLEVILLE', state: 'MI', zip: null, storeNumber: '0001' });
   });

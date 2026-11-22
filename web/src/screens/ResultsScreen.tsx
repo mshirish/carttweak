@@ -105,6 +105,8 @@ export function ResultsScreen({
   onSave,
   onRetry,
   excludedCount,
+  keptUnmatched = [],
+  differentStore = null,
 }: {
   resp: PlanResponse | null;
   progress: PlanProgress | null;
@@ -118,6 +120,10 @@ export function ResultsScreen({
   onSave: () => void;
   onRetry: () => void;
   excludedCount: number;
+  /** receipt lines that were not matched: kept on the list, never swapped */
+  keptUnmatched?: string[];
+  /** receipt planned at a different store (Walmart unavailable) */
+  differentStore?: string | null;
 }) {
   if (error) {
     return (
@@ -145,6 +151,11 @@ export function ResultsScreen({
   return (
     <section>
       <h1>Your swaps</h1>
+      {differentStore ? (
+        <p className="notice" role="status">
+          <strong>Different store: {differentStore}.</strong> We couldn't check Walmart's current prices, so these prices are from {differentStore}. What you paid at Walmart is shown for reference only.
+        </p>
+      ) : null}
       <p className="lede">
         {swaps.length ? `Up to two swaps that do the most for ${GOALS[resp.plan.primaryGoal].label} within your budget.` : ''}
         {excludedCount ? ` ${excludedCount} rejected swap${excludedCount === 1 ? '' : 's'} left out.` : ''}
@@ -161,11 +172,17 @@ export function ResultsScreen({
             busy={busy}
             onAccept={() => onAccept(s)}
             onReject={() => onReject(s)}
+            paid={resp.paid?.[s.itemId] ?? null}
           />
         ))
       ) : (
         <NoSwapPanel resp={resp} />
       )}
+      {keptUnmatched.length ? (
+        <p className="small muted" style={{ marginTop: 14 }}>
+          Kept as they are (not matched, never swapped): {keptUnmatched.join(', ')}.
+        </p>
+      ) : null}
       {swaps.length ? (
         <details className="sources panel" style={{ marginTop: 18 }}>
           <summary>Why not the other items?</summary>

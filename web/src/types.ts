@@ -64,6 +64,9 @@ export interface PlanResponse {
   excludedCandidateIds: string[];
   timingsMs: { resolve: number; candidates: number; engine: number; total: number };
   cache: { hits: number; misses: number; liveCalls: number; staleServed: number };
+  chain: 'kroger' | 'walmart';
+  /** what the shopper paid, from their receipt (context only; never used for cost math) */
+  paid?: Record<string, import('@carttweak/shared').PriceObservation>;
 }
 
 export interface Store extends Branch {

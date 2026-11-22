@@ -72,6 +72,8 @@ export interface PriceObservation {
   isSample: boolean;
   /** true when served from cache after a failed live call */
   stale?: boolean;
+  /** receipt: number of units this price covers (merged duplicate lines) */
+  quantity?: number;
 }
 
 /**

@@ -33,28 +33,6 @@ export function StartScreen({ onDemo, demoAvailable, loadingDemo }: { onDemo: ()
   );
 }
 
-export function ReceiptScreen() {
-  return (
-    <section>
-      <h1>Upload a receipt</h1>
-      <div className="panel rule-top">
-        <p style={{ marginTop: 0 }}>
-          <strong>Receipt reading arrives in the next update.</strong>
-        </p>
-        <p className="muted">For now, enter your list by hand. It takes about a minute, and you can use quantities like "2 bananas".</p>
-        <div className="actions">
-          <button type="button" className="btn primary" onClick={() => go({ name: 'list' })}>
-            Enter my list instead
-          </button>
-          <button type="button" className="btn" onClick={() => go({ name: 'start' })}>
-            Back
-          </button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 export function ListScreen({
   text,
   isSample,

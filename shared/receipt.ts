@@ -136,7 +136,8 @@ const SKIP_RE =
 const STREET_RE = /^\s*\d{2,6}\s+[A-Za-z].*\b(ST|STREET|AVE|AVENUE|RD|ROAD|BLVD|DR|DRIVE|HWY|HIGHWAY|PKWY|LN|LANE|WAY|PIKE|CT|PL|SQ|TPKE|CIR)\b/i;
 const CITY_RE = /^\s*([A-Za-z][A-Za-z .'-]+?)\s*(?:,\s*|\s+)([A-Z]{2})\s*,?\s*(\d{5})?(?:-\d{4})?\s*$/;
 const DATE_RE = /\b(\d{2})\/(\d{2})\/(\d{2}|\d{4})\s+(\d{2}:\d{2}(?::\d{2})?)/;
-const STORE_RE = /\bST\s*#\s*([0-9OoIl]{2,6})/i;
+// OCR sometimes adds a letter ("STH# 2079" seen on a real receipt)
+const STORE_RE = /\bS[T7][A-Z]?\s*#\s*([0-9OoIl]{2,6})/i;
 
 function isoDate(m: RegExpExecArray): string {
   const y = m[3]!.length === 2 ? `20${m[3]}` : m[3]!;

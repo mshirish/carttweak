@@ -7,7 +7,9 @@ import { CheckScreen, rowFromResolve } from './screens/CheckScreen.tsx';
 import { GoalsScreen } from './screens/GoalsScreen.tsx';
 import { ResultsScreen } from './screens/ResultsScreen.tsx';
 import { SavedScreen, TripScreen } from './screens/SavedScreens.tsx';
-import { ListScreen, ReceiptScreen, StartScreen } from './screens/StartScreens.tsx';
+import { ListScreen, StartScreen } from './screens/StartScreens.tsx';
+import { ReceiptCheckScreen, ReceiptMatchScreen, ReceiptUploadScreen } from './screens/ReceiptScreens.tsx';
+import { matchRequest, mergeMatchedRows, productKey, type MatchRow, type ReceiptState } from './receipt.ts';
 import { StoreScreen } from './screens/StoreScreen.tsx';
 import { buildRevisedList, newId, tripStore, type SavedItem, type SavedTrip } from './storage.ts';
 import type { Branch, Goals, PlanProgress, PlanResponse, Row, SwapOption } from './types.ts';
@@ -22,7 +24,7 @@ function useRoute(): Route {
   return route;
 }
 
-function Header({ branch, route }: { branch: Branch | null; route: Route }) {
+function Header({ branch, route, note }: { branch: Branch | null; route: Route; note?: string | null }) {
   const cur = (names: Route['name'][]) => (names.includes(route.name) ? ('page' as const) : undefined);
   return (
     <header className="header">
@@ -33,6 +35,7 @@ function Header({ branch, route }: { branch: Branch | null; route: Route }) {
         {branch ? (
           <>
             <strong>{branch.name}</strong>
+            {note ? <span className="badge warn" style={{ marginLeft: 6 }}>{note}</span> : null}
             <span className="addr">{branch.address}</span> ·{' '}
             <a href={hrefFor({ name: 'store' })} className="small">
               Change
@@ -43,7 +46,7 @@ function Header({ branch, route }: { branch: Branch | null; route: Route }) {
         )}
       </div>
       <nav className="nav" aria-label="Main">
-        <a href={hrefFor({ name: 'start' })} aria-current={cur(['start', 'list', 'check', 'goals', 'results', 'receipt'])}>
+        <a href={hrefFor({ name: 'start' })} aria-current={cur(['start', 'list', 'check', 'goals', 'results', 'receipt', 'receipt-check', 'receipt-match'])}>
           Plan
         </a>
         <a href={hrefFor({ name: 'saved' })} aria-current={cur(['saved', 'trip'])}>
@@ -82,6 +85,15 @@ export default function App() {
   const [saveWarning, setSaveWarning] = useState<string | null>(null);
   const [now, setNow] = useState(() => new Date().toISOString());
   const planSeq = useRef(0);
+  // receipt flow
+  const [tripSource, setTripSource] = useState<'list' | 'receipt'>('list');
+  const [receipt, setReceipt] = useState<ReceiptState | null>(null);
+  const [matchRows, setMatchRows] = useState<MatchRow[]>([]);
+  const [walmart, setWalmart] = useState<{ available: boolean; reason: string | null }>({ available: false, reason: null });
+  const [planTarget, setPlanTarget] = useState<'walmart' | 'kroger'>('kroger');
+  const [matching, setMatching] = useState(false);
+  const [matchError, setMatchError] = useState<string | null>(null);
+  const receiptMeta = useRef<{ zip: string; storeNumber: string | null; date: string | null }>({ zip: '', storeNumber: null, date: null });
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date().toISOString()), 60_000);
@@ -103,11 +115,15 @@ export default function App() {
   // guards: later steps need the earlier ones
   useEffect(() => {
     if (!ready) return; // wait for the default store
-    if (['list', 'check', 'goals', 'results'].includes(route.name) && !branch) go({ name: 'store' });
-    else if (['goals', 'results'].includes(route.name) && rows.length === 0) go({ name: 'list' });
+    const receiptTrip = tripSource === 'receipt' && matchRows.length > 0;
+    if (route.name === 'receipt-check' && !receipt) go({ name: 'receipt' });
+    else if (route.name === 'receipt-match' && !matchRows.length) go({ name: receipt ? 'receipt-check' : 'receipt' });
+    else if (['list', 'check'].includes(route.name) && !branch) go({ name: 'store' });
+    else if (['goals', 'results'].includes(route.name) && !receiptTrip && !branch) go({ name: 'store' });
+    else if (['goals', 'results'].includes(route.name) && !receiptTrip && rows.length === 0) go({ name: 'list' });
     else if (route.name === 'check' && rows.length === 0) go({ name: 'list' });
     else if (route.name === 'results' && !goals.primary) go({ name: 'goals' });
-  }, [ready, route.name, branch, rows.length, goals.primary]);
+  }, [ready, route.name, branch, rows.length, goals.primary, tripSource, matchRows.length, receipt]);
 
   const setRows = useCallback((fn: (r: Row[]) => Row[]) => setRowsState(fn), []);
 
@@ -140,6 +156,7 @@ export default function App() {
       const items = parsed.map((p, i) => ({ id: `i${String(i + 1).padStart(2, '0')}`, query: p.query, quantity: p.quantity }));
       const r = await api.resolve(branch.locationId, items);
       setRowsState(r.items.map((it) => rowFromResolve(it, demoLocks.has(it.query))));
+      setTripSource('list');
       setResp(null);
       setExcluded([]);
       setAccepted({});
@@ -151,19 +168,41 @@ export default function App() {
     }
   }
 
+  function receiptPlanBody() {
+    const m = receiptMeta.current;
+    const paid = (r: MatchRow) => (r.priceCents != null ? { cents: r.priceCents, date: m.date, storeNumber: m.storeNumber, quantity: r.quantity } : undefined);
+    // the same product on several receipt lines becomes one item (quantity and paid add up)
+    const matched = mergeMatchedRows(matchRows);
+    if (planTarget === 'walmart') {
+      return {
+        chain: 'walmart',
+        zip: m.zip,
+        items: matched.map((r) => ({ id: r.id, ...(r.product!.walmartItemId ? { walmartItemId: r.product!.walmartItemId } : { code: r.code }), quantity: r.quantity, paid: paid(r) })),
+      };
+    }
+    return {
+      locationId: defaultBranch?.locationId,
+      items: matched.filter((r) => r.product!.krogerProductId).map((r) => ({ id: r.id, productId: r.product!.krogerProductId, quantity: r.quantity, paid: paid(r) })),
+    };
+  }
+
   async function plan(excludedIds = excluded, pinned: Array<{ itemId: string; candidateRef: string }> = []) {
-    if (!branch || !goals.primary) return;
+    const receiptTrip = tripSource === 'receipt';
+    if ((!receiptTrip && !branch) || !goals.primary) return;
     const seq = ++planSeq.current;
     setPlanning(true);
     setPlanError(null);
     setProgress(null);
     go({ name: 'results' });
-    const body = {
-      locationId: branch.locationId,
+    const listBody = () => ({
+      locationId: branch!.locationId,
       items: rows
         .filter((r) => r.status === 'matched' || r.status === 'no_barcode')
         .map((r) => (r.status === 'matched' && r.product ? { id: r.id, productId: r.product.productId, quantity: r.quantity } : { id: r.id, query: r.query, quantity: r.quantity })),
-      locks: rows.filter((r) => r.locked).map((r) => r.id),
+    });
+    const body = {
+      ...(receiptTrip ? receiptPlanBody() : listBody()),
+      locks: receiptTrip ? mergeMatchedRows(matchRows).filter((r) => r.locked).map((r) => r.id) : rows.filter((r) => r.locked).map((r) => r.id),
       goals: { primary: goals.primary, secondary: goals.secondary },
       budget: { maxExtraSpendCents: budgetCents },
       excludedCandidateIds: excludedIds,
@@ -201,8 +240,21 @@ export default function App() {
   }
 
   function save() {
-    if (!branch || !resp) return;
-    const originalItems: SavedItem[] = rows
+    if (!resp) return;
+    const receiptTrip = tripSource === 'receipt';
+    // receipt images are never saved: only the item lines, matches and prices
+    const originalItems: SavedItem[] = receiptTrip
+      ? [...mergeMatchedRows(matchRows), ...matchRows.filter((r) => productKey(r) == null)].map((r) => ({
+          itemId: r.id,
+          query: r.name,
+          quantity: r.quantity,
+          status: r.status === 'matched' ? ('matched' as const) : ('unmatched' as const),
+          locked: r.locked,
+          matchMethod: r.status === 'needs_confirm' ? ('unmatched' as const) : r.matchMethod,
+          paidCents: r.priceCents,
+          product: r.product ? { ref: r.product.walmartItemId ? `walmart:${r.product.walmartItemId}` : `gtin:${r.product.gtin14}`, description: r.product.description, sizeLabel: r.product.sizeLabel, regularCents: r.product.regularCents, imageUrl: r.product.imageUrl } : null,
+        }))
+      : rows
       .filter((r) => r.status === 'matched' || r.status === 'no_barcode')
       .map((r) => ({
         itemId: r.id,
@@ -210,21 +262,24 @@ export default function App() {
         quantity: r.quantity,
         status: r.status as 'matched' | 'no_barcode',
         locked: r.locked,
+        matchMethod: null,
         product: r.product ? { ref: r.product.ref, description: r.product.description, sizeLabel: r.product.sizeLabel, regularCents: r.product.regularCents, imageUrl: r.product.imageUrl } : null,
       }));
     const acceptedSwaps = resp.plan.swaps.filter((s) => accepted[s.itemId] === s.replacement.ref);
     const trip: SavedTrip = {
-      schemaVersion: 1,
+      schemaVersion: 2,
       id: newId(),
       createdAt: new Date().toISOString(),
-      branch,
+      branch: resp.branch,
       goals,
       budgetCents,
       originalItems,
       acceptedSwaps,
       revisedList: buildRevisedList(originalItems, acceptedSwaps),
       containsSample: resp.containsSample,
-      listIsSample,
+      listIsSample: receiptTrip ? false : listIsSample,
+      source: receiptTrip ? 'receipt' : 'list',
+      chain: resp.chain ?? 'kroger',
     };
     const r = tripStore.save(trip);
     setSaveWarning(r.warning);
@@ -248,7 +303,69 @@ export default function App() {
       );
       break;
     case 'receipt':
-      body = <ReceiptScreen />;
+      body = (
+        <ReceiptUploadScreen
+          onRead={(s) => {
+            setReceipt(s);
+            setMatchRows([]);
+            go({ name: 'receipt-check' });
+          }}
+        />
+      );
+      break;
+    case 'receipt-check':
+      body = receipt ? (
+        <ReceiptCheckScreen
+          state={receipt}
+          setState={(fn) => setReceipt((s) => (s ? fn(s) : s))}
+          busy={matching}
+          error={matchError}
+          onContinue={async () => {
+            const req = matchRequest(receipt);
+            receiptMeta.current = { zip: req.zip, storeNumber: req.storeNumber, date: req.date };
+            setMatching(true);
+            setMatchError(null);
+            try {
+              const r = await api.matchReceipt(req);
+              setWalmart(r.walmart);
+              setMatchRows(
+                r.items.map((it: any) => {
+                  const src = req.items.find((x) => x.id === it.id)!;
+                  return { ...it, quantity: src.quantity, priceCents: src.priceCents, candidates: it.candidates ?? [], locked: false } as MatchRow;
+                }),
+              );
+              go({ name: 'receipt-match' });
+            } catch (e) {
+              setMatchError(e instanceof ApiError ? e.message : 'Matching failed.');
+            } finally {
+              setMatching(false);
+            }
+          }}
+        />
+      ) : null;
+      break;
+    case 'receipt-match':
+      body = (
+        <ReceiptMatchScreen
+          rows={matchRows}
+          setRows={(fn) => setMatchRows(fn)}
+          walmart={walmart}
+          zip={receiptMeta.current.zip}
+          fallbackBranch={defaultBranch}
+          onPlanWalmart={() => {
+            setTripSource('receipt');
+            setPlanTarget('walmart');
+            setResp(null);
+            go({ name: 'goals' });
+          }}
+          onPlanFallback={() => {
+            setTripSource('receipt');
+            setPlanTarget('kroger');
+            setResp(null);
+            go({ name: 'goals' });
+          }}
+        />
+      );
       break;
     case 'list':
       body = (
@@ -275,7 +392,7 @@ export default function App() {
           setGoals={setGoals}
           budgetCents={budgetCents}
           setBudget={setBudget}
-          itemCount={rows.length}
+          itemCount={tripSource === 'receipt' ? mergeMatchedRows(matchRows).length : rows.length}
           onPlan={() => {
             setExcluded([]);
             setAccepted({});
@@ -299,6 +416,8 @@ export default function App() {
           onSave={save}
           onRetry={() => void plan()}
           excludedCount={excluded.length}
+          keptUnmatched={tripSource === 'receipt' ? matchRows.filter((r) => r.status !== 'matched').map((r) => r.name) : []}
+          differentStore={tripSource === 'receipt' && planTarget === 'kroger' && defaultBranch ? defaultBranch.name : null}
         />
       );
       break;
@@ -322,7 +441,11 @@ export default function App() {
 
   return (
     <div className="shell">
-      <Header branch={branch} route={route} />
+      <Header
+        branch={tripSource === 'receipt' && ['goals', 'results'].includes(route.name) ? (planTarget === 'walmart' ? { chain: 'walmart', locationId: `zip:${receiptMeta.current.zip}`, name: `Walmart.com prices for ZIP ${receiptMeta.current.zip}`, address: 'from your receipt' } : defaultBranch) : branch}
+        note={tripSource === 'receipt' && planTarget === 'kroger' && ['goals', 'results'].includes(route.name) ? 'Different store' : null}
+        route={route}
+      />
       {configError ? <p className="error" role="alert">{configError}</p> : null}
       <main>{body}</main>
     </div>

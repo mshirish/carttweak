@@ -30,6 +30,8 @@ export const api = {
   demoList: () => call<DemoList>('/api/demo-list'),
   resolve: (locationId: string, items: Array<{ id: string; query: string; quantity: number }>) =>
     call<{ branch: Branch; items: ResolveItem[] }>('/api/resolve', { method: 'POST', body: JSON.stringify({ locationId, items }) }),
+  matchReceipt: (body: unknown) =>
+    call<{ walmart: { available: boolean; reason: string | null }; zip: string | null; items: any[] }>('/api/receipt/match', { method: 'POST', body: JSON.stringify(body) }),
   startPlan: (body: unknown) => call<{ jobId: string }>('/api/plan/jobs', { method: 'POST', body: JSON.stringify(body) }),
   pollPlan: (id: string) =>
     call<{ status: 'running' | 'done' | 'error'; progress: PlanProgress; result?: PlanResponse; error?: { code: string; message: string }; httpStatus?: number }>(

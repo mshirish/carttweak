@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { buildRevisedList, SCHEMA_VERSION, STORAGE_KEY, TripStore, type SavedTrip, type StorageLike } from './storage.ts';
+import { buildRevisedList, migrateTrip, SCHEMA_VERSION, STORAGE_KEY, TripStore, type SavedTrip, type StorageLike } from './storage.ts';
 
 const trip = (id: string, createdAt = '2026-11-22T08:00:00Z'): SavedTrip => ({
   schemaVersion: SCHEMA_VERSION,
@@ -13,6 +13,8 @@ const trip = (id: string, createdAt = '2026-11-22T08:00:00Z'): SavedTrip => ({
   revisedList: [],
   containsSample: false,
   listIsSample: true,
+  source: 'list',
+  chain: 'kroger',
 });
 
 function mem(): StorageLike & { data: Record<string, string> } {
@@ -26,7 +28,7 @@ describe('TripStore', () => {
     const store = new TripStore(() => s);
     store.save(trip('a', '2026-11-21T08:00:00Z'));
     store.save(trip('b'));
-    expect(JSON.parse(s.data[STORAGE_KEY]!).schemaVersion).toBe(1);
+    expect(JSON.parse(s.data[STORAGE_KEY]!).schemaVersion).toBe(2);
     expect(store.list().map((t) => t.id)).toEqual(['b', 'a']);
     expect(store.warning).toBeNull();
   });
@@ -67,9 +69,9 @@ describe('TripStore', () => {
 describe('buildRevisedList', () => {
   it('replaces accepted items with the replacement and packages needed', () => {
     const items = [
-      { itemId: 'i1', query: 'bread', quantity: 1, status: 'matched' as const, locked: false, product: { ref: 'k:1', description: 'Wonder Classic White Bread', sizeLabel: '20 oz', regularCents: 329, imageUrl: null } },
-      { itemId: 'i2', query: 'cheerios', quantity: 1, status: 'matched' as const, locked: true, product: { ref: 'k:2', description: 'Honey Nut Cheerios', sizeLabel: '10.8 oz', regularCents: 399, imageUrl: null } },
-      { itemId: 'i3', query: 'bananas', quantity: 6, status: 'no_barcode' as const, locked: false, product: null },
+      { itemId: 'i1', query: 'bread', quantity: 1, status: 'matched' as const, locked: false, matchMethod: null, product: { ref: 'k:1', description: 'Wonder Classic White Bread', sizeLabel: '20 oz', regularCents: 329, imageUrl: null } },
+      { itemId: 'i2', query: 'cheerios', quantity: 1, status: 'matched' as const, locked: true, matchMethod: null, product: { ref: 'k:2', description: 'Honey Nut Cheerios', sizeLabel: '10.8 oz', regularCents: 399, imageUrl: null } },
+      { itemId: 'i3', query: 'bananas', quantity: 6, status: 'no_barcode' as const, locked: false, matchMethod: null, product: null },
     ];
     const swap: any = { itemId: 'i1', packagesNeeded: 2, replacement: { description: 'Small Whole Grain Loaf', sizeLabel: '12 oz' }, original: { description: 'Wonder Classic White Bread' } };
     expect(buildRevisedList(items, [swap])).toEqual([
@@ -77,5 +79,25 @@ describe('buildRevisedList', () => {
       { itemId: 'i2', quantity: 1, description: 'Honey Nut Cheerios', sizeLabel: '10.8 oz', swapped: false, locked: true },
       { itemId: 'i3', quantity: 6, description: 'bananas', sizeLabel: null, swapped: false, locked: false },
     ]);
+  });
+});
+
+describe('schema v2', () => {
+  it('v1 trips (Milestone 2) migrate to v2 as list trips at Kroger', () => {
+    const v1 = { ...trip('old'), schemaVersion: 1, originalItems: [{ itemId: 'i1', query: 'bread', quantity: 1, status: 'matched', locked: false, product: null }] } as any;
+    delete v1.source;
+    delete v1.chain;
+    const m = migrateTrip(v1)!;
+    expect(m).toMatchObject({ schemaVersion: 2, source: 'list', chain: 'kroger' });
+    expect(m.originalItems[0]!.matchMethod).toBeNull();
+  });
+  it('receipt trips keep source, chain and per-item matchMethod; no image field exists', () => {
+    const s = mem();
+    const store = new TripStore(() => s);
+    const t = { ...trip('r'), source: 'receipt' as const, chain: 'walmart' as const, originalItems: [{ itemId: 'r01', query: 'WHT BRD', quantity: 1, status: 'matched' as const, locked: false, matchMethod: 'barcode' as const, paidCents: 248, product: null }] };
+    store.save(t);
+    const back = store.get('r')!;
+    expect(back.originalItems[0]!.matchMethod).toBe('barcode');
+    expect(s.data[STORAGE_KEY]).not.toMatch(/image|data:image|blob:/i);
   });
 });

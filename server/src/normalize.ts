@@ -258,5 +258,6 @@ export function receiptPrice(itemRef: string, paid: { cents: number; date: strin
     observedAt: paid.date ?? '',
     sourceRef: 'receipt (image not stored)',
     isSample: false,
+    ...(paid.quantity > 1 ? { quantity: paid.quantity } : {}),
   };
 }

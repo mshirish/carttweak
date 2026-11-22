@@ -6,14 +6,20 @@
 import type { Branch, Goals, SwapOption } from './types.ts';
 
 export const STORAGE_KEY = 'carttweak.trips';
-export const SCHEMA_VERSION = 1 as const;
+export const SCHEMA_VERSION = 2 as const;
+
+export type MatchMethod = 'barcode' | 'shopper_confirmed' | 'unmatched';
 
 export interface SavedItem {
   itemId: string;
   query: string;
   quantity: number;
-  status: 'matched' | 'no_barcode';
+  status: 'matched' | 'no_barcode' | 'unmatched';
   locked: boolean;
+  /** receipt trips: how the line was matched; list trips: null (matched by name at the store) */
+  matchMethod: MatchMethod | null;
+  /** receipt trips: what the shopper paid (cents) */
+  paidCents?: number | null;
   product: { ref: string; description: string; sizeLabel: string | null; regularCents: number | null; imageUrl: string | null } | null;
 }
 
@@ -41,6 +47,24 @@ export interface SavedTrip {
   revisedList: RevisedLine[];
   containsSample: boolean;
   listIsSample: boolean;
+  /** v2 */
+  source: 'list' | 'receipt';
+  chain: 'kroger' | 'walmart';
+}
+
+/** v1 trips (Milestone 2) were list trips at Kroger. */
+export function migrateTrip(t: any): SavedTrip | null {
+  if (t?.schemaVersion === SCHEMA_VERSION) return t as SavedTrip;
+  if (t?.schemaVersion === 1) {
+    return {
+      ...t,
+      schemaVersion: SCHEMA_VERSION,
+      source: 'list',
+      chain: 'kroger',
+      originalItems: (t.originalItems ?? []).map((i: any) => ({ ...i, matchMethod: null })),
+    } as SavedTrip;
+  }
+  return null;
 }
 
 export interface StorageLike {
@@ -72,7 +96,7 @@ export class TripStore {
       if (!raw) return [];
       const doc = JSON.parse(raw);
       const trips: unknown[] = Array.isArray(doc?.trips) ? doc.trips : [];
-      const ok = trips.filter((t: any) => t?.schemaVersion === SCHEMA_VERSION) as SavedTrip[];
+      const ok = trips.map(migrateTrip).filter((t): t is SavedTrip => t != null);
       if (ok.length !== trips.length) this.warning = `${trips.length - ok.length} saved trip(s) use an unknown format and were skipped.`;
       return ok.sort((a, b) => b.createdAt.localeCompare(a.createdAt));
     } catch (e: any) {
