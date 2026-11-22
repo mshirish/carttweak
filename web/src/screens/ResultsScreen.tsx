@@ -1,10 +1,16 @@
-import { budgetSentence, dollars, explainOutcome, GOALS, groupOutcomes, haulScore, NUTRIENT_UNIT, projectHaul, suggestChange, type HaulItem } from '@carttweak/shared';
+import { budgetSentence, relativeTime, dollars, explainOutcome, GOALS, groupOutcomes, haulScore, NUTRIENT_UNIT, projectHaul, suggestChange, type HaulItem } from '@carttweak/shared';
 
 /**
  * "Haul score: 64 -> 71 if you make these swaps (projected)": each swap's item takes the
  * replacement's score, and its spend changes by the swap's regular-price difference.
  * Uses the accepted swaps once any are accepted, otherwise all suggested swaps.
  */
+/** Earliest price check among the shown swaps (fallback: when the plan was made). */
+function earliestPriceDate(resp: PlanResponse): string {
+  const ds = resp.plan.swaps.flatMap((s) => s.sources.filter((x) => x.kind === 'price').map((x) => x.date ?? '')).filter(Boolean).sort();
+  return ds[0] ?? resp.generatedAt;
+}
+
 export function projectedLine(haul: HaulItem[], resp: PlanResponse, accepted: Record<string, string>): { before: number | null; after: number | null; text: string } | null {
   if (!haul.length || !resp.plan.swaps.length) return null;
   const acceptedSwaps = resp.plan.swaps.filter((s) => accepted[s.itemId] === s.replacement.ref);
@@ -147,7 +153,7 @@ export function ResultsScreen({
   haul?: HaulItem[];
   /** receipt lines that were not matched: kept on the list, never swapped */
   keptUnmatched?: string[];
-  /** receipt planned at a different store (Walmart unavailable) */
+  /** receipt bought at a different Kroger than the selected branch */
   differentStore?: string | null;
 }) {
   if (error) {
@@ -182,8 +188,8 @@ export function ResultsScreen({
         </p>
       ) : null}
       <p className="notice" role="status" data-testid="price-label">
-        Prices from {resp?.branch?.name ?? differentStore ?? "Kroger On the Rhine"}; Walmart prices coming soon.
-        {differentStore ? " What you paid on your receipt is shown for reference only." : ""}
+        Prices from {resp?.branch?.name ?? 'your store'} (checked {relativeTime(resp ? earliestPriceDate(resp) : null, now)}).
+        {differentStore ? ' What you paid on your receipt is shown for reference only.' : ''}
       </p>
       <p className="lede">
         {swaps.length ? `Up to two swaps that do the most for ${GOALS[resp.plan.primaryGoal].label} within your budget.` : ''}

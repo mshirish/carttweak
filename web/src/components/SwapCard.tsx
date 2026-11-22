@@ -1,18 +1,14 @@
 import { dollars, explainSwap, GOALS, NUTRIENT_LABEL, NUTRIENT_UNIT, relativeTime, shortName, type PriceObservation, type SwapOption } from '@carttweak/shared';
 
-/** Human label for where a price came from. Walmart API prices are online prices for a ZIP, never a shelf price. */
+/** Human label for where a price came from: "Prices from <branch> (checked <time>)". */
 export function priceSourceLabel(p: { source: string; branch?: string; date: string | null; stale?: boolean }, now: string): string {
   const checked = `checked ${relativeTime(p.date, now)}`;
-  if (p.source === 'walmart_api') {
-    const zip = /ZIP (\d{5})/.exec(p.branch ?? '')?.[1] ?? '';
-    return `Walmart.com price for ZIP ${zip} (${checked})`;
-  }
-  if (p.source === 'kroger_api') return `Prices from ${p.branch}; Walmart prices coming soon (${checked})`;
+  if (p.source === 'kroger_api') return `Prices from ${p.branch} (${checked})`;
   return `${p.source}, ${p.branch ?? ''}, ${checked}`;
 }
 
 const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-/** "You paid $2.48 on Feb 3, 2026 at Walmart #1711" */
+/** "You paid $2.48 on Feb 3, 2026 at Kroger, 100 Main St" */
 export function paidLabel(p: PriceObservation): string {
   const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(p.observedAt);
   const when = m ? ` on ${MONTHS[Number(m[2]) - 1]} ${Number(m[3])}, ${m[1]}` : '';
@@ -94,7 +90,6 @@ export function SwapCard({ swap: s, now, accepted, busy, onAccept, onReject, pai
               <div className="pname">{shortName(p.description)}</div>
               <div className="psize num">
                 {p.sizeLabel ?? 'size unknown'} · {dollars(Math.round(cents))}
-                {price?.source === 'walmart_api' ? ' on Walmart.com' : ''}
                 {price?.stale ? ' (cached)' : ''}
               </div>
               {role === 'original' && paid ? (

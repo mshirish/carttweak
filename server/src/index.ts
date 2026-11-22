@@ -17,7 +17,7 @@ const env = {
   FDC_API_KEY: process.env.FDC_API_KEY?.trim() ?? '',
 };
 // client id is registered too: Kroger echoes it inside productPageURI
-[env.KROGER_CLIENT_ID, env.KROGER_CLIENT_SECRET, env.FDC_API_KEY, process.env.WALMART_CONSUMER_ID?.trim()].forEach(registerSecret);
+[env.KROGER_CLIENT_ID, env.KROGER_CLIENT_SECRET, env.FDC_API_KEY].forEach(registerSecret);
 
 // CARTTWEAK_CACHE_DIR lets timing runs use an empty cache without touching data/cache/
 setCacheRoot(process.env.CARTTWEAK_CACHE_DIR ? path.resolve(process.env.CARTTWEAK_CACHE_DIR) : path.join(root, 'data', 'cache'));
@@ -27,9 +27,6 @@ const svc = createService({
   sampleDir: path.join(root, 'data', 'sample'),
   demoListPath: path.join(root, 'docs', 'demo-list.txt'),
   defaultLocationId: process.env.DEMO_LOCATION_ID?.trim() || undefined,
-  // Walmart API is out of scope for now: never called. Prices come from the Kroger demo branch.
-  walmart: null,
-  walmartReason: 'Walmart prices coming soon',
 });
 const app = createApp(svc, { kroger: Boolean(env.KROGER_CLIENT_ID && env.KROGER_CLIENT_SECRET), fdc: Boolean(env.FDC_API_KEY) });
 

@@ -102,11 +102,9 @@ export default function App() {
   const [tripSource, setTripSource] = useState<'list' | 'receipt'>('list');
   const [receipt, setReceipt] = useState<ReceiptState | null>(null);
   const [matchRows, setMatchRows] = useState<MatchRow[]>([]);
-  const [walmart, setWalmart] = useState<{ available: boolean; reason: string | null }>({ available: false, reason: null });
-  const [planTarget, setPlanTarget] = useState<'walmart' | 'kroger'>('kroger');
   const [matching, setMatching] = useState(false);
   const [matchError, setMatchError] = useState<string | null>(null);
-  const receiptMeta = useRef<{ zip: string; storeNumber: string | null; date: string | null }>({ zip: '', storeNumber: null, date: null });
+  const receiptMeta = useRef<{ zip: string; store: string | null; date: string | null }>({ zip: '', store: null, date: null });
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date().toISOString()), 60_000);
@@ -235,7 +233,6 @@ export default function App() {
 
   async function overviewFromReceipt() {
     setTripSource('receipt');
-    setPlanTarget('kroger');
     const m = receiptMeta.current;
     const merged = mergeMatchedRows(matchRows);
     const unmatched = matchRows.filter((r) => productKey(r) == null);
@@ -263,24 +260,17 @@ export default function App() {
         name: produce.has(r.id) && r.produceConfirmed ? `${r.name} (${r.produceConfirmed.description})` : r.product?.description ?? r.name,
         krogerProductId: r.status === 'matched' ? r.product?.krogerProductId ?? null : null,
       })),
-      { storeLabel: m.storeNumber ? `Walmart #${m.storeNumber.replace(/^0+(?=\d)/, '')}` : 'Walmart', date: m.date, source: 'receipt' },
+      { storeLabel: m.store ? `Kroger, ${m.store}` : 'Kroger', date: m.date, source: 'receipt' },
     );
   }
 
   function receiptPlanBody() {
     const m = receiptMeta.current;
-    const paid = (r: MatchRow) => (r.priceCents != null ? { cents: r.priceCents, date: m.date, storeNumber: m.storeNumber, quantity: r.quantity } : undefined);
+    const paid = (r: MatchRow) => (r.priceCents != null ? { cents: r.priceCents, date: m.date, storeNumber: m.store, quantity: r.quantity } : undefined);
     // the same product on several receipt lines becomes one item (quantity and paid add up)
     const matched = mergeMatchedRows(matchRows);
-    if (planTarget === 'walmart') {
-      return {
-        chain: 'walmart',
-        zip: m.zip,
-        items: matched.map((r) => ({ id: r.id, ...(r.product!.walmartItemId ? { walmartItemId: r.product!.walmartItemId } : { code: r.code }), quantity: r.quantity, paid: paid(r) })),
-      };
-    }
     return {
-      locationId: defaultBranch?.locationId,
+      locationId: (branch ?? defaultBranch)?.locationId,
       items: matched.filter((r) => r.product!.krogerProductId).map((r) => ({ id: r.id, productId: r.product!.krogerProductId, quantity: r.quantity, paid: paid(r) })),
     };
   }
@@ -351,7 +341,7 @@ export default function App() {
           locked: r.locked,
           matchMethod: r.status === 'needs_confirm' ? ('unmatched' as const) : r.matchMethod,
           paidCents: r.priceCents,
-          product: r.product ? { ref: r.product.walmartItemId ? `walmart:${r.product.walmartItemId}` : `gtin:${r.product.gtin14}`, description: r.product.description, sizeLabel: r.product.sizeLabel, regularCents: r.product.regularCents, imageUrl: r.product.imageUrl } : null,
+          product: r.product ? { ref: r.product.ref ?? `gtin:${r.product.gtin14}`, description: r.product.description, sizeLabel: r.product.sizeLabel, regularCents: r.product.regularCents, imageUrl: r.product.imageUrl } : null,
         }))
       : rows
       .filter((r) => r.status === 'matched' || r.status === 'no_barcode')
@@ -444,12 +434,11 @@ export default function App() {
           error={matchError}
           onContinue={async () => {
             const req = matchRequest(receipt);
-            receiptMeta.current = { zip: req.zip, storeNumber: req.storeNumber, date: req.date };
+            receiptMeta.current = { zip: req.zip, store: req.store, date: req.date };
             setMatching(true);
             setMatchError(null);
             try {
-              const r = await api.matchReceipt(req);
-              setWalmart(r.walmart);
+              const r = await api.matchReceipt({ ...req, locationId: (branch ?? defaultBranch)?.locationId });
               setMatchRows(
                 r.items.map((it: any) => {
                   const src = req.items.find((x) => x.id === it.id)!;
@@ -461,12 +450,12 @@ export default function App() {
                 rs.map((x) => {
                   if (x.status !== 'unmatched') return x;
                   const nf = nonFoodGuess(x.name);
-                  return { ...x, nonFood: nf, nonFoodGuess: nf, produceGuess: nf ? null : produceGuess(x.name, x.code) };
+                  return { ...x, nonFood: nf, nonFoodGuess: nf, produceGuess: nf ? null : produceGuess(x.name, null) };
                 }),
               );
               for (const it of r.items as any[]) {
                 if (it.status !== 'unmatched') continue;
-                const g = nonFoodGuess(it.name) ? null : produceGuess(it.name, it.code);
+                const g = nonFoodGuess(it.name) ? null : produceGuess(it.name, null);
                 if (!g) continue;
                 api
                   .produceCandidates(g.term)
@@ -522,15 +511,14 @@ export default function App() {
         <ReceiptMatchScreen
           rows={matchRows}
           setRows={(fn) => setMatchRows(fn)}
-          walmart={walmart}
           zip={receiptMeta.current.zip}
-          fallbackBranch={defaultBranch}
-          onPlanWalmart={() => {
-            setTripSource('receipt');
-            setPlanTarget('walmart');
-            setResp(null);
-            go({ name: 'goals' });
-          }}
+          zipNote={(() => {
+            const b = branch ?? defaultBranch;
+            const z = receiptMeta.current.zip;
+            const bz = /\b(\d{5})\b/.exec(b?.address ?? '')?.[1];
+            return b && z && bz && z !== bz ? `Receipt from Kroger, ${receiptMeta.current.store ?? `ZIP ${z}`}. Swap prices use ${b.name}.` : null;
+          })()}
+          fallbackBranch={branch ?? defaultBranch}
           onPlanFallback={() => void overviewFromReceipt()}
           busy={scoring}
           error={scoreError}
@@ -594,7 +582,7 @@ export default function App() {
           excludedCount={excluded.length}
           haul={haulRows}
           keptUnmatched={tripSource === 'receipt' ? matchRows.filter((r) => r.status !== 'matched').map((r) => r.name) : []}
-          differentStore={tripSource === 'receipt' && planTarget === 'kroger' && defaultBranch ? defaultBranch.name : null}
+          differentStore={tripSource === 'receipt' ? (branch ?? defaultBranch)?.name ?? null : null}
         />
       );
       break;
@@ -623,7 +611,7 @@ export default function App() {
   return (
     <div className="shell">
       <Header
-        branch={tripSource === 'receipt' && ['goals', 'results'].includes(route.name) ? (planTarget === 'walmart' ? { chain: 'walmart', locationId: `zip:${receiptMeta.current.zip}`, name: `Walmart.com prices for ZIP ${receiptMeta.current.zip}`, address: 'from your receipt' } : defaultBranch) : branch}
+        branch={branch ?? defaultBranch}
         note={null}
         route={route}
         profile={profile}

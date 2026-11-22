@@ -34,7 +34,7 @@ export const api = {
   produceScore: (fdcId: number) => call<{ fdcId: number; description: string; result: any }>('/api/produce/score', { method: 'POST', body: JSON.stringify({ fdcId }) }),
   scoreHaul: (body: unknown) => call<{ items: any[]; method: string }>('/api/haul/items', { method: 'POST', body: JSON.stringify(body) }),
   matchReceipt: (body: unknown) =>
-    call<{ walmart: { available: boolean; reason: string | null }; zip: string | null; items: any[] }>('/api/receipt/match', { method: 'POST', body: JSON.stringify(body) }),
+    call<{ branch: Branch; items: any[] }>('/api/receipt/match', { method: 'POST', body: JSON.stringify(body) }),
   startPlan: (body: unknown) => call<{ jobId: string }>('/api/plan/jobs', { method: 'POST', body: JSON.stringify(body) }),
   pollPlan: (id: string) =>
     call<{ status: 'running' | 'done' | 'error'; progress: PlanProgress; result?: PlanResponse; error?: { code: string; message: string }; httpStatus?: number }>(

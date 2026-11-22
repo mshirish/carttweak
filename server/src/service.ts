@@ -18,7 +18,6 @@ import {
   swapGroupFor,
   SWAP_GROUPS,
   storedLabelProblems,
-  receiptCodeToUpcA,
   isPlu,
   searchTermsFor,
   type PriceObservation,
@@ -40,16 +39,14 @@ import {
   applyPackageWeight,
   normalizeFdcFood,
   normalizeKrogerProduct,
-  normalizeWalmartItem,
   receiptPrice,
   fdcDisplayName,
   prettyPackageWeight,
   storeCheck,
   toBranch,
-  walmartBranch,
   type KrogerNormalized,
 } from './normalize.ts';
-import * as wm from './walmart.ts';
+import { krogerAdapter, type ChainAdapter } from './chains.ts';
 
 export class ServiceError extends Error {
   constructor(
@@ -71,9 +68,6 @@ export interface ServiceConfig {
   demoListPath?: string;
   /** DEMO_LOCATION_ID */
   defaultLocationId?: string;
-  /** Walmart Affiliate API (null = not configured; reason says why) */
-  walmart?: wm.WalmartConfig | null;
-  walmartReason?: string | null;
   now?: () => Date;
 }
 
@@ -206,8 +200,7 @@ export function createService(cfg: ServiceConfig) {
     if (n.noBarcode || !n.upc) {
       return { ...base, nutrition: extra, fdc: { fdcId: null, matched: false, lookup: 'barcode', reason: 'no barcode (PLU)' } };
     }
-    // Walmart's upc includes its check digit; Kroger ids (and receipt codes) do not
-    const f = n.product.chain === 'walmart' && n.product.gtin14 ? await lookupByGtin14(cfg.fdcApiKey, n.product.gtin14) : await lookupByUpc(cfg.fdcApiKey, n.upc);
+    const f = await lookupByUpc(cfg.fdcApiKey, n.upc);
     if (!f.match || !f.detail) {
       return {
         ...base,
@@ -329,15 +322,13 @@ export function createService(cfg: ServiceConfig) {
     const includeSample = body?.includeSample === true;
     const ids = items.map((it, i) => String(it.id ?? `item${i + 1}`));
     if (new Set(ids).size !== ids.length) throw new ServiceError(400, 'bad_items', 'item ids must be unique');
-    const chain = body?.chain === 'walmart' ? 'walmart' : 'kroger';
+    const chain = 'kroger' as const;
     const zip = String(body?.zip ?? '');
-    if (chain === 'walmart' && !/^\d{5}$/.test(zip)) throw new ServiceError(400, 'bad_zip', 'zip must be 5 digits for Walmart plans');
-    if (chain === 'kroger' && !/^[A-Za-z0-9]{8}$/.test(locationId)) throw new ServiceError(400, 'bad_location', 'locationId must be 8 characters');
+    if (!/^[A-Za-z0-9]{8}$/.test(locationId)) throw new ServiceError(400, 'bad_location', 'locationId must be 8 characters');
     return { items, locationId, primary, secondary, budget, locks, excluded, pinnedSwaps, includeSample, ids, chain, zip };
   }
 
   async function plan(body: any, onProgress: ProgressFn = () => {}) {
-    if (body?.chain === 'walmart') return planWalmart(body, onProgress);
     const t0 = Date.now();
     const { items, locationId, primary, secondary, budget, locks, excluded, pinnedSwaps, includeSample, ids } = validatePlan(body);
     const sample = includeSample ? loadSample() : [];
@@ -581,208 +572,51 @@ export function createService(cfg: ServiceConfig) {
     return out;
   }
 
-  // ---------- Walmart ----------
-  let wmStatus: { at: number; available: boolean; reason: string | null } | null = null;
-  async function walmartStatus(): Promise<{ available: boolean; reason: string | null }> {
-    if (!cfg.walmart) return { available: false, reason: cfg.walmartReason ?? 'Walmart API is not configured' };
-    if (wmStatus && Date.now() - wmStatus.at < 5 * 60_000) return wmStatus;
-    let available = false;
-    let reason: string | null = null;
-    try {
-      const r = await wm.ping(cfg.walmart);
-      available = r.ok;
-      if (!r.ok) reason = `Walmart API returned HTTP ${r.status}${r.body?.details?.Description ? `: ${String(r.body.details.Description).replace(/Consumer id\s*:.*$/i, 'consumer id')}` : ''}`;
-    } catch (e: any) {
-      reason = `Walmart API unreachable (${e?.message ?? e})`;
-    }
-    wmStatus = { at: Date.now(), available, reason };
-    return wmStatus;
-  }
-  const needWalmart = () => {
-    if (!cfg.walmart) throw new ServiceError(503, 'walmart_unavailable', cfg.walmartReason ?? 'Walmart API is not configured');
-    return cfg.walmart;
-  };
-  function wmNormalizeAll(body: any, zip: string, r: { retrievedAt: string; sourceUrl: string; stale: boolean }): KrogerNormalized[] {
-    const list: any[] = Array.isArray(body?.items) ? body.items : [];
-    return list.filter((x) => x?.itemId != null).map((x) => normalizeWalmartItem(x, zip, { observedAt: r.retrievedAt, sourceRef: r.sourceUrl, stale: r.stale }));
-  }
-  async function walmartByIds(ids: string[], zip: string): Promise<KrogerNormalized[]> {
-    const c = needWalmart();
-    const out: KrogerNormalized[] = [];
-    for (let i = 0; i < ids.length; i += 20) {
-      const r = await wm.itemsByIds(c, ids.slice(i, i + 20), zip);
-      if (!r.ok) throw new ServiceError(503, 'walmart_unavailable', `Walmart API returned HTTP ${r.status}`);
-      out.push(...wmNormalizeAll(r.body, zip, r));
-    }
-    return out;
-  }
-  /** Receipt code (UPC without check digit) -> exactly one Walmart item at this ZIP, or null. */
-  async function walmartByReceiptCode(code: string, zip: string): Promise<KrogerNormalized | null> {
-    const upcA = receiptCodeToUpcA(code);
-    if (!upcA) return null;
-    const r = await wm.itemsByUpc(needWalmart(), upcA, zip);
-    if (!r.ok) return null;
-    const list = wmNormalizeAll(r.body, zip, r);
-    return list.length === 1 ? list[0]! : null;
-  }
-  async function walmartSearch(q: string, zip: string, numItems = 10): Promise<KrogerNormalized[]> {
-    const r = await wm.search(needWalmart(), q, { numItems });
-    if (!r.ok) throw new ServiceError(503, 'walmart_unavailable', `Walmart API returned HTTP ${r.status}`);
-    return wmNormalizeAll(r.body, zip, r);
-  }
-  async function candidatesForWalmart(product: Product, zip: string, sample: NutritionRecord[] = []) {
-    const group = swapGroupFor(product);
-    if (!group) return { group: null, candidates: [] as EnrichedProduct[], searched: [] as string[], skipped: { notSameKind: 0, noPrice: 0, noSize: 0 } };
-    const terms = searchTermsFor(group, 'walmart');
-    const found = (await Promise.all(terms.map((t) => walmartSearch(t, zip, 25)))).flat();
-    const seen = new Map<string, KrogerNormalized>();
-    for (const n of found) if (n.product.ref !== product.ref && !seen.has(n.product.ref)) seen.set(n.product.ref, n);
-    const skipped = { notSameKind: 0, noPrice: 0, noSize: 0 };
-    const kind = [...seen.values()].filter((n) => (sameKind(product, n.product).ok ? true : (skipped.notSameKind++, false)));
-    // current price at this ZIP for every candidate (search results are not ZIP-specific)
-    const priced = await walmartByIds(kind.map((n) => n.product.chainProductId), zip);
-    const keep = priced.filter((n) => {
-      if (!n.price) return (skipped.noPrice++, false);
-      if (!n.product.size) return (skipped.noSize++, false);
-      return true;
-    });
-    return { group: group.id, candidates: await mapLimit(keep, CONCURRENCY, (n) => enrich(n, sample)), searched: terms, skipped };
-  }
-
-  async function planWalmart(body: any, onProgress: ProgressFn = () => {}) {
-    const t0 = Date.now();
-    const { items, primary, secondary, budget, locks, excluded, pinnedSwaps, includeSample, ids, zip } = validatePlan(body);
-    const status = await walmartStatus();
-    if (!status.available) throw new ServiceError(503, 'walmart_unavailable', `We can't check Walmart's current prices right now (${status.reason}).`);
-    const sample = includeSample ? loadSample() : [];
-    const before = snapshotStats();
-    const b = walmartBranch(zip);
-    let done = 0;
-    onProgress({ phase: 'resolve', done: 0, total: items.length, message: `Checking Walmart.com prices 0/${items.length}…` });
-    const trip: TripItem[] = await mapLimit(items.map((it, i) => ({ it: it as any, id: ids[i]! })), CONCURRENCY, async ({ it, id }) => {
-      const quantity = Number.isInteger(it.quantity) && it.quantity > 0 ? it.quantity : 1;
-      const query = String(it.query ?? it.walmartItemId ?? it.upc ?? '');
-      try {
-        let n: KrogerNormalized | null = null;
-        if (it.walmartItemId) n = (await walmartByIds([String(it.walmartItemId)], zip))[0] ?? null;
-        else if (it.code) n = await walmartByReceiptCode(String(it.code), zip);
-        if (!n) return { id, quantity, query, unresolved: { reason: 'not_found' as const, detail: 'not found on Walmart.com for this ZIP', candidates: [] } };
-        return { id, quantity, query, resolved: await enrich(n, sample) };
-      } finally {
-        onProgress({ phase: 'resolve', done: ++done, total: items.length, message: `Checking Walmart.com prices ${done}/${items.length}…` });
-      }
-    });
-    const t1 = Date.now();
-    const lockSet = new Set(locks);
-    const groupCache = new Map<string, Promise<Awaited<ReturnType<typeof candidatesForWalmart>>>>();
-    const wanted = trip.filter((t) => t.resolved && !lockSet.has(t.id));
-    for (const t of wanted) {
-      const g = swapGroupFor(t.resolved!.product);
-      if (g && !groupCache.has(g.id)) groupCache.set(g.id, candidatesForWalmart(t.resolved!.product, zip, sample));
-    }
-    onProgress({ phase: 'candidates', done: 0, total: groupCache.size, message: `Finding alternatives 0/${groupCache.size}…` });
-    await Promise.all(groupCache.values());
-    const candidates: Record<string, ResolvedItem[]> = {};
-    for (const t of wanted) {
-      const g = swapGroupFor(t.resolved!.product);
-      candidates[t.id] = g ? (await groupCache.get(g.id)!).candidates.filter((x) => x.product.ref !== t.resolved!.product.ref) : [];
-    }
-    const t2 = Date.now();
-    onProgress({ phase: 'plan', done: 0, total: 1, message: 'Comparing labels and prices…' });
-    const result = planSwaps({ items: trip, candidates, primaryGoal: primary, secondaryGoal: secondary, lockedItemIds: locks, maxExtraSpendCents: budget, asOf: now().toISOString().slice(0, 10), excludedCandidateIds: excluded, pinnedSwaps });
-    const t3 = Date.now();
-    onProgress({ phase: 'done', done: 1, total: 1, message: 'Done' });
-    return {
-      branch: b,
-      generatedAt: now().toISOString(),
-      plan: result,
-      explanations: explainPlan(result),
-      resolution: [],
-      candidates: {},
-      containsSample: result.containsSample,
-      cache: diffStats(before, snapshotStats()),
-      excludedCandidateIds: excluded,
-      timingsMs: { resolve: t1 - t0, candidates: t2 - t1, engine: t3 - t2, total: t3 - t0 },
-      groups: SWAP_GROUPS.map((g) => g.id),
-      chain: 'walmart' as const,
-      paid: paidPrices(items, ids, trip),
-      // P3: Nutri-Score of each suggested replacement, for the projected haul score
-      replacementScores: Object.fromEntries(
-        result.swaps.map((s) => {
-          const cand = (candidates[s.itemId] ?? []).find((c) => c.product.ref === s.replacement.ref);
-          return [s.replacement.ref, cand ? nutriFor(cand) : { scored: false, reason: 'label data missing', missing: [] }];
-        }),
-      ),
-    };
-  }
-
-  // ---------- receipt matching ----------
+  // ---------- receipt matching (Kroger prints no barcodes: match by name) ----------
   type MatchMethod = 'barcode' | 'shopper_confirmed' | 'unmatched';
+  const adapter: ChainAdapter = krogerAdapter({ search, byUpc, stores, branch });
   /**
-   * Match receipt lines to products. Honest labels:
-   *  barcode           the item code resolves to exactly one product (Walmart lookup, else FDC by GTIN)
-   *  needs_confirm     no code match; Walmart search candidates for the shopper to pick (never auto-picked)
-   *  unmatched         kept on the list, never swapped (produce, or nothing found)
+   * For each receipt line: search the selected branch with the expanded name and
+   * return the top candidates for the shopper to pick (never auto-picked). If there is
+   * exactly one strong match it is returned as `suggested` - the shopper still taps.
    */
   async function matchReceipt(body: any) {
     const items: any[] = Array.isArray(body?.items) ? body.items : [];
     if (!items.length) throw new ServiceError(400, 'bad_items', 'items must be a non-empty array');
     if (items.length > 80) throw new ServiceError(400, 'too_many_items', 'at most 80 receipt lines');
-    const zip = /^\d{5}$/.test(String(body?.zip ?? '')) ? String(body.zip) : null;
-    const status = zip ? await walmartStatus() : { available: false, reason: 'no ZIP on the receipt' };
+    const locationId = String(body?.locationId ?? '');
+    const b = await branch(locationId);
     const out = await mapLimit(items, CONCURRENCY, async (it) => {
       const id = String(it?.id ?? '');
       const name = String(it?.name ?? '').slice(0, 80);
-      const code = /^\d{6,14}$/.test(String(it?.code ?? '')) ? String(it.code).padStart(12, '0') : null;
-      const base = { id, name, code };
-      if (!code || isPlu(code)) {
-        return { ...base, status: 'unmatched' as const, matchMethod: 'unmatched' as MatchMethod, reason: code ? 'produce (PLU code, no barcode)' : 'no item code', candidates: [] };
-      }
-      if (status.available && zip) {
-        const n = await walmartByReceiptCode(code, zip).catch(() => null);
-        if (n) return { ...base, status: 'matched' as const, matchMethod: 'barcode' as MatchMethod, via: 'walmart', product: matchCard(n), candidates: [] };
-      }
-      const f = await lookupByUpc(cfg.fdcApiKey, code);
-      if (f.match && f.detail?.body) {
-        const d = f.detail.body;
-        return {
-          ...base,
-          status: 'matched' as const,
-          matchMethod: 'barcode' as MatchMethod,
-          via: 'fdc',
-          product: {
-            source: 'fdc',
-            gtin14: f.match.gtin14,
-            upcA: receiptCodeToUpcA(code),
-            krogerProductId: krogerIdFromGtin14(f.match.gtin14),
-            walmartItemId: null,
-            description: fdcDisplayName(d.brandName ?? d.brandOwner, d.description),
-            brand: d.brandName ?? d.brandOwner ?? null,
-            sizeLabel: prettyPackageWeight(d.packageWeight),
-            fdcId: f.match.fdcId,
-            regularCents: null,
-            imageUrl: null,
-          },
-          candidates: [],
-        };
-      }
-      if (status.available && zip && name) {
-        const cands = await walmartSearch(name, zip, 8).catch(() => []);
-        if (cands.length) return { ...base, status: 'needs_confirm' as const, matchMethod: 'unmatched' as MatchMethod, reason: 'code not found; pick the product you bought', candidates: cands.map(matchCard) };
-      }
-      return { ...base, status: 'unmatched' as const, matchMethod: 'unmatched' as MatchMethod, reason: 'code not found in Walmart or USDA records', candidates: [] };
+      const term = String(it?.searchTerm ?? name).slice(0, 80);
+      const base = { id, name, code: null };
+      if (!term.trim() || it?.skipSearch) return { ...base, status: 'unmatched' as const, matchMethod: 'unmatched' as MatchMethod, reason: 'not searched', candidates: [] };
+      const s = await adapter.search(term, locationId).catch(() => null);
+      if (!s) return { ...base, status: 'unmatched' as const, matchMethod: 'unmatched' as MatchMethod, reason: 'search failed', candidates: [] };
+      const results = (s.normalized as KrogerNormalized[]).filter((n) => !n.noBarcode && n.price);
+      if (!results.length) return { ...base, status: 'unmatched' as const, matchMethod: 'unmatched' as MatchMethod, reason: `nothing found at ${b.name}`, candidates: [] };
+      const strong = s.resolution.status === 'resolved' && s.resolution.method === 'only_match' && s.resolution.chosen && !s.resolution.chosen.noBarcode ? s.resolution.chosen.product.ref : null;
+      return {
+        ...base,
+        status: 'needs_confirm' as const,
+        matchMethod: 'unmatched' as MatchMethod,
+        reason: 'pick the product you bought',
+        suggestedRef: strong,
+        candidates: results.slice(0, 5).map(matchCard),
+      };
     });
-    return { walmart: status, zip, items: out };
+    return { branch: b, items: out };
   }
 
   function matchCard(n: KrogerNormalized) {
     const p = n.product;
     return {
-      source: 'walmart',
+      source: 'kroger',
+      ref: p.ref,
       gtin14: p.gtin14,
-      upcA: n.upc,
-      krogerProductId: p.gtin14 ? krogerIdFromGtin14(p.gtin14) : null,
-      walmartItemId: p.chainProductId,
+      upcA: null,
+      krogerProductId: p.chainProductId,
       description: p.description,
       brand: p.brand,
       sizeLabel: p.size?.label ?? null,
@@ -791,7 +625,6 @@ export function createService(cfg: ServiceConfig) {
       imageUrl: p.imageUrl ?? null,
     };
   }
-
 
   // ---------- haul scoring ----------
   /** Nutri-Score of a resolved product from its chosen nutrition record. FVL% = 0 (not on US labels) unless given. */
@@ -895,7 +728,7 @@ export function createService(cfg: ServiceConfig) {
     return { fdcId, description: r.body?.description ?? '', dataType: r.body?.dataType ?? null, result };
   }
 
-  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList, walmartStatus, matchReceipt, planWalmart, scoreHaul, nutriFor, produceCandidates, produceScore };
+  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList, matchReceipt, adapter, scoreHaul, nutriFor, produceCandidates, produceScore };
 }
 
 export type Service = ReturnType<typeof createService>;

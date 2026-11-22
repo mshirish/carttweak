@@ -206,3 +206,9 @@ Every item gets one outcome code, plus candidate rejection counts. `noSwapReason
   - **Coverage:** scored food spend ÷ all food spend. Below 50% shows "Low confidence". Non-food items are excluded from both.
   - **Verdicts:** 80+ Great haul, 60–79 Solid, 40–59 Room to improve, below 40 Lots of easy wins.
 - **Receipt lines not carried at the Kroger demo branch** are still scored from their USDA label (FDC by barcode). They just can't be swapped, because there's no Kroger price.
+
+## Kroger only (Nov 22, 2026)
+
+- Walmart is removed: the API client, request signing, the probe, the env vars, the receipt parser, the copy and the tests. Chain-specific code now sits behind `ChainAdapter` (`server/src/chains.ts`) and `RECEIPT_PARSERS` (`shared/receipt.ts`). Kroger is the only implementation of each. See `docs/ADDING_A_CHAIN.md`. Older notes above that mention Walmart are history.
+- Kroger receipts print no barcodes, so items are matched by name. The abbreviated name is expanded (`shared/krogerAbbrev.ts`) and searched at the selected branch, and the top 5 candidates are shown. The shopper picks one or skips. When there is a single strong match it is preselected as "Suggested", but it still needs a tap or "Confirm all suggested", and either can be undone. Produce and weighted lines go to the USDA produce step. Obvious non-food is pre-marked.
+- Price label: "Prices from <branch> (checked <time>)". If the receipt ZIP differs from the branch ZIP, the app says: "Receipt from Kroger, <address>. Swap prices use <branch>."

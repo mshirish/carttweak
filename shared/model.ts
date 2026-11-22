@@ -7,7 +7,8 @@
  */
 import { crossCheckPackageWeight, type ParsedSize, type SizeBasis } from './units.ts';
 
-export type Chain = 'kroger' | 'walmart' | 'target';
+/** Supported chains (Kroger today; see docs/ADDING_A_CHAIN.md). */
+export type Chain = 'kroger';
 export type SizeUnit = 'g' | 'ml' | 'each';
 
 /** `${chain}:${chainProductId}` */
@@ -57,7 +58,7 @@ export interface Branch {
   address: string;
 }
 
-export type PriceSource = 'kroger_api' | 'walmart_api' | 'shelf_observation' | 'receipt';
+export type PriceSource = 'kroger_api' | 'shelf_observation' | 'receipt';
 
 export interface PriceObservation {
   productRef: ProductRef;

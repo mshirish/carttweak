@@ -1,10 +1,11 @@
 // Receipt flow state shared by the receipt screens and App.
-import { parseWalmartReceipt, type OcrLine, type ParsedReceipt } from '@carttweak/shared';
+import { expandAbbrev, nonFoodGuess, parseReceipt, produceGuess, type OcrLine, type ParsedReceipt } from '@carttweak/shared';
 
 export type MatchMethod = 'barcode' | 'shopper_confirmed' | 'unmatched';
 
 export interface ReceiptHeaderEdit {
-  storeNumber: string;
+  /** store address line as printed */
+  store: string;
   zip: string;
   date: string;
 }
@@ -24,14 +25,16 @@ export interface ReceiptRow {
   issues: string[];
   /** came from a line the parser could not read */
   fromUnparsed: boolean;
+  /** weighed at the register ("lb @ /lb") */
+  weighted?: boolean;
 }
 
 export interface MatchCard {
-  source: 'walmart' | 'fdc';
+  source: 'kroger' | 'fdc';
+  ref?: string;
   gtin14: string | null;
   upcA: string | null;
   krogerProductId: string | null;
-  walmartItemId: string | null;
   description: string;
   brand: string | null;
   sizeLabel: string | null;
@@ -48,7 +51,9 @@ export interface MatchRow {
   priceCents: number | null;
   status: 'matched' | 'needs_confirm' | 'unmatched';
   matchMethod: MatchMethod;
-  via?: 'walmart' | 'fdc' | 'shopper';
+  via?: 'fdc' | 'shopper';
+  /** one strong match preselected by the server; still needs a tap */
+  suggestedRef?: string | null;
   product?: MatchCard;
   candidates: MatchCard[];
   reason?: string;
@@ -77,7 +82,7 @@ const dollarsText = (c: number | null) => (c == null ? '' : (c / 100).toFixed(2)
 /** Key identifying the matched product of a row (null if not matched). */
 export function productKey(r: MatchRow): string | null {
   if (r.status !== 'matched' || !r.product) return null;
-  return r.product.walmartItemId ? `w:${r.product.walmartItemId}` : r.product.gtin14 ? `g:${r.product.gtin14}` : r.product.krogerProductId ? `k:${r.product.krogerProductId}` : null;
+  return r.product.krogerProductId ? `k:${r.product.krogerProductId}` : r.product.gtin14 ? `g:${r.product.gtin14}` : null;
 }
 
 /**
@@ -107,7 +112,7 @@ export function mergeMatchedRows(rows: MatchRow[]): Array<MatchRow & { mergedIds
 }
 
 export function receiptFromOcr(lines: OcrLine[]): { state: ReceiptState; parsed: ParsedReceipt } {
-  const parsed = parseWalmartReceipt(lines);
+  const parsed = parseReceipt(lines);
   const rows: ReceiptRow[] = parsed.items.map((i) => ({
     id: i.id,
     name: i.name,
@@ -119,6 +124,7 @@ export function receiptFromOcr(lines: OcrLine[]): { state: ReceiptState; parsed:
     reviewed: false,
     issues: i.issues,
     fromUnparsed: false,
+    weighted: i.weightLb != null,
   }));
   parsed.unparsed.forEach((u, k) =>
     rows.push({
@@ -138,7 +144,7 @@ export function receiptFromOcr(lines: OcrLine[]): { state: ReceiptState; parsed:
   return {
     parsed,
     state: {
-      header: { storeNumber: h.storeNumber ?? '', zip: h.zip ?? '', date: h.date ?? '' },
+      header: { store: h.store ?? '', zip: h.zip ?? '', date: h.date ?? '' },
       rows,
       dropped: Object.values(parsed.dropped).reduce((a, b) => a + b, 0),
       subtotalCents: parsed.subtotalCents,
@@ -160,7 +166,7 @@ export function priceCents(s: string): number | null {
 export function matchRequest(state: ReceiptState) {
   return {
     zip: state.header.zip.trim(),
-    storeNumber: state.header.storeNumber.trim() || null,
+    store: state.header.store.trim() || null,
     date: state.header.date.trim() || null,
     items: state.rows
       .filter((r) => r.name.trim())
@@ -170,6 +176,9 @@ export function matchRequest(state: ReceiptState) {
         code: r.code.replace(/\D/g, '') || null,
         quantity: Math.max(1, Math.round(Number(r.quantity) || 1)),
         priceCents: priceCents(r.price),
+        searchTerm: expandAbbrev(r.name.trim()),
+        // produce/weighted lines go to the USDA produce step; obvious non-food is pre-marked: no store search
+        skipSearch: r.weighted || !!produceGuess(r.name, null) || nonFoodGuess(r.name),
       })),
   };
 }

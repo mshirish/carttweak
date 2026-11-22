@@ -212,53 +212,6 @@ export function applyPackageWeight(product: Product, packageWeight: string | nul
   return { ...product, size: r.size, flags: [...product.flags.filter((f) => !['size_conflict', 'size_rejected', 'size_inferred'].includes(f.code)), ...r.flags] };
 }
 
-// ---------- Walmart ----------
-/** Walmart.com prices are online prices for a ZIP code, not a shelf price at a store. */
-export function walmartBranch(zip: string): Branch {
-  return { chain: 'walmart', locationId: `zip:${zip}`, name: `Walmart.com (ZIP ${zip})`, address: `Walmart.com prices for ZIP ${zip}` };
-}
-
-/** Walmart Affiliate API item -> Product + PriceObservation (source walmart_api). */
-export function normalizeWalmartItem(raw: any, zip: string, meta: { observedAt: string; sourceRef: string; stale: boolean }): KrogerNormalized {
-  const upc: string | null = raw?.upc ? String(raw.upc) : null;
-  const ref = productRef('walmart', String(raw?.itemId));
-  // size: the documented `size` field, else a size in the name ("... 20 oz")
-  let size = sizeFromParsed(parsePackageSize(raw?.size ?? null));
-  if (!size) size = splitSize(String(raw?.name ?? '')).size;
-  const product: Product = {
-    ref,
-    chain: 'walmart',
-    chainProductId: String(raw?.itemId),
-    gtin14: upc ? toGtin14(upc) : null,
-    brand: raw?.brandName ?? null,
-    description: String(raw?.name ?? ''),
-    size,
-    categories: String(raw?.categoryPath ?? '')
-      .split('/')
-      .map((s) => s.trim())
-      .filter(Boolean),
-    flags: [],
-    isSample: false,
-    imageUrl: typeof raw?.thumbnailImage === 'string' && /^https:\/\/([a-z0-9-]+\.)*walmartimages\.com\//i.test(raw.thumbnailImage) ? raw.thumbnailImage : null,
-  };
-  const regular = positiveCents(raw?.salePrice);
-  const price: PriceObservation | null =
-    regular == null
-      ? null
-      : {
-          productRef: ref,
-          branch: walmartBranch(zip),
-          regularCents: regular,
-          promoCents: null,
-          source: 'walmart_api',
-          observedAt: meta.observedAt,
-          sourceRef: meta.sourceRef,
-          isSample: false,
-          ...(meta.stale ? { stale: true } : {}),
-        };
-  return { product, price, upc, noBarcode: false, packageSizeRaw: raw?.size ?? null };
-}
-
 /** FDC packageWeight for display: GS1 unit codes -> plain units ("16 ONZ" -> "16 oz", "144.0 OZA" -> "144 fl oz"). */
 export function prettyPackageWeight(pw: string | null | undefined): string | null {
   if (!pw) return null;
@@ -281,12 +234,10 @@ export function fdcDisplayName(brand: string | null | undefined, description: st
 
 /** A price the shopper actually paid, read from their receipt (context only; never used for swap cost math). */
 export function receiptPrice(itemRef: string, paid: { cents: number; date: string | null; storeNumber: string | null; quantity: number }): PriceObservation {
-  // keep at least one digit: store "00000" must not become "Walmart #"
-  const num = paid.storeNumber ? paid.storeNumber.replace(/^0+(?=\d)/, '') : null;
-  const store = num ? `Walmart #${num}` : 'Walmart';
+  const store = paid.storeNumber ? `Kroger, ${paid.storeNumber}` : 'Kroger';
   return {
     productRef: itemRef,
-    branch: { chain: 'walmart', locationId: `store:${paid.storeNumber ?? 'unknown'}`, name: store, address: '' },
+    branch: { chain: 'kroger', locationId: 'receipt', name: store, address: paid.storeNumber ?? '' },
     regularCents: paid.cents,
     promoCents: null,
     source: 'receipt',

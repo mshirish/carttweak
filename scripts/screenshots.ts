@@ -175,10 +175,9 @@ async function run(width: number, height: number) {
   await page.getByRole('heading', { name: 'Match your items' }).waitFor({ timeout: 120_000 });
   report.runs[width].receiptMatch = await page.$$eval('li.item .chip', (els) => els.map((e) => e.textContent?.trim()));
   shots.push(await shot(page, width, ++n, 'receipt-match'));
-  const fallback = page.getByRole('button', { name: /Plan at .* instead/ });
-  const toWalmart = page.getByRole('button', { name: /Continue at Walmart\.com/ });
-  if (await fallback.isVisible().catch(() => false)) await fallback.click();
-  else await toWalmart.click();
+  const suggested = page.getByRole('button', { name: /Confirm all suggested/ });
+  if (await suggested.isVisible().catch(() => false)) await suggested.click();
+  await page.getByRole('button', { name: /See your haul score|Pick or skip/ }).click();
   await page.getByRole('heading', { name: 'Goals and budget' }).waitFor();
   await page.locator('label.radio-card', { hasText: 'Less sodium' }).first().click();
   await page.getByLabel('Maximum extra spend in dollars').fill('2');

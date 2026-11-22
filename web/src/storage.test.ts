@@ -94,7 +94,7 @@ describe('schema v2', () => {
   it('receipt trips keep source, chain and per-item matchMethod; no image field exists', () => {
     const s = mem();
     const store = new TripStore(() => s);
-    const t = { ...trip('r'), source: 'receipt' as const, chain: 'walmart' as const, originalItems: [{ itemId: 'r01', query: 'WHT BRD', quantity: 1, status: 'matched' as const, locked: false, matchMethod: 'barcode' as const, paidCents: 248, product: null }] };
+    const t = { ...trip('r'), source: 'receipt' as const, chain: 'kroger' as const, originalItems: [{ itemId: 'r01', query: 'WHT BRD', quantity: 1, status: 'matched' as const, locked: false, matchMethod: 'barcode' as const, paidCents: 248, product: null }] };
     store.save(t);
     const back = store.get('r')!;
     expect(back.originalItems[0]!.matchMethod).toBe('barcode');

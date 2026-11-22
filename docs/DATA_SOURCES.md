@@ -211,3 +211,7 @@ Nutri-Score original 2017 algorithm. Prices and swaps from Kroger On the Rhine. 
   - A label that omits a required value, e.g. soda labels with no fiber.
   - Produce not confirmed. On typed lists there is no produce confirm step yet.
 - **Generic produce:** USDA Foundation records can lack saturated fat, so SR Legacy candidates are listed first.
+
+## Nov 22, 2026: Kroger only
+
+The Walmart Affiliate API is no longer used, and its env vars were removed from `.env.example`. Receipt line items come from Kroger receipts that the shopper photographs. They are matched by name with Kroger product search at the selected branch, as Kroger receipts carry no UPCs. The prices shown are Kroger API prices for that branch.

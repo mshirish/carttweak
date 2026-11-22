@@ -52,7 +52,7 @@ export function HomeScreen({ profile, hauls, onDemo, demoAvailable }: { profile:
       <p className="lede">Upload a grocery receipt to rate your haul out of 100, then find swaps that raise the score within your budget.</p>
       <div className="panel rule-top home-upload">
         <h2 style={{ marginTop: 0 }}>Upload a receipt</h2>
-        <p className="muted">Walmart receipts work best. Your photo stays on this device.</p>
+        <p className="muted">Kroger receipts work best. Your photo stays on this device.</p>
         <button type="button" className="btn primary big" onClick={() => go({ name: 'receipt' })}>
           Upload a receipt
         </button>

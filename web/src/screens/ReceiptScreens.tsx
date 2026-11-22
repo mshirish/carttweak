@@ -66,7 +66,7 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
   return (
     <section>
       <h1>Upload a receipt</h1>
-      <p className="lede">Walmart receipts work best. Your photo stays on this device: we read it here and only send the item lines to check prices. The photo is never saved.</p>
+      <p className="lede">Kroger receipts work best. Your photo stays on this device: we read it here and only send the item lines to check prices. The photo is never saved.</p>
       <div className="panel rule-top">
         <label className="btn primary" style={{ width: '100%' }}>
           {img ? 'Choose a different photo' : 'Choose a receipt photo'}
@@ -157,8 +157,8 @@ export function ReceiptCheckScreen({ state, setState, onContinue, busy, error }:
       <fieldset className="panel rule-top receipt-header">
         <legend className="sr-only">Store</legend>
         <label className="field small">
-          Walmart store #
-          <input type="text" inputMode="numeric" value={state.header.storeNumber} onChange={(e) => setH('storeNumber', e.target.value)} />
+          Store
+          <input type="text" value={state.header.store} placeholder="Street address" onChange={(e) => setH('store', e.target.value)} />
         </label>
         <label className="field small">
           ZIP {zipOk ? '' : <span className="badge warn">needed</span>}
@@ -234,10 +234,13 @@ export function ReceiptCheckScreen({ state, setState, onContinue, busy, error }:
 // ---------- 3. match ----------
 const METHOD_TEXT = { barcode: 'Matched by barcode', shopper_confirmed: 'You confirmed', unmatched: 'Not matched' } as const;
 
-function Card({ c }: { c: MatchCard }) {
+function Card({ c, suggested }: { c: MatchCard; suggested?: boolean }) {
   return (
     <span className="pick" style={{ flex: 1, minWidth: 0 }}>
-      <span className="p-name">{shortName(c.description)}</span>
+      <span className="p-name">
+        {c.imageUrl ? <img src={c.imageUrl} alt="" referrerPolicy="no-referrer" style={{ width: 40, height: 40, objectFit: 'contain', verticalAlign: 'middle', marginRight: 8 }} /> : null}
+        {shortName(c.description)} {suggested ? <span className="badge accent">Suggested</span> : null}
+      </span>
       <span className="p-price num">{c.regularCents != null ? dollars(c.regularCents) : ''}</span>
       <span className="p-sub">{c.sizeLabel ?? 'size unknown'}</span>
     </span>
@@ -247,20 +250,19 @@ function Card({ c }: { c: MatchCard }) {
 export function ReceiptMatchScreen({
   rows,
   setRows,
-  walmart,
   zip,
+  zipNote,
   fallbackBranch,
-  onPlanWalmart: _onPlanWalmart,
   onPlanFallback,
   busy = false,
   error = null,
 }: {
   rows: MatchRow[];
   setRows: (fn: (r: MatchRow[]) => MatchRow[]) => void;
-  walmart: { available: boolean; reason: string | null };
   zip: string;
+  /** "Receipt from Kroger, <address>. Swap prices use <branch>." */
+  zipNote?: string | null;
   fallbackBranch: Branch | null;
-  onPlanWalmart: () => void;
   onPlanFallback: () => void;
   busy?: boolean;
   error?: string | null;
@@ -276,7 +278,26 @@ export function ReceiptMatchScreen({
         {counts.barcode} matched by barcode · {counts.shopper_confirmed} you confirmed · {counts.unmatched} not matched
         {counts.pending ? ` · ${counts.pending} to pick` : ''}. Unmatched items stay on your list and are never swapped.
       </p>
-      <p className="notice" role="status">Prices from {fallbackBranch?.name ?? "Kroger On the Rhine"}; Walmart prices coming soon.</p>
+      {zipNote ? <p className="notice" role="status" data-testid="zip-note">{zipNote}</p> : null}
+      {rows.some((r) => r.status === 'needs_confirm' && r.suggestedRef) ? (
+        <div className="row" style={{ margin: '10px 0' }}>
+          <button
+            type="button"
+            className="btn small"
+            onClick={() =>
+              setRows((rs) =>
+                rs.map((r) => {
+                  const c = r.status === 'needs_confirm' && r.suggestedRef ? r.candidates.find((x) => x.ref === r.suggestedRef) : null;
+                  return c ? { ...r, status: 'matched', matchMethod: 'shopper_confirmed', via: 'shopper', product: c } : r;
+                }),
+              )
+            }
+          >
+            Confirm all suggested ({rows.filter((r) => r.status === 'needs_confirm' && r.suggestedRef).length})
+          </button>
+          <span className="small muted">Each one stays visible and can be undone.</span>
+        </div>
+      ) : null}
       {error ? <p className="error" role="alert">{error}</p> : null}
       <ul className="items">
         {rows.map((r) => (
@@ -316,6 +337,11 @@ export function ReceiptMatchScreen({
                   </button>
                 ) : null}
               </div>
+              {r.status === 'matched' && r.matchMethod === 'shopper_confirmed' ? (
+                <button type="button" className="btn ghost small" onClick={() => set(r.id, { status: 'needs_confirm', matchMethod: 'unmatched', product: undefined })}>
+                  Undo
+                </button>
+              ) : null}
               {r.status === 'matched' ? (
                 <button type="button" className="lock" aria-pressed={r.locked} onClick={() => set(r.id, { locked: !r.locked })}>
                   <Heart filled={r.locked} />
@@ -346,9 +372,9 @@ export function ReceiptMatchScreen({
               <>
                 <ul className="pick-list" aria-label={`Options for ${r.name}`}>
                   {r.candidates.map((c) => (
-                    <li key={c.walmartItemId ?? c.gtin14 ?? c.description}>
+                    <li key={c.ref ?? c.krogerProductId ?? c.description}>
                       <button type="button" className="choice" onClick={() => set(r.id, { status: 'matched', matchMethod: 'shopper_confirmed', via: 'shopper', product: c })}>
-                        <Card c={c} />
+                        <Card c={c} suggested={!!c.ref && c.ref === r.suggestedRef} />
                       </button>
                     </li>
                   ))}

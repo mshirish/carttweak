@@ -34,7 +34,7 @@ export async function lookupByUpc(apiKey: string, upc: string): Promise<FdcLooku
 }
 
 /**
- * Lookup for a barcode that already includes its check digit (e.g. Walmart's
+ * Lookup for a barcode that already includes its check digit (e.g. a full
  * `upc`, 12-digit UPC-A). Same strict rule: the FDC record's gtinUpc must
  * normalize to the same GTIN-14.
  */

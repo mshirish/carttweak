@@ -49,7 +49,7 @@ export interface SavedTrip {
   listIsSample: boolean;
   /** v2 */
   source: 'list' | 'receipt';
-  chain: 'kroger' | 'walmart';
+  chain: string;
   /** haul fields (optional; older saved trips lack them) */
   profileId?: string;
   storeLabel?: string;

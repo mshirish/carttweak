@@ -44,7 +44,7 @@ const env = {
   DEMO_LOCATION_ID: process.env.DEMO_LOCATION_ID?.trim() ?? '',
 };
 // Only real secrets are registered (ZIP / location ID are not secret and must stay visible).
-[env.KROGER_CLIENT_ID, env.KROGER_CLIENT_SECRET, env.FDC_API_KEY, process.env.WALMART_CONSUMER_ID].forEach(registerSecret);
+[env.KROGER_CLIENT_ID, env.KROGER_CLIENT_SECRET, env.FDC_API_KEY].forEach(registerSecret);
 const missing = (['KROGER_CLIENT_ID', 'KROGER_CLIENT_SECRET', 'FDC_API_KEY', 'DEMO_ZIP'] as const).filter((k) => !env[k]);
 if (missing.length) {
   console.error(`Missing in .env: ${missing.join(', ')}`);
