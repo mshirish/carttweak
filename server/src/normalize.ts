@@ -70,6 +70,16 @@ export function krogerGtin14(upc: string | null | undefined): string | null {
   return padTo(s + String(gs1CheckDigit(s)), 14);
 }
 
+/** Front image, small size (Kroger product images are public https URLs on kroger.com). */
+export function krogerImage(raw: any): string | null {
+  const imgs: any[] = Array.isArray(raw?.images) ? raw.images : [];
+  const front = imgs.find((i) => i?.perspective === 'front') ?? imgs[0];
+  const sizes: any[] = front?.sizes ?? [];
+  const pick = sizes.find((s) => s?.size === 'small') ?? sizes.find((s) => s?.size === 'thumbnail') ?? sizes[0];
+  const url = typeof pick?.url === 'string' ? pick.url : null;
+  return url && /^https:\/\/([a-z0-9-]+\.)*kroger\.com\//i.test(url) ? url : null;
+}
+
 function positiveCents(v: unknown): number | null {
   return typeof v === 'number' && Number.isFinite(v) && v > 0 ? Math.round(v * 100) : null;
 }
@@ -93,6 +103,7 @@ export function normalizeKrogerProduct(
     categories: [...new Set<string>((raw?.categories ?? []).map((c: string) => String(c)))],
     flags: [],
     isSample: false,
+    imageUrl: krogerImage(raw),
   };
   const regular = positiveCents(item?.price?.regular);
   const price: PriceObservation | null =

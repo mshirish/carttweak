@@ -56,7 +56,7 @@ describe(`verified bread pair (${RECORDED}) through the engine`, () => {
     expect(s.cost.regular.differenceCents / 100).toBe(verified.checkout.difference);
     expect(s.cost.promo!.differenceCents).toBe(100);
     expect(s.cost.promo!.differenceCents / 100).toBe(verified.checkoutWithPromo.difference);
-    expect(s.cost.promo!.label).toMatch(/may require loyalty card/);
+    expect(s.cost.promo!.label).toMatch(/may require Kroger card/);
   });
   it('other per-100 deltas match the verified file', () => {
     const map: Record<string, string> = { calories: 'calories', protein: 'protein_g', sugars: 'totalSugars_g', sodium: 'sodium_mg' };
@@ -82,7 +82,7 @@ describe(`verified bread pair (${RECORDED}) through the engine`, () => {
     expect(text).toContain(
       "Swapping Wonder Classic White Bread for Aunt Millie's Live Light! Whole Grain Bread adds 9.3 g fiber per 100 g (+52.7 g across the 20 oz you're buying) for $0.50 more at Kroger On the Rhine (regular price, checked Nov 22).",
     );
-    expect(text).toContain('With current promo (may require loyalty card): $1.00 more.');
+    expect(text).toContain('With current promo (may require Kroger card): $1.00 more.');
     expect(text).toContain('sodium rises 46 mg per 100 g');
     expect(text).toContain('Label data from Oct 2021 (Aunt Millie\'s) and Jun 2023 (Wonder); label may be outdated.');
   });

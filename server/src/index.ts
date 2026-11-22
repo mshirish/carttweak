@@ -25,6 +25,8 @@ const svc = createService({
   kroger: { clientId: env.KROGER_CLIENT_ID, clientSecret: env.KROGER_CLIENT_SECRET },
   fdcApiKey: env.FDC_API_KEY,
   sampleDir: path.join(root, 'data', 'sample'),
+  demoListPath: path.join(root, 'docs', 'demo-list.txt'),
+  defaultLocationId: process.env.DEMO_LOCATION_ID?.trim() || undefined,
 });
 const app = createApp(svc, { kroger: Boolean(env.KROGER_CLIENT_ID && env.KROGER_CLIENT_SECRET), fdc: Boolean(env.FDC_API_KEY) });
 

@@ -65,7 +65,7 @@ export function explainSwap(s: SwapOption): string {
       `${costPhrase(s.cost.regular.differenceCents)}${branch} (regular price, checked ${monthDay(price?.date)}${stale}).`,
   );
   if (s.cost.promo) {
-    parts.push(`With current promo (may require loyalty card): ${costPhrase(s.cost.promo.differenceCents).replace(/^for |^and /, '')}.`);
+    parts.push(`${s.cost.promo.label.charAt(0).toUpperCase()}${s.cost.promo.label.slice(1)}: ${costPhrase(s.cost.promo.differenceCents).replace(/^for |^and /, '')}.`);
   }
   // notes: any tracked nutrient that got worse (flagged ones say so)
   const notes: string[] = [];

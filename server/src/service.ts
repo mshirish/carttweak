@@ -13,6 +13,8 @@ import {
   swapGroupFor,
   SWAP_GROUPS,
   storedLabelProblems,
+  parseDemoList,
+  unitPrice,
   type Branch,
   type Goal,
   type NutritionRecord,
@@ -43,6 +45,10 @@ export interface ServiceConfig {
   sampleDir: string;
   /** real hand-transcribed labels (npm run add-label); defaults to <sampleDir>/../labels */
   labelsDir?: string;
+  /** docs/demo-list.txt (served by GET /api/demo-list) */
+  demoListPath?: string;
+  /** DEMO_LOCATION_ID */
+  defaultLocationId?: string;
   now?: () => Date;
 }
 
@@ -421,7 +427,94 @@ export function createService(cfg: ServiceConfig) {
     };
   }
 
-  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan };
+  // ---------- UI support ----------
+  function demoList() {
+    if (!cfg.demoListPath || !existsSync(cfg.demoListPath)) throw new ServiceError(404, 'no_demo_list', 'demo list not available');
+    const d = parseDemoList(readFileSync(cfg.demoListPath, 'utf8'));
+    return {
+      badge: 'Sample list',
+      header: d.header,
+      headerLocationId: d.headerLocationId,
+      items: d.items,
+      text: d.items.map((i) => `${i.quantity} ${i.query}`).join('\n'),
+    };
+  }
+
+  async function config() {
+    let defaultLocationId = cfg.defaultLocationId || null;
+    let source = 'DEMO_LOCATION_ID';
+    if (!defaultLocationId && cfg.demoListPath && existsSync(cfg.demoListPath)) {
+      defaultLocationId = parseDemoList(readFileSync(cfg.demoListPath, 'utf8')).headerLocationId;
+      source = 'demo list header';
+    }
+    let defaultBranch: Branch | null = null;
+    if (defaultLocationId) {
+      try {
+        defaultBranch = await branch(defaultLocationId);
+      } catch {
+        defaultBranch = null;
+      }
+    }
+    return { defaultLocationId, defaultLocationSource: defaultLocationId ? source : null, defaultBranch, demoList: !!cfg.demoListPath && existsSync(cfg.demoListPath) };
+  }
+
+  function card(n: KrogerNormalized) {
+    const p = n.product;
+    return {
+      productId: p.chainProductId,
+      ref: p.ref,
+      brand: p.brand,
+      description: p.description,
+      sizeLabel: p.size?.label ?? null,
+      size: p.size ? { quantity: p.size.quantity, unit: p.size.unit, basis: p.size.basis } : null,
+      regularCents: n.price?.regularCents ?? null,
+      promoCents: n.price?.promoCents ?? null,
+      observedAt: n.price?.observedAt ?? null,
+      stale: !!n.price?.stale,
+      unitPrice: unitPrice(n.price?.regularCents ?? null, p.size),
+      imageUrl: p.imageUrl ?? null,
+      noBarcode: n.noBarcode,
+      categories: p.categories,
+      swapGroup: swapGroupFor(p)?.id ?? null,
+    };
+  }
+
+  /** Resolution for the "check your list" screen. Kroger only (no FDC), so it is fast. */
+  async function resolveList(body: any, onProgress: ProgressFn = () => {}) {
+    const items: Array<{ id?: string; query?: string; quantity?: number }> = Array.isArray(body?.items) ? body.items : [];
+    if (!items.length) throw new ServiceError(400, 'bad_items', 'items must be a non-empty array');
+    if (items.length > 40) throw new ServiceError(400, 'too_many_items', 'at most 40 items');
+    const locationId = String(body?.locationId ?? '');
+    const b = await branch(locationId);
+    let done = 0;
+    const out = await mapLimit(items, CONCURRENCY, async (it, ) => {
+      const id = String(it.id ?? '');
+      const query = String(it.query ?? '').trim();
+      const quantity = Number.isInteger(it.quantity) && it.quantity! > 0 ? it.quantity! : 1;
+      try {
+        if (!query) return { id, query, quantity, status: 'not_found', detail: 'empty line', product: null, candidates: [] };
+        const s = await search(query, locationId);
+        const r = s.resolution;
+        return {
+          id,
+          query,
+          quantity,
+          status: r.status,
+          method: r.method ?? null,
+          detail: r.detail,
+          product: r.chosen ? card(r.chosen) : null,
+          candidates: r.candidates.map(card),
+          retrievedAt: s.retrievedAt,
+          stale: s.stale,
+        };
+      } finally {
+        onProgress({ phase: 'resolve', done: ++done, total: items.length, message: `Checking prices ${done}/${items.length}…` });
+      }
+    });
+    return { branch: b, items: out };
+  }
+
+  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList };
 }
 
 export type Service = ReturnType<typeof createService>;

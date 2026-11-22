@@ -10,3 +10,4 @@ export * from './fdcDate.ts';
 export * from './resolve.ts';
 export * from './demoList.ts';
 export * from './labelEntry.ts';
+export * from './display.ts';

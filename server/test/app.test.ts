@@ -78,6 +78,7 @@ beforeAll(() => {
     fdcApiKey: 'fdc-key-qqq',
     sampleDir: path.join(ROOT, 'data', 'sample'),
     labelsDir: (labelsDir = path.join(dir, 'labels')),
+    demoListPath: path.join(ROOT, 'docs', 'demo-list.txt'),
     now: () => new Date(t),
   });
   app = createApp(svc, { kroger: true, fdc: true });
@@ -218,6 +219,27 @@ describe(`HTTP API over ${RECORDED} responses`, () => {
     } finally {
       rmSync(labelsDir, { recursive: true, force: true });
     }
+  });
+  it('GET /api/config: default branch from the demo list header', async () => {
+    const r = await call('GET', '/api/config');
+    expect(r.json).toMatchObject({ defaultLocationId: '01400513', defaultLocationSource: 'demo list header', demoList: true });
+    expect(r.json.defaultBranch.name).toBe('Kroger On the Rhine');
+  });
+  it('GET /api/demo-list: badged sample list, 20 items, qty-prefixed text', async () => {
+    const r = await call('GET', '/api/demo-list');
+    expect(r.json.badge).toBe('Sample list');
+    expect(r.json.items).toHaveLength(20);
+    expect(r.json.text.split('\n')[0]).toBe('1 Wonder Classic White Bread 20 oz');
+    expect(r.json.items.find((i: any) => i.tags.includes('lock')).query).toMatch(/Cheerios/);
+  });
+  it('POST /api/resolve: matched card with price, unit price and Kroger image; unknown -> not_found', async () => {
+    const r = await call('POST', '/api/resolve', { locationId: '01400513', items: [{ id: 'a', query: 'Wonder Classic White Bread 20 oz' }, { id: 'b', query: 'eggs' }] });
+    expect(r.status).toBe(200);
+    const [a, b] = r.json.items;
+    expect(a).toMatchObject({ id: 'a', status: 'resolved', product: { productId: '0007225001137', sizeLabel: '20 oz', regularCents: 329, promoCents: 279, swapGroup: 'bread' } });
+    expect(a.product.unitPrice.per).toBe('oz');
+    expect(a.product.imageUrl).toMatch(/^https:\/\/www\.kroger\.com\/product\/images\//);
+    expect(b.status).toBe('too_vague');
   });
   it('includeSample: true attaches sample label data and marks the result containsSample', async () => {
     const r = await call('POST', '/api/plan', { ...planBody, includeSample: true });

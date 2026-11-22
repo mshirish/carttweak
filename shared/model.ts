@@ -46,6 +46,8 @@ export interface Product {
   categories: string[];
   flags: ProductFlag[];
   isSample: boolean;
+  /** small product image on the retailer's site (display only) */
+  imageUrl?: string | null;
 }
 
 export interface Branch {

@@ -333,7 +333,7 @@ describe('cost math', () => {
     const orig = resolved(prod('w', 'Classic White Bread', '20 oz'), 329, { fiber_g: 3.5 }, { promo: 279 });
     const s = plan({ items: [item('bread', orig)], candidates: { bread: [wgBread('b1', 379, 12)] } }).swaps[0]!;
     expect(s.cost.regular).toMatchObject({ differenceCents: 50, priceTypes: { original: 'regular', replacement: 'regular' } });
-    expect(s.cost.promo).toMatchObject({ differenceCents: 100, label: 'with current promo (may require loyalty card)', priceTypes: { original: 'promo', replacement: 'regular' } });
+    expect(s.cost.promo).toMatchObject({ differenceCents: 100, label: 'with current promo (may require Kroger card)', priceTypes: { original: 'promo', replacement: 'regular' } });
   });
 });
 

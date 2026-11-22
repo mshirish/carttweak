@@ -70,6 +70,9 @@ export const NUTRIENT_LABEL: Record<Per100Key, string> = {
 };
 
 export const LABEL_OUTDATED_YEARS = 2;
+
+/** Promo prices at these chains usually need the store's loyalty card. */
+export const CARD_NAME: Record<string, string> = { kroger: 'Kroger card' };
 export const MAX_SWAPS = 2;
 const EPS = 1e-9;
 
@@ -177,6 +180,7 @@ export interface ProductSummary {
   unit: string | null;
   gtin14: string | null;
   isSample: boolean;
+  imageUrl: string | null;
 }
 
 export interface SourceInfo {
@@ -301,6 +305,7 @@ function summarize(p: Product): ProductSummary {
     unit: p.size?.unit ?? null,
     gtin14: p.gtin14,
     isSample: p.isSample,
+    imageUrl: p.imageUrl ?? null,
   };
 }
 
@@ -475,7 +480,7 @@ function evaluate(
     const oc = op.promoCents ?? op.regularCents;
     const rc = rp.promoCents ?? rp.regularCents;
     promo = {
-      label: 'with current promo (may require loyalty card)',
+      label: `with current promo (may require ${CARD_NAME[rp.branch.chain] ?? 'loyalty card'})`,
       originalCents: item.quantity * oc,
       replacementCents: packagesNeeded * rc,
       differenceCents: packagesNeeded * rc - item.quantity * oc,

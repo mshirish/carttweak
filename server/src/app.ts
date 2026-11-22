@@ -43,6 +43,9 @@ export function createApp(svc: Service, config: { kroger: boolean; fdc: boolean 
   app.notFound((c) => send(c, 404, { error: { code: 'not_found', message: `no route ${c.req.method} ${c.req.path}` } }));
 
   app.get('/api/health', (c) => send(c, 200, { ok: true, config }));
+  app.get('/api/config', async (c) => send(c, 200, await svc.config()));
+  app.get('/api/demo-list', (c) => send(c, 200, svc.demoList()));
+  app.post('/api/resolve', async (c) => send(c, 200, await svc.resolveList(await c.req.json())));
 
   app.get('/api/locations', async (c) => send(c, 200, await svc.stores(String(c.req.query('zip') ?? ''))));
 
