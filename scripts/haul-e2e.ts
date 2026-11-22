@@ -2,7 +2,7 @@
  * LOCAL: drive the haul flow end to end in Edge and print scores/coverage only
  * (no item names). Real receipts come from data/receipts/private/ (gitignored).
  *   npm run dev  (another terminal)
- *   npx tsx scripts/haul-e2e.ts [--width=375] [--receipts=walmart-1.png,walmart-3.png] [--list] [--shots=dir]
+ *   npx tsx scripts/haul-e2e.ts [--width=375] [--receipts=kroger-2-handheld-28-items.jpg,kroger-3-three-items.jpg] [--list] [--shots=dir]
  */
 import { existsSync, mkdirSync } from 'node:fs';
 import path from 'node:path';
@@ -57,13 +57,22 @@ async function improveAndSave(page: Page, tag: string) {
   const label = await page.getByTestId('price-label').textContent().catch(() => null);
   const projected = await page.getByTestId('projected').textContent().catch(() => null);
   const cards = page.locator('article.swap');
-  if (swaps > 0) await cards.nth(0).getByRole('button', { name: 'Accept' }).click();
-  const projectedAfterAccept = await page.getByTestId('projected').textContent().catch(() => null);
+  const totalBefore = await page.getByTestId('trip-total').textContent().catch(() => null);
+  const acceptAll = page.getByRole('button', { name: /Accept all/ });
+  let acceptAllWorks: boolean | null = null;
+  let projectedAfterAccept: string | null = null;
+  if (swaps > 0 && (await acceptAll.count())) {
+    await acceptAll.click();
+    projectedAfterAccept = await page.getByTestId('projected').textContent().catch(() => null);
+    const totalAfter = await page.getByTestId('trip-total').textContent().catch(() => null);
+    const undo = await page.getByRole('button', { name: 'Undo' }).count();
+    acceptAllWorks = (await page.getByText('All accepted').count()) > 0 && undo > 0 && (totalAfter !== totalBefore || projectedAfterAccept !== projected);
+  }
   await shot(page, `${tag}-results`);
   const ov = await overflow(page);
   await page.getByRole('button', { name: /Save revised list/ }).click();
   await page.getByRole('heading', { name: /Revised list/ }).waitFor();
-  return { planMs, swaps, priceLabel: label?.trim(), projected, projectedAfterAccept, resultsOverflow: ov };
+  return { planMs, swaps, priceLabel: label?.trim(), projected, projectedAfterAccept, acceptAllWorks, resultsOverflow: ov };
 }
 
 const browser = await chromium.launch({ channel: 'msedge', headless: true });
@@ -79,14 +88,42 @@ for (const file of receipts) {
     await page.getByTestId('receipt-file').setInputFiles(existsSync(p) ? p : sample);
     await page.getByRole('button', { name: 'Read receipt' }).click();
     await page.getByRole('heading', { name: 'Check what we read' }).waitFor({ timeout: 180_000 });
+    r.linesRead = await page.getByTestId('receipt-row').count();
+    r.needLook = (await page.getByTestId('need-look').textContent())?.trim();
     await page.getByRole('button', { name: 'Match products' }).click();
-    await page.getByRole('heading', { name: 'Match your items' }).waitFor({ timeout: 120_000 });
-    // P2: confirm produce guesses / keep non-food marks as offered (first candidate), if present
-    for (let i = 0; i < 20; i++) {
+    await page.getByRole('heading', { name: 'Match your items' }).waitFor({ timeout: 180_000 });
+    r.zipNote = (await page.getByTestId('zip-note').count()) > 0;
+    await page.waitForTimeout(5000); // produce candidates load after the list
+    r.offered = await page.$$eval('li.item', (els) => {
+      const c = { rows: els.length, pickOne: 0, suggested: 0, produceAsk: 0, notFood: 0, unmatched: 0 };
+      for (const e of els) {
+        const chips = [...e.querySelectorAll('.chip')].map((x) => x.textContent ?? '').join('|');
+        if (e.querySelector('[data-testid=produce-confirm]')) c.produceAsk++;
+        else if (/Not food/.test(chips)) c.notFood++;
+        else if (/Pick one/.test(chips)) c.pickOne++;
+        else if (/Not matched/.test(chips)) c.unmatched++;
+        if (e.querySelector('.badge')?.textContent?.includes('Suggested') || /Suggested/.test(e.querySelector('button.choice')?.textContent ?? '')) c.suggested++;
+      }
+      return c;
+    });
+    // shopper actions: confirm suggested (one tap), then pick the first candidate on the rest, confirm produce
+    const cas = page.getByRole('button', { name: /Confirm all suggested/ });
+    if (await cas.count()) await cas.click();
+    r.pickedFirst = 0;
+    for (let i = 0; i < 60; i++) {
+      const row = page.locator('li.item', { hasText: 'Pick one' }).first();
+      if (!(await row.count())) break;
+      await row.locator('button.choice').first().click();
+      r.pickedFirst++;
+    }
+    r.produceConfirmed = 0;
+    for (let i = 0; i < 30; i++) {
       const c = page.locator('[data-testid=produce-confirm] button.choice').first();
       if (!(await c.count())) break;
       await c.click();
+      r.produceConfirmed++;
     }
+    r.youConfirmed = await page.locator('li.item', { hasText: 'You confirmed' }).count();
     const t0 = Date.now();
     await page.getByRole('button', { name: 'See your haul score' }).click();
     Object.assign(r, await overviewNumbers(page), { scoreMs: Date.now() - t0 });

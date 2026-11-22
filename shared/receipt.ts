@@ -91,8 +91,12 @@ function cents(s: string | undefined | null): number | null {
 // ---------- Kroger ----------
 const N = String.raw`[0-9OoIl|SB]`;
 const PRICE = String.raw`(${N}{1,4}[.,]${N}{2})`;
-const K_ITEM = new RegExp(String.raw`^(?:WT\s+)?(?<name>.*?[A-Za-z]{2}.*?)\s+(?<price>${N}{1,4}[.,]${N}{2})\s*-?\s*(?<tax>[FTB])?\s*$`);
+const K_ITEM = new RegExp(String.raw`^(?:WT\s+)?(?<name>.*?[A-Za-z]{2}.*?)\s+(?<price>${N}{1,4}[.,]${N}{2})\s*-?\s*(?:(?<tax>[FTB])|[|§\[\]{}()/\\:;'"~«»*a-z])?\s*$`);
 const K_WEIGHT = /^\s*(?:WT\s+)?(?<w>\d*[.,]?\d+)\s*[l1I|]b\s*@\s*(?<rate>\d+[.,]\d{2})\s*\/\s*[l1I|]b\s*$/i;
+/** OCR-mangled weight line ("2.13 1b ¢ 1,99 /1b"): a number, a short unit, maybe an @-ish mark, a rate, "/" + a short unit. */
+const K_WEIGHT_LOOSE = /^\s*(?:\S{1,2}\s+){0,2}(?<w>\d*[.,]?\d+)\s*\S{0,3}\s*[@¢©9]?\s*(?<rate>\d+[.,]\d{2})\s*\/\s*\S{1,3}\s*$/;
+/** Item whose price lost its decimal point ("SAMPLE JAM 399 F"): only with a real word and a tax flag. */
+const K_ITEM_NODOT = /^(?:WT\s+)?(?<name>.*?[A-Za-z]{3}.*?)\s+(?<price>\d{3,4})\s+(?<tax>[FTB])\s*$/;
 const K_MULTI = /^\s*(?<qty>\d+)\s*@\s*(?:(?<n>\d+)\s*\/\s*)?(?<price>\d+[.,]\d{2})\s*$/;
 const K_SAVINGS = new RegExp(String.raw`^\s*(?:KROGER\s+SAVINGS|SC|SAVINGS)\b.*?${PRICE}\s*-?\s*[A-Z]?\s*$`, 'i');
 const K_SENSITIVE: Array<[string, RegExp]> = [
@@ -105,6 +109,38 @@ const K_STREET = /^\s*\d{2,6}\s+[A-Za-z][A-Za-z0-9 .'-]*$/;
 const K_CITY = /^\s*([A-Za-z][A-Za-z .'-]+?)\s*,?\s+([A-Za-z]{2})\s*,?\s+(\d{5})(?:-\d{4})?\s*$/;
 const K_DATE = /\b(\d{2})\/(\d{2})\/(\d{2}|\d{4})\s+(\d{1,2}:\d{2})\s*(am|pm)?/i;
 const MARKERS = /\s+(?:PC|SC|<\+|<|\+)(?=\s|$)|<\+/g;
+
+/**
+ * Handheld photos pick up junk past the receipt edges: stray marks before the
+ * name and after the tax flag, separated from the real text by wide gaps.
+ * Keep the gap-separated segment holding the price, the name segment(s) before
+ * it, and at most one short tax-flag token after it.
+ */
+export function trimEdgeNoise(text: string): string {
+  const segs = text.split(/\s{4,}/).map((x) => x.trim()).filter(Boolean);
+  if (segs.length < 2) return text;
+  const pi = segs.findIndex((x) => /\d+[.,]\d{2}/.test(x));
+  if (pi < 0) return text;
+  const priceSeg = segs[pi]!;
+  const lettersBefore = (/^(.*?)\d+[.,]\d{2}/.exec(priceSeg)?.[1] ?? '').replace(/[^A-Za-z]/g, '').length;
+  const keep: string[] = [];
+  let haveName = lettersBefore >= 2;
+  for (let i = pi - 1; i >= 0; i--) {
+    const x = segs[i]!;
+    if (/^(?:PC|SC|<\+|<|\+)$/.test(x)) {
+      keep.unshift(x); // price markers between name and price
+      continue;
+    }
+    if ((!haveName && /[A-Za-z]{2}/.test(x)) || /[A-Za-z]{3}/.test(x)) {
+      keep.unshift(x);
+      haveName = true;
+    } else break;
+  }
+  let tail = '';
+  const next = segs[pi + 1];
+  if (next && /^[FTB]$/.test(next)) tail = next;
+  return [...keep, priceSeg, tail].filter(Boolean).join(' ');
+}
 
 function newItem(n: number, raw: OcrLine, name: string): ReceiptItem {
   const clean = name.replace(MARKERS, ' ').replace(/^WT\s+/i, '').replace(/\s+/g, ' ').trim();
@@ -143,7 +179,7 @@ export function parseKrogerReceipt(input: OcrLine[] | string): ParsedReceipt {
   let pending: { raw: OcrLine; weightLb?: number; perLb?: number; qty?: number; unit?: number } | null = null;
   let n = 0;
   for (const raw of lines) {
-    const text = raw.text.replace(/\s+/g, ' ').trim();
+    const text = trimEdgeNoise(raw.text).replace(/\s+/g, ' ').trim();
     if (!text) continue;
     const d = K_DATE.exec(text);
     if (d) {
@@ -176,7 +212,7 @@ export function parseKrogerReceipt(input: OcrLine[] | string): ParsedReceipt {
       header.store = text;
       continue;
     }
-    const w = K_WEIGHT.exec(text);
+    const w = K_WEIGHT.exec(text) ?? (/[A-Za-z]{3}/.test(text) ? null : K_WEIGHT_LOOSE.exec(text));
     if (w) {
       pending = { raw, weightLb: Number(w.groups!.w!.replace(',', '.')), perLb: cents(w.groups!.rate) ?? undefined };
       continue;
@@ -205,11 +241,13 @@ export function parseKrogerReceipt(input: OcrLine[] | string): ParsedReceipt {
       skipped++;
       continue;
     }
-    const it = K_ITEM.exec(text);
+    const nodot = K_ITEM.exec(text) ? null : K_ITEM_NODOT.exec(text);
+    const it = K_ITEM.exec(text) ?? nodot;
     if (it) {
       const item = newItem(++n, raw, it.groups!.name!);
-      item.priceCents = cents(it.groups!.price);
-      if (fixDigits(it.groups!.price!).fixed) item.issues.push('price had letters that look like digits; please check it');
+      item.priceCents = nodot ? Number(nodot.groups!.price) : cents(it.groups!.price);
+      if (nodot) item.issues.push('price decimal point not read; please check it');
+      else if (fixDigits(it.groups!.price!).fixed) item.issues.push('price had letters that look like digits; please check it');
       item.taxFlag = it.groups!.tax ?? null;
       item.snapEligible = item.taxFlag === 'F';
       if (pending) {
@@ -217,6 +255,11 @@ export function parseKrogerReceipt(input: OcrLine[] | string): ParsedReceipt {
         if (pending.weightLb != null) {
           item.weightLb = pending.weightLb;
           item.pricePerLbCents = pending.perLb ?? null;
+          // OCR often mangles the weight; the price and the rate are more reliable
+          if (item.priceCents && pending.perLb && Math.abs(pending.weightLb * pending.perLb - item.priceCents) > item.priceCents * 0.05) {
+            item.weightLb = Math.round((item.priceCents / pending.perLb) * 100) / 100;
+            item.issues.push('weight re-read from price and rate; please check it');
+          }
         }
         if (pending.qty != null) {
           item.quantity = pending.qty;

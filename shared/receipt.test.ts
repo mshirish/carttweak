@@ -97,3 +97,23 @@ describe('OCR noise and registry', () => {
     expect(expandAbbrev('NBSC WHEAT THINS')).toBe('Nabisco Wheat Thins');
   });
 });
+
+describe('handheld photo noise (synthetic)', () => {
+  it('edge junk past the receipt is trimmed; a lost decimal point is read but flagged', () => {
+    const r = parseKrogerReceipt([
+      { text: 'Kroger', confidence: 90 },
+      { text: 'a2            SAMPLE GRN BEANS      1.29 |              9    a', confidence: 70 },
+      { text: '=      SAMPLE JAM 399 F', confidence: 70 },
+      { text: '>        2.13 1b ¢ 1,99 /1b       99 ¢', confidence: 60 },
+      { text: 'SAMPLE APPLES 4.24 F', confidence: 70 },
+    ]);
+    expect(r.items.map((i) => [i.name, i.priceCents])).toEqual([
+      ['SAMPLE GRN BEANS', 129],
+      ['= SAMPLE JAM', 399],
+      ['SAMPLE APPLES', 424],
+    ]);
+    expect(r.items[1]!.issues.join()).toMatch(/decimal point/);
+    expect(r.items[2]!.weightLb).toBeCloseTo(2.13);
+    expect(r.items[2]!.pricePerLbCents).toBe(199);
+  });
+});

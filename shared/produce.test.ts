@@ -16,7 +16,7 @@ describe('produceGuess', () => {
 
 describe('nonFoodGuess', () => {
   it('obvious non-food keywords', () => {
-    for (const n of ['TIDE DETERGENT', 'BOUNTY PAPER TOWEL', 'DOVE SOAP', 'ALUM FOIL', 'GLAD TRASH BAG', 'AA BATTERY', 'HAIR COLOR', 'ZIPLOC BAGS']) expect(nonFoodGuess(n)).toBe(true);
+    for (const n of ['TIDE DETERGENT', 'BOUNTY PAPER TOWEL', 'DOVE SOAP', 'ALUM FOIL', 'GLAD TRASH BAG', 'AA BATTERY', 'HAIR COLOR', 'ZIPLOC BAGS', 'SAMPLE BLOKS SET', 'MEOW MIX CAT FOOD', 'SAMPLE TOY CAR']) expect(nonFoodGuess(n)).toBe(true);
   });
   it('food stays food', () => {
     for (const n of ['GV TEA BAGS', 'SHARP CHED', 'BANANAS', 'WAXED BEANS']) expect(nonFoodGuess(n)).toBe(false);

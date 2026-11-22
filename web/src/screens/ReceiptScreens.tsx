@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { dollars, shortName } from '@carttweak/shared';
 import { Heart } from '../components/Icons.tsx';
-import { DEFAULT_PREP, preprocess, recognize, type Prep } from '../ocr.ts';
+import { autoRotation, DEFAULT_PREP, preprocess, recognize, type Prep } from '../ocr.ts';
 import { priceCents, receiptFromOcr, rowNeedsLook, type MatchCard, type MatchRow, type ReceiptRow, type ReceiptState } from '../receipt.ts';
 import { go } from '../router.ts';
 import type { Branch } from '../types.ts';
@@ -10,6 +10,8 @@ import type { Branch } from '../types.ts';
 export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => void }) {
   const [img, setImg] = useState<HTMLImageElement | null>(null);
   const [prep, setPrep] = useState<Prep>(DEFAULT_PREP);
+  /** the shopper turned the photo themselves: skip auto-rotate */
+  const [rotatedByHand, setRotatedByHand] = useState(false);
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<{ status: string; progress: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -34,6 +36,7 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
     i.onload = () => {
       setImg(i);
       setPrep(DEFAULT_PREP);
+      setRotatedByHand(false);
     };
     i.onerror = () => setError("That photo couldn't be opened.");
     i.src = url.current;
@@ -44,7 +47,15 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
     setBusy(true);
     setError(null);
     try {
-      const lines = await recognize(preprocess(img, prep, document.createElement('canvas')), setProgress);
+      let p = prep;
+      if (!rotatedByHand) {
+        const r = await autoRotation(img, prep, setProgress).catch(() => prep.rotation);
+        if (r !== prep.rotation) {
+          p = { ...prep, rotation: r };
+          setPrep(p);
+        }
+      }
+      const lines = await recognize(preprocess(img, p, document.createElement('canvas')), setProgress);
       const { state } = receiptFromOcr(lines);
       if (!state.rows.length) {
         setError('No item lines were found. Try rotating the photo, cropping to the items, or turning on black & white.');
@@ -80,10 +91,10 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
             </div>
             <div className="prep-controls">
               <div className="row">
-                <button type="button" className="btn small" onClick={() => set({ rotation: prep.rotation + 3 })} aria-label="Rotate left">
+                <button type="button" className="btn small" onClick={() => (setRotatedByHand(true), set({ rotation: prep.rotation + 3 }))} aria-label="Rotate left">
                   ⟲ Rotate left
                 </button>
-                <button type="button" className="btn small" onClick={() => set({ rotation: prep.rotation + 1 })} aria-label="Rotate right">
+                <button type="button" className="btn small" onClick={() => (setRotatedByHand(true), set({ rotation: prep.rotation + 1 }))} aria-label="Rotate right">
                   Rotate right ⟳
                 </button>
                 <label className="toggle">

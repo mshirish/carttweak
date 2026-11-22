@@ -23,6 +23,68 @@ export const DEFAULT_PREP: Prep = { rotation: 0, contrast: 1.3, threshold: false
 /** Small receipts OCR badly (a 300 px wide photo read 0 of 4 lines); upscale to at least this width. */
 export const MIN_OCR_WIDTH = 1400;
 
+/** Upscale factor: images under 1000 px wide get at least 2x; everything is brought up to MIN_OCR_WIDTH. */
+export function ocrScale(width: number): number {
+  if (width < 1000) return Math.max(2, MIN_OCR_WIDTH / width);
+  return width < MIN_OCR_WIDTH ? MIN_OCR_WIDTH / width : 1;
+}
+
+/**
+ * How "receipt-like" a quick OCR pass reads: confident lines that carry both a
+ * word and a price count most. Text read sideways or upside down scores near 0.
+ */
+export function rotationScore(lines: OcrLine[]): number {
+  let s = 0;
+  for (const l of lines) {
+    const c = (l.confidence ?? 0) / 100;
+    const words = (l.text.match(/[A-Za-z]{3,}/g) ?? []).length;
+    const price = /\d+[.,]\d{2}\b/.test(l.text) ? 1 : 0;
+    s += c * c * (Math.min(words, 4) + 3 * price * (words ? 1 : 0));
+  }
+  return s;
+}
+
+/** Rotations worth trying: a tall photo is upright or upside down; a wide one is on its side. */
+export function rotationsToTry(w: number, h: number): number[] {
+  if (h > w * 1.2) return [0, 2];
+  if (w > h * 1.2) return [1, 3];
+  return [0, 1, 2, 3];
+}
+
+/**
+ * Best of the candidate quarter turns, by a fast OCR pass on a small copy.
+ * Returns the rotation with the highest rotationScore (ties keep the first).
+ */
+export async function autoRotation(img: HTMLImageElement | ImageBitmap, prep: Prep, onProgress: (p: OcrProgress) => void): Promise<number> {
+  const tries = rotationsToTry(img.width, img.height);
+  const { createWorker, PSM } = await import('tesseract.js');
+  const worker = await createWorker('eng', 1);
+  try {
+    await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_BLOCK } as any);
+    let best = tries[0]!;
+    let bestScore = -1;
+    for (const [i, r] of tries.entries()) {
+      onProgress({ status: 'finding which way is up', progress: i / tries.length });
+      const full = preprocess(img, { ...prep, rotation: r });
+      const small = document.createElement('canvas');
+      const k = Math.min(1, 900 / full.width);
+      small.width = Math.round(full.width * k);
+      small.height = Math.round(full.height * k);
+      small.getContext('2d')!.drawImage(full, 0, 0, small.width, small.height);
+      const { data } = await worker.recognize(small);
+      const lines: OcrLine[] = ((data as any).lines ?? []).map((l: any) => ({ text: String(l.text), confidence: Math.round(l.confidence) }));
+      const sc = rotationScore(lines);
+      if (sc > bestScore) {
+        bestScore = sc;
+        best = r;
+      }
+    }
+    return best;
+  } finally {
+    await worker.terminate();
+  }
+}
+
 export function otsu(gray: Uint8ClampedArray | number[]): number {
   const hist = new Array(256).fill(0);
   for (const g of gray) hist[g]++;
@@ -70,7 +132,7 @@ export function preprocess(img: HTMLImageElement | ImageBitmap, prep: Prep, canv
   const cy = Math.round((rh * prep.crop.top) / 100);
   const cw = Math.max(1, Math.round(rw * (1 - (prep.crop.left + prep.crop.right) / 100)));
   const ch = Math.max(1, Math.round(rh * (1 - (prep.crop.top + prep.crop.bottom) / 100)));
-  const scale = cw < MIN_OCR_WIDTH ? MIN_OCR_WIDTH / cw : 1;
+  const scale = ocrScale(cw);
   canvas.width = Math.round(cw * scale);
   canvas.height = Math.round(ch * scale);
   const c = canvas.getContext('2d', { willReadFrequently: true })!;

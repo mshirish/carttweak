@@ -40,6 +40,9 @@ export const NON_FOOD_WORDS = [
   'detergent', 'paper towel', 'towel', 'tissue', 'toilet', 'shampoo', 'conditioner', 'soap', 'foil', 'trash bag', 'garbage bag', 'battery', 'batteries',
   'bleach', 'cleaner', 'wipes', 'diaper', 'toothpaste', 'toothbrush', 'deodorant', 'razor', 'lotion', 'sponge', 'napkin', 'plastic wrap', 'ziploc',
   'light bulb', 'candle', 'hair color', 'wax', 'bath bomb', 'old spice', 'charger', 'cable', 'pet food', 'cat litter', 'litter', 'knee', 'brace', 'vitamin',
+  // toys and pet food (Kroger general merchandise)
+  'toy', 'mega bloks', 'bloks', 'lego', 'crayola', 'hot wheels', 'barbie', 'play doh', 'puzzle', 'cat food', 'dog food', 'meow mix', 'friskies', 'purina', 'fancy feast', 'pedigree', 'kibbles',
+  'greeting card', 'gift card', 'magazine', 'balloon', 'motor oil', 'propane',
 ];
 
 export function nonFoodGuess(name: string): boolean {
