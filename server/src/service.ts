@@ -12,6 +12,7 @@ import {
   sameKind,
   swapGroupFor,
   SWAP_GROUPS,
+  storedLabelProblems,
   type Branch,
   type Goal,
   type NutritionRecord,
@@ -40,6 +41,8 @@ export interface ServiceConfig {
   kroger: kroger.KrogerConfig;
   fdcApiKey: string;
   sampleDir: string;
+  /** real hand-transcribed labels (npm run add-label); defaults to <sampleDir>/../labels */
+  labelsDir?: string;
   now?: () => Date;
 }
 
@@ -143,8 +146,24 @@ export function createService(cfg: ServiceConfig) {
     return data.map((raw: any) => normalizeKrogerProduct(raw, b, { observedAt: meta.retrievedAt, sourceRef: meta.sourceUrl, stale: meta.stale }));
   }
 
+  const labelsDir = cfg.labelsDir ?? path.join(path.dirname(cfg.sampleDir), 'labels');
+  /** Read fresh on each call (files are tiny) so labels added with the CLI apply without a restart. */
+  function loadLabels(): NutritionRecord[] {
+    if (!existsSync(labelsDir)) return [];
+    const out: NutritionRecord[] = [];
+    for (const f of readdirSync(labelsDir).filter((x) => x.endsWith('.json'))) {
+      const j = JSON.parse(readFileSync(path.join(labelsDir, f), 'utf8'));
+      for (const r of j.records ?? []) {
+        const problems = storedLabelProblems(r);
+        if (problems.length) throw new ServiceError(500, 'bad_label_record', `${f}: ${problems.join('; ')}`);
+        out.push(r as NutritionRecord);
+      }
+    }
+    return out;
+  }
+
   async function enrich(n: KrogerNormalized, sample: NutritionRecord[] = []): Promise<EnrichedProduct> {
-    const extra = sample.filter((s) => s.productRef === n.product.ref);
+    const extra = [...loadLabels(), ...sample].filter((s) => s.productRef === n.product.ref);
     const base = { product: n.product, price: n.price, upc: n.upc, noBarcode: n.noBarcode };
     if (n.noBarcode || !n.upc) {
       return { ...base, nutrition: extra, fdc: { fdcId: null, matched: false, lookup: 'barcode', reason: 'no barcode (PLU)' } };

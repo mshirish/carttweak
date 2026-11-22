@@ -1,5 +1,5 @@
 // End-to-end through HTTP with upstream calls served from recorded fixtures (no network).
-import { mkdtempSync, rmSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
@@ -61,6 +61,7 @@ async function upstream(url: string): Promise<Response> {
 }
 
 let dir: string;
+let labelsDir: string;
 let app: ReturnType<typeof createApp>;
 
 beforeAll(() => {
@@ -76,6 +77,7 @@ beforeAll(() => {
     kroger: { clientId: CLIENT_ID, clientSecret: 'client-secret-zzz', fetch: upstream },
     fdcApiKey: 'fdc-key-qqq',
     sampleDir: path.join(ROOT, 'data', 'sample'),
+    labelsDir: (labelsDir = path.join(dir, 'labels')),
     now: () => new Date(t),
   });
   app = createApp(svc, { kroger: true, fdc: true });
@@ -195,6 +197,27 @@ describe(`HTTP API over ${RECORDED} responses`, () => {
     expect(r.json.plan.swaps.find((s: any) => s.replacement.ref === 'kroger:0007131400185')).toBeUndefined();
     const o = r.json.plan.itemOutcomes.find((x: any) => x.itemId === 'bread');
     expect(o.rejections.find((x: any) => x.candidateRef === 'kroger:0007131400185').reason).toBe('excluded');
+  });
+  it('retailer_listing from data/labels/ (newer than FDC) is used and its URL is shown as the source', async () => {
+    mkdirSync(labelsDir, { recursive: true });
+    const url = 'https://www.kroger.com/p/aunt-millie-s-live-light-whole-grain-bread/0007131400185';
+    // synthetic values for the test only (not a real transcription)
+    const rec = {
+      productRef: 'kroger:0007131400185', source: 'retailer_listing', basis: 'g', labelDate: '2026-11-21', sourceRef: url, sourceUrl: url,
+      transcribedAt: '2026-11-21', transcribedBy: 'demo author', isSample: false, method: 'label_scaled', servingSize: { quantity: 47, unit: 'g' },
+      per100: { calories: 150, protein_g: 8.5, fiber_g: 14, addedSugars_g: null, totalSugars_g: 2, sodium_mg: 360 },
+    };
+    writeFileSync(path.join(labelsDir, 'labels.json'), JSON.stringify({ records: [rec] }));
+    try {
+      const r = await call('POST', '/api/plan', planBody);
+      const s = r.json.plan.swaps[0];
+      const src = s.sources.find((x: any) => x.kind === 'nutrition' && x.role === 'replacement');
+      expect(src).toMatchObject({ source: 'retailer_listing', sourceUrl: url, transcribedBy: 'demo author', choice: 'listing_newer_than_fdc', date: '2026-11-21' });
+      expect(s.nutrients.find((n: any) => n.key === 'fiber_g').replacement).toBe(14);
+      expect(r.json.containsSample).toBe(false);
+    } finally {
+      rmSync(labelsDir, { recursive: true, force: true });
+    }
   });
   it('includeSample: true attaches sample label data and marks the result containsSample', async () => {
     const r = await call('POST', '/api/plan', { ...planBody, includeSample: true });

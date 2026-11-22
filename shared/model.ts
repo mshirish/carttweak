@@ -72,7 +72,13 @@ export interface PriceObservation {
   stale?: boolean;
 }
 
-export type NutritionSource = 'fdc' | 'label_observation';
+/**
+ * fdc:               USDA FoodData Central branded record
+ * label_observation: Nutrition Facts read from a photo of the package
+ * retailer_listing:  Nutrition Facts transcribed from the product's page on the chain's own website
+ */
+export type NutritionSource = 'fdc' | 'label_observation' | 'retailer_listing';
+export type TranscribedBy = 'demo author' | 'shopper';
 
 export interface Per100Values {
   calories: number | null;
@@ -113,6 +119,10 @@ export interface NutritionRecord {
   packageWeight?: string | null;
   /** non-empty = values are physically implausible; the engine treats them as unknown */
   qualityIssues?: string[];
+  /** retailer_listing / label_observation: where and when it was transcribed, and by whom */
+  sourceUrl?: string;
+  transcribedAt?: string;
+  transcribedBy?: TranscribedBy;
 }
 
 /**
@@ -186,32 +196,60 @@ export function reconcileSize(
   return { size, flags };
 }
 
+export type NutritionChoiceReason =
+  | 'only_record'
+  | 'label_newer_than_fdc'
+  | 'listing_newer_than_fdc'
+  | 'fdc_newer_or_equal'
+  | 'fdc_label_undated'
+  | 'newest_label_observation'
+  | 'newest_retailer_listing';
+
 export interface NutritionChoice {
   used: NutritionRecord;
-  reason: 'only_record' | 'label_newer_than_fdc' | 'fdc_newer_or_equal' | 'fdc_label_undated' | 'newest_label_observation';
+  reason: NutritionChoiceReason;
   alternatives: Array<{ source: NutritionSource; sourceRef: string; labelDate: string | null }>;
 }
 
+/** Higher wins among usable manual records. */
+const MANUAL_PRIORITY: Record<NutritionSource, number> = { label_observation: 2, retailer_listing: 1, fdc: 0 };
+
 /**
- * Nutrition precedence: a label_observation newer than the FDC labelDate wins;
- * otherwise FDC. Both are kept (alternatives) and the reason recorded.
- * An undated FDC record loses to any dated label observation.
+ * Nutrition precedence: label_observation (photo) > retailer_listing > fdc,
+ * newest first within each source.
+ * A manual record (photo or listing) is usable only if it is dated and newer
+ * than the newest dated FDC label (if FDC has a newer label, the package may
+ * have changed). An undated FDC record loses to any dated manual record.
+ * All records are kept as alternatives and the reason is recorded.
  */
 export function chooseNutrition(records: NutritionRecord[]): NutritionChoice | null {
   if (!records.length) return null;
   const byDateDesc = (a: NutritionRecord, b: NutritionRecord) => String(b.labelDate ?? '').localeCompare(String(a.labelDate ?? ''));
-  const labels = records.filter((r) => r.source === 'label_observation').sort(byDateDesc);
-  const fdcs = records.filter((r) => r.source === 'fdc').sort(byDateDesc);
   const alt = (used: NutritionRecord) =>
     records.filter((r) => r !== used).map((r) => ({ source: r.source, sourceRef: r.sourceRef, labelDate: r.labelDate }));
   if (records.length === 1) return { used: records[0]!, reason: 'only_record', alternatives: [] };
-  const label = labels[0];
-  const fdc = fdcs[0];
-  if (label && !fdc) return { used: label, reason: 'newest_label_observation', alternatives: alt(label) };
-  if (fdc && !label) return { used: fdc, reason: 'fdc_newer_or_equal', alternatives: alt(fdc) };
-  if (label!.labelDate && !fdc!.labelDate) return { used: label!, reason: 'fdc_label_undated', alternatives: alt(label!) };
-  if (label!.labelDate && fdc!.labelDate && label!.labelDate > fdc!.labelDate) {
-    return { used: label!, reason: 'label_newer_than_fdc', alternatives: alt(label!) };
+  const fdcs = records.filter((r) => r.source === 'fdc').sort(byDateDesc);
+  const newestFdcDate = fdcs.find((r) => r.labelDate)?.labelDate ?? null;
+  const manual = records
+    .filter((r) => r.source !== 'fdc')
+    .filter((r) => !!r.labelDate && (newestFdcDate == null || r.labelDate > newestFdcDate))
+    .sort((a, b) => MANUAL_PRIORITY[b.source] - MANUAL_PRIORITY[a.source] || byDateDesc(a, b));
+  const m = manual[0];
+  if (m) {
+    const isPhoto = m.source === 'label_observation';
+    const reason: NutritionChoiceReason = !fdcs.length
+      ? isPhoto
+        ? 'newest_label_observation'
+        : 'newest_retailer_listing'
+      : newestFdcDate == null
+        ? 'fdc_label_undated'
+        : isPhoto
+          ? 'label_newer_than_fdc'
+          : 'listing_newer_than_fdc';
+    return { used: m, reason, alternatives: alt(m) };
   }
-  return { used: fdc!, reason: 'fdc_newer_or_equal', alternatives: alt(fdc!) };
+  if (fdcs[0]) return { used: fdcs[0], reason: 'fdc_newer_or_equal', alternatives: alt(fdcs[0]) };
+  // only undated manual records
+  const any = [...records].sort((a, b) => MANUAL_PRIORITY[b.source] - MANUAL_PRIORITY[a.source])[0]!;
+  return { used: any, reason: any.source === 'label_observation' ? 'newest_label_observation' : 'newest_retailer_listing', alternatives: alt(any) };
 }

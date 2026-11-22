@@ -191,6 +191,9 @@ export interface SourceInfo {
   outdated?: boolean;
   choice?: NutritionChoice['reason'];
   method?: NutritionRecord['method'];
+  /** retailer_listing: product page on the chain's site */
+  sourceUrl?: string;
+  transcribedBy?: NutritionRecord['transcribedBy'];
   alternatives?: NutritionChoice['alternatives'];
 }
 
@@ -501,6 +504,8 @@ function evaluate(
       choice: pp.choice.reason,
       method: u.method,
       alternatives: pp.choice.alternatives,
+      ...(u.sourceUrl ? { sourceUrl: u.sourceUrl } : {}),
+      ...(u.transcribedBy ? { transcribedBy: u.transcribedBy } : {}),
     });
     if (outdated) flags.push({ code: 'label_outdated', detail: `${role} label ${u.labelDate ?? 'undated'}: label may be outdated` });
     for (const f of pp.r.product.flags) {

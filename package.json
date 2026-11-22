@@ -17,6 +17,7 @@
     "probe:kroger-fdc": "tsx scripts/probe-kroger-fdc.ts",
     "smoke:plan": "tsx scripts/smoke-plan.ts",
     "warm": "tsx scripts/warm.ts",
+    "add-label": "tsx scripts/add-label.ts",
     "dev:server": "npm run dev -w @carttweak/server",
     "dev:web": "npm run dev -w @carttweak/web"
   },
