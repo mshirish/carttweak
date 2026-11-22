@@ -19,7 +19,8 @@
     "add-label": "tsx scripts/add-label.ts",
     "dev": "tsx scripts/dev.ts",
     "dev:server": "npm run dev -w @carttweak/server",
-    "dev:web": "npm run dev -w @carttweak/web"
+    "dev:web": "npm run dev -w @carttweak/web",
+    "receipts:eval": "tsx scripts/receipts-eval.ts"
   },
   "devDependencies": {
     "@testing-library/dom": "^10.4.2",
