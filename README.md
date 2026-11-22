@@ -12,6 +12,14 @@ CartTweak takes a shopping list or receipt and suggests up to two swaps for your
 - **See the trade-offs.** Compare nutrition per 100 g or 100 mL and see the checkout difference based on whole packages. Promotions are shown separately.
 - **Keep the swaps you like.** Accept or skip suggestions and save your trip in your browser.
 
+## Launch preview
+
+![CartTweak walkthrough showing shopping list entry, nutrition goals, a budget, and a grocery swap](brag-output/brag.gif)
+
+This 20-second demonstration uses illustrative sample nutrition and prices.
+
+[Watch the video with music](brag-output/brag.mp4) · [Poster](brag-output/brag.jpg) · [Share copy](brag-output/share-copy.txt)
+
 ## Run locally
 
 1. Install dependencies with `npm ci` using Node.js 22.12 or later.
