@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { chooseBestSet, planSwaps, THRESHOLDS, type PlanInput, type ResolvedItem, type TripItem } from './engine.ts';
+import { chooseBestSet, planSwaps, sameLine, THRESHOLDS, type PlanInput, type ResolvedItem, type TripItem } from './engine.ts';
 import { explainOutcome, explainPlan, explainSwap } from './explain.ts';
-import { emptyPer100, reconcileSize, sizeFromParsed, type NutritionRecord, type Per100Values, type Product } from './model.ts';
+import { emptyPer100, per100QualityIssues, reconcileSize, sizeFromParsed, type NutritionRecord, type Per100Values, type Product } from './model.ts';
 import { parsePackageSize } from './units.ts';
 
 // ---------- builders (synthetic data; not live) ----------
@@ -179,10 +179,104 @@ describe('nutrient rules', () => {
     expect(r.swaps).toHaveLength(0);
     expect(r.itemOutcomes[0]!.code).toBe('basis_mismatch');
   });
-  it('milk case (recorded live): size in mL but FDC nutrition per 100 g -> basis_mismatch, not converted', () => {
-    const milk = resolved(prod('m', 'Kroger 2% Reduced Fat Milk Gallon', '1 gal', { categories: ['Dairy'] }), 329, { protein_g: 3.3 });
-    const r = plan({ items: [item('milk', milk)], primaryGoal: 'more_protein' });
+});
+
+describe('live data guards (found re-running milk, 2026-11-22)', () => {
+  it('implausible per-100 values (serving off by 100x) are treated as unknown, reason kept', () => {
+    const p = prod('m2', 'Reduced Fat Milk Half Gallon B', '1/2 gal', { categories: ['Dairy'] });
+    const bad = resolved(p, 239, { protein_g: 96.7, totalSugars_g: 150 }, { nutr: { qualityIssues: per100QualityIssues({ ...emptyPer100(), protein_g: 96.7, totalSugars_g: 150 }) } });
+    const orig = resolved(prod('m1', 'Whole Milk Gallon', '1 gal', { categories: ['Dairy'] }), 329, { protein_g: 3.3 });
+    const r = plan({ items: [item('milk', orig)], candidates: { milk: [bad] }, primaryGoal: 'more_protein' });
+    expect(r.swaps).toHaveLength(0);
+    expect(r.itemOutcomes[0]!.rejections![0]!).toMatchObject({ reason: 'goal_nutrient_unknown' });
+    expect(r.itemOutcomes[0]!.rejections![0]!.detail).toMatch(/implausible/);
+  });
+  it('per100QualityIssues', () => {
+    expect(per100QualityIssues({ ...emptyPer100(), protein_g: 3.3, totalSugars_g: 5, sodium_mg: 50, calories: 50 })).toEqual([]);
+    expect(per100QualityIssues({ ...emptyPer100(), protein_g: 96.7, totalSugars_g: 150 }).length).toBeGreaterThanOrEqual(2);
+    expect(per100QualityIssues({ ...emptyPer100(), addedSugars_g: 8.81, totalSugars_g: 8.77 })).toEqual([]); // label rounding (Wonder)
+    expect(per100QualityIssues({ ...emptyPer100(), addedSugars_g: 12, totalSugars_g: 5 })).toHaveLength(1);
+  });
+  it('same brand + same name in another size is not a swap ("Gallon" vs "Half Gallon", "Cup" vs "Tub")', () => {
+    expect(sameLine({ brand: 'Kroger', description: 'Kroger® 2% Reduced Fat Milk Gallon' }, { brand: 'Kroger', description: 'Kroger® 2% Reduced Fat Milk Half Gallon' })).toBe(true);
+    expect(sameLine({ brand: 'Kroger', description: 'Kroger® Plain Nonfat Greek Yogurt Cup' }, { brand: 'Kroger', description: 'Kroger® Plain Nonfat Greek Yogurt Tub' })).toBe(true);
+    expect(sameLine({ brand: 'Kroger', description: 'Kroger® 2% Reduced Fat Milk Gallon' }, { brand: 'Kroger', description: 'Kroger® 1% Lowfat Milk Gallon' })).toBe(false);
+    expect(sameLine({ brand: 'Lay\'s', description: 'Lay\'s Classic Potato Chips' }, { brand: 'Ruffles', description: 'Lay\'s Classic Potato Chips' })).toBe(false);
+    const orig = resolved(prod('g', 'Kroger 2% Reduced Fat Milk Gallon', '1 gal', { categories: ['Dairy'], brand: 'Kroger' }), 329, { protein_g: 3.3 });
+    const half = resolved(prod('h', 'Kroger 2% Reduced Fat Milk Half Gallon', '1/2 gal', { categories: ['Dairy'], brand: 'Kroger' }), 239, { protein_g: 9 });
+    const r = plan({ items: [item('milk', orig)], candidates: { milk: [half] }, primaryGoal: 'more_protein' });
+    expect(r.itemOutcomes[0]!.rejections![0]!.reason).toBe('same_product');
+  });
+});
+
+describe('A1: units decoupled (nutrition basis / package dimension / trip impact)', () => {
+  const milkP = (id: string, desc: string, size: string) => prod(id, desc, size, { categories: ['Dairy'] });
+  // Milk case (recorded live 2026-11-22): Kroger sells by the gallon (mL), FDC labels milk per 100 g.
+  const milk = resolved(milkP('m', 'Kroger 2% Reduced Fat Milk Gallon', '1 gal'), 329, { protein_g: 3.3, sodium_mg: 50 });
+  const ufMilk = resolved(milkP('uf', 'Ultra Filtered Reduced Fat Milk', '52 fl oz'), 449, { protein_g: 5.8, sodium_mg: 50 });
+
+  it('milk: same nutrition basis (both per 100 g) + same package dimension (both mL) -> eligible, trip impact null', () => {
+    const r = plan({ items: [item('milk', milk)], candidates: { milk: [ufMilk] }, primaryGoal: 'more_protein', maxExtraSpendCents: 2000 });
+    expect(r.swaps).toHaveLength(1);
+    const s = r.swaps[0]!;
+    expect(s.basis).toBe('g');
+    expect(s.goal.improvementPer100).toBeCloseTo(2.5, 9);
+    expect(s.goal.tripImpact).toBeNull();
+    expect(s.goal.quantityUnit).toBe('ml');
+    expect(s.goal.tripImpactNote).toMatch(/sold by volume.*per 100 g/);
+    // cost still works: 1 gal (3785 mL) / 52 fl oz (1538 mL) -> 3 packages
+    expect(s.packagesNeeded).toBe(3);
+    expect(s.cost.regular.differenceCents).toBe(3 * 449 - 329);
+    expect(s.why.codes).toContain('trip_impact_unknown');
+    expect(explainSwap(s)).toMatch(/total for the trip unknown: it's sold by volume but the label is per 100 g/);
+    expect(r.combined).toMatchObject({ tripImpact: 0, tripImpactUnknown: 1 });
+  });
+  it("Campbell's case (recorded live): sold by weight (10.75 oz) but labelled per 100 mL -> comparable with another per-100 mL soup, trip null", () => {
+    const soupP = (id: string, desc: string) => prod(id, desc, '10.75 oz', { categories: ['Canned & Packaged'] });
+    const orig = resolved(soupP('cs', "Campbell's Condensed Chicken Noodle Soup"), 167, { sodium_mg: 740, fiber_g: 0.4 }, { nutr: { basis: 'ml' } });
+    const cand = resolved(soupP('ls', "Campbell's 25% Less Sodium Chicken Noodle Soup"), 199, { sodium_mg: 540, fiber_g: 0.4 }, { nutr: { basis: 'ml' } });
+    const r = plan({ items: [item('soup', orig)], candidates: { soup: [cand] }, primaryGoal: 'less_sodium' });
+    expect(r.swaps).toHaveLength(1);
+    expect(r.swaps[0]!.basis).toBe('ml');
+    expect(r.swaps[0]!.goal.tripImpact).toBeNull();
+    expect(r.swaps[0]!.cost.regular.differenceCents).toBe(32);
+  });
+  it('nutrition per 100 g vs per 100 mL -> basis_mismatch (never converted)', () => {
+    const mlLabel = resolved(milkP('x', 'Fat Free Milk Gallon', '1 gal'), 329, { protein_g: 9 }, { nutr: { basis: 'ml' } });
+    const r = plan({ items: [item('milk', milk)], candidates: { milk: [mlLabel] }, primaryGoal: 'more_protein' });
+    expect(r.swaps).toHaveLength(0);
     expect(r.itemOutcomes[0]!.code).toBe('basis_mismatch');
+  });
+  it('same nutrition basis but packages by volume vs weight -> package_dimension_mismatch', () => {
+    const byWeight = resolved(milkP('w', 'Powdered Style Milk', '25.6 oz'), 329, { protein_g: 9 });
+    const r = plan({ items: [item('milk', milk)], candidates: { milk: [byWeight] }, primaryGoal: 'more_protein' });
+    expect(r.swaps).toHaveLength(0);
+    expect(r.itemOutcomes[0]!.code).toBe('package_dimension_mismatch');
+    expect(r.itemOutcomes[0]!.rejections![0]!.detail).toMatch(/sold by volume.*by weight/);
+  });
+  it('count packages (eggs "12 ct") with per-100 g labels compare per 100 g; trip null', () => {
+    const egg = (id: string, desc: string, cents: number, prot: number) =>
+      resolved(prod(id, desc, '12 ct', { categories: ['Dairy'] }), cents, { protein_g: prot });
+    const r = plan({ items: [item('e', egg('e1', 'Large White Eggs', 179, 12.5))], candidates: { e: [egg('e2', 'Large Brown Eggs High Protein', 299, 15)] }, primaryGoal: 'more_protein' });
+    expect(r.swaps[0]!.goal.quantityUnit).toBe('each');
+    expect(r.swaps[0]!.goal.tripImpact).toBeNull();
+  });
+  it('ranking: swaps with known trip impact come before unknown ones, then by per-100 delta', () => {
+    const items = [item('bread', whiteBread()), item('milk', milk)];
+    const candidates = {
+      bread: [wgBread('b1', 329, 6)], // +2.5 g fiber/100 g, known trip impact
+      milk: [resolved(milkP('mf', 'Fiber Milk Gallon', '1 gal'), 329, { fiber_g: 9 })], // +9/100 g but trip unknown
+    };
+    const milkFiber = { ...milk, nutrition: [nut(milk.product, { fiber_g: 0, protein_g: 3.3 })] };
+    const one = plan({ items: [items[0]!, item('milk', milkFiber)], candidates, maxSwaps: 1 });
+    expect(one.swaps[0]!.itemId).toBe('bread'); // known beats a bigger per-100 delta with unknown trip impact
+    const two = plan({ items: [items[0]!, item('milk', milkFiber)], candidates });
+    expect(two.swaps.map((s) => s.itemId)).toEqual(['bread', 'milk']); // a second (unknown) swap still adds value
+    // among unknowns: larger per-100 improvement first
+    const u1 = resolved(milkP('u1', 'Fiber Milk A Gallon', '1 gal'), 329, { fiber_g: 4 });
+    const u2 = resolved(milkP('u2', 'Fiber Milk B Gallon', '1 gal'), 329, { fiber_g: 7 });
+    const r = plan({ items: [item('milk', milkFiber)], candidates: { milk: [u1, u2] } });
+    expect(r.swaps[0]!.replacement.ref).toBe('kroger:u2');
   });
 });
 

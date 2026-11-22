@@ -3,6 +3,7 @@
  */
 import {
   emptyPer100,
+  per100QualityIssues,
   fdcDateToIso,
   fromFdcLabelNutrients,
   gs1CheckDigit,
@@ -163,6 +164,7 @@ export function normalizeFdcFood(food: any, ref: string): NutritionRecord {
     }
   }
   const servingQty = typeof food?.servingSize === 'number' && food.servingSize > 0 ? food.servingSize : null;
+  const qualityIssues = per100QualityIssues(per100);
   return {
     productRef: ref,
     source: 'fdc',
@@ -174,6 +176,7 @@ export function normalizeFdcFood(food: any, ref: string): NutritionRecord {
     isSample: false,
     method,
     packageWeight: food?.packageWeight ?? null,
+    ...(qualityIssues.length ? { qualityIssues } : {}),
   };
 }
 

@@ -115,7 +115,7 @@ async function main() {
       const sodium = s.nutrients.find((n: any) => n.key === 'sodium_mg');
       console.log(`  [${s.itemId}] ${s.original.description} (${s.original.sizeLabel}) -> ${s.replacement.description} (${s.replacement.sizeLabel})`);
       console.log(
-        `      fiber/100${s.basis}: ${fiber.original?.toFixed(2)} -> ${fiber.replacement?.toFixed(2)} (+${s.goal.improvementPer100.toFixed(2)}), trip +${s.goal.tripImpact.toFixed(1)} g | ` +
+        `      fiber/100${s.basis}: ${fiber.original?.toFixed(2)} -> ${fiber.replacement?.toFixed(2)} (+${s.goal.improvementPer100.toFixed(2)}), trip ${s.goal.tripImpact == null ? "unknown (per-100 only)" : "+" + s.goal.tripImpact.toFixed(1) + " g"} | ` +
           `sodium/100${s.basis}: ${sodium.original?.toFixed(0) ?? '?'} -> ${sodium.replacement?.toFixed(0) ?? '?'} | ` +
           `${s.packagesNeeded} pkg | regular ${dollars(s.cost.regular.differenceCents)}${s.cost.promo ? ` | promo line ${dollars(s.cost.promo.differenceCents)}` : ''}`,
       );

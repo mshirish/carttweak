@@ -69,7 +69,7 @@ describe(`verified bread pair (${RECORDED}) through the engine`, () => {
   });
   it('trip impact = 9.30 x 567 g / 100 = 52.7 g fiber; both labels flagged outdated', () => {
     expect(s.goal.tripImpact).toBeCloseTo((s.goal.improvementPer100 * 566.9904625) / 100, 9);
-    expect(Math.round(s.goal.tripImpact * 10) / 10).toBe(52.7);
+    expect(Math.round(s.goal.tripImpact! * 10) / 10).toBe(52.7);
     expect(s.flags.filter((f) => f.code === 'label_outdated')).toHaveLength(2);
   });
   it('candidates without FDC data are ineligible for the stated reason', () => {

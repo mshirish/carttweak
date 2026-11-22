@@ -4,7 +4,10 @@
  * Rules (see docs/DECISIONS.md):
  *  - locked / unresolved items are never swapped; unresolved items are returned with candidates, never guessed
  *  - candidates must share a specific Kroger category AND a curated swap group
- *  - nutrients compared per 100 g or per 100 mL; g vs mL never compared
+ *  - units are decoupled (never convert g <-> mL):
+ *      nutrients: both NUTRITION records must share a basis (per 100 g or per 100 mL)
+ *      cost:      both PACKAGE sizes must share a dimension (weight, volume or count)
+ *      trip impact: only when the package dimension matches the nutrition basis; else null
  *  - unknown goal nutrient -> ineligible; added sugar never falls back to total sugars
  *  - cost: replace the ORIGINAL quantity with whole packages (ceil) at REGULAR price; promo is a separate line
  *  - ranking: per-100 delta x quantity bought (trip impact); best set of <= 2 swaps within the shared budget
@@ -19,6 +22,7 @@ import {
   type Product,
 } from './model.ts';
 import { sameKind, swapGroupFor } from './swapGroups.ts';
+import { normalizeTokens } from './resolve.ts';
 
 // ---------- goals & thresholds ----------
 export type Goal = 'more_protein' | 'more_fiber' | 'less_added_sugar' | 'less_sodium';
@@ -109,7 +113,8 @@ export type CandidateReason =
   | 'not_same_kind'
   | 'price_unknown'
   | 'size_unknown'
-  | 'basis_mismatch'
+  | 'basis_mismatch' // nutrition per 100 g vs per 100 mL
+  | 'package_dimension_mismatch' // packages sold by weight vs volume vs count
   | 'goal_nutrient_unknown'
   | 'below_threshold'
   | 'secondary_worse';
@@ -198,10 +203,13 @@ export interface SwapOption {
     nutrient: TrackedKey;
     deltaPer100: number;
     improvementPer100: number;
-    /** quantity of the original actually bought (g or mL) = packages x package size */
+    /** quantity of the original actually bought = packages x package size, in the package unit */
     quantityBought: number;
-    /** improvement x quantityBought / 100, in the nutrient's unit */
-    tripImpact: number;
+    quantityUnit: 'g' | 'ml' | 'each';
+    /** improvement x quantityBought / 100, in the nutrient's unit; null when the package
+     *  dimension differs from the nutrition basis (e.g. milk sold by volume, label per 100 g) */
+    tripImpact: number | null;
+    tripImpactNote: string | null;
   };
   secondary: { goal: Goal; nutrient: TrackedKey; deltaPer100: number | null; status: 'ok' | 'unknown' } | null;
   packagesNeeded: number;
@@ -223,6 +231,7 @@ export type ItemOutcomeCode =
   | 'price_unknown'
   | 'size_unknown'
   | 'basis_mismatch'
+  | 'package_dimension_mismatch'
   | 'goal_nutrient_unknown'
   | 'no_candidates'
   | 'below_threshold'
@@ -238,7 +247,7 @@ export interface ItemOutcome {
   detail: string;
   unresolved?: TripItem['unresolved'];
   /** over_budget: cheapest qualifying option */
-  cheapestQualifying?: { replacementRef: string; description: string; differenceCents: number; tripImpact: number };
+  cheapestQualifying?: { replacementRef: string; description: string; differenceCents: number; tripImpact: number | null; group: string };
   /** below_threshold: best improvement seen */
   bestImprovementPer100?: number;
   candidateReasonCounts?: Partial<Record<CandidateReason, number>>;
@@ -251,7 +260,15 @@ export interface PlanResult {
   secondaryGoal: Goal | null;
   maxExtraSpendCents: number;
   swaps: SwapOption[];
-  combined: { differenceCents: number; promoDifferenceCents: number | null; tripImpact: number; unit: string } | null;
+  combined: {
+    differenceCents: number;
+    promoDifferenceCents: number | null;
+    /** sum over swaps whose trip impact is known */
+    tripImpact: number;
+    /** swaps in the set whose trip impact is unknown (per-100 only) */
+    tripImpactUnknown: number;
+    unit: string;
+  } | null;
   itemOutcomes: ItemOutcome[];
   noSwapReason: { items: ItemOutcome[] } | null;
   stats: {
@@ -304,10 +321,11 @@ interface Prepared {
   r: ResolvedItem;
   choice: NutritionChoice;
   basis: 'g' | 'ml';
-  qty: number; // package size in basis units
+  qty: number; // package size in the package unit
+  unit: 'g' | 'ml' | 'each';
 }
 
-type PrepareFail = { ok: false; code: 'price_unknown' | 'size_unknown' | 'basis_mismatch' | 'goal_nutrient_unknown'; detail: string };
+type PrepareFail = { ok: false; code: 'price_unknown' | 'size_unknown' | 'goal_nutrient_unknown'; detail: string };
 
 function prepare(r: ResolvedItem, goalKey: TrackedKey): Prepared | PrepareFail {
   if (!r.price) return { ok: false, code: 'price_unknown', detail: 'no regular price at this branch' };
@@ -319,17 +337,30 @@ function prepare(r: ResolvedItem, goalKey: TrackedKey): Prepared | PrepareFail {
   if (!choice) return { ok: false, code: 'goal_nutrient_unknown', detail: 'no nutrition record' };
   const basis = choice.used.basis;
   if (!basis) return { ok: false, code: 'goal_nutrient_unknown', detail: 'serving size not convertible to g/mL' };
-  if (r.product.size.unit !== basis) {
-    return {
-      ok: false,
-      code: 'basis_mismatch',
-      detail: `package size is in ${r.product.size.unit} ("${r.product.size.label}") but nutrition is per 100 ${basis}; g and mL are never converted`,
-    };
+  if (choice.used.qualityIssues?.length) {
+    return { ok: false, code: 'goal_nutrient_unknown', detail: `implausible label data (${choice.used.sourceRef}): ${choice.used.qualityIssues.join('; ')}` };
   }
   if (choice.used.per100[goalKey] == null) {
     return { ok: false, code: 'goal_nutrient_unknown', detail: `${NUTRIENT_LABEL[goalKey]} not on label (${choice.used.source} ${choice.used.sourceRef})` };
   }
-  return { ok: true, r, choice, basis, qty: r.product.size.quantity };
+  return { ok: true, r, choice, basis, qty: r.product.size.quantity, unit: r.product.size.unit };
+}
+
+/** Words that only describe size or packaging ("Gallon" vs "Half Gallon", "Cup" vs "Tub"). */
+const PACKAGE_WORDS = new Set([
+  'half', 'gallon', 'quart', 'pint', 'liter', 'giant', 'family', 'large', 'small', 'mini', 'value', 'pack', 'size',
+  'party', 'bag', 'tub', 'cup', 'can', 'bottle', 'box', 'jar', 'multipack', 'count', 'single', 'twin', 'big', 'loaf',
+]);
+
+function lineKey(p: Pick<Product, 'brand' | 'description'>): string {
+  return [...new Set(normalizeTokens(p.description).filter((t) => !PACKAGE_WORDS.has(t) && !/^\d+(\.\d+)?$/.test(t)))].sort().join(' ');
+}
+
+/** Same brand and the same name once size/package words are removed. */
+export function sameLine(a: Pick<Product, 'brand' | 'description'>, b: Pick<Product, 'brand' | 'description'>): boolean {
+  if (!a.brand || !b.brand || a.brand.trim().toLowerCase() !== b.brand.trim().toLowerCase()) return false;
+  const ka = lineKey(a);
+  return ka.length > 0 && ka === lineKey(b);
 }
 
 // ---------- evaluate one candidate ----------
@@ -347,6 +378,7 @@ function evaluate(
   });
 
   if (c.ref === orig.r.product.ref || (c.gtin14 && c.gtin14 === orig.r.product.gtin14)) return reject('same_product', 'same product');
+  if (sameLine(orig.r.product, c)) return reject('same_product', 'same product in another size or package');
   const kind = sameKind(orig.r.product, c);
   if (!kind.ok) return reject('not_same_kind', kind.reason);
   // reuse prepare for the candidate but with candidate-specific mapping
@@ -354,11 +386,16 @@ function evaluate(
   if (!cp.ok) {
     if (cp.code === 'price_unknown') return reject('price_unknown', cp.detail);
     if (cp.code === 'size_unknown') return reject('size_unknown', cp.detail);
-    if (cp.code === 'basis_mismatch') return reject('basis_mismatch', cp.detail);
     return reject('goal_nutrient_unknown', cp.detail);
   }
   if (cp.basis !== orig.basis) {
-    return reject('basis_mismatch', `original is per 100 ${orig.basis}, candidate per 100 ${cp.basis}; g and mL are never compared`);
+    return reject('basis_mismatch', `original nutrition is per 100 ${orig.basis}, candidate per 100 ${cp.basis}; g and mL are never compared`);
+  }
+  if (cp.unit !== orig.unit) {
+    return reject(
+      'package_dimension_mismatch',
+      `original is sold by ${DIMENSION[orig.unit]} ("${orig.r.product.size!.label}"), candidate by ${DIMENSION[cp.unit]} ("${c.size!.label}"); cost can't be compared`,
+    );
   }
   const on = orig.choice.used.per100;
   const cn = cp.choice.used.per100;
@@ -481,7 +518,12 @@ function evaluate(
       ...(k === 'totalSugars_g' ? { contextOnly: true } : {}),
     };
   });
-  const tripImpact = (gImp * origTotal) / 100;
+  // trip impact needs the package dimension to match the nutrition basis (never convert g <-> mL)
+  const tripKnown = orig.unit === orig.basis;
+  const tripImpact = tripKnown ? (gImp * origTotal) / 100 : null;
+  const tripImpactNote = tripKnown
+    ? null
+    : `package sold by ${DIMENSION[orig.unit]} ("${orig.r.product.size!.label}") but nutrition is per 100 ${orig.basis}; trip total unknown, per-100 values only`;
   const dates = [orig.choice.used.labelDate, cp.choice.used.labelDate].filter((d): d is string => !!d).sort();
   const why = {
     codes: [
@@ -489,6 +531,7 @@ function evaluate(
       'meets_threshold',
       ...(secondary?.status === 'ok' ? ['secondary_ok'] : secondary?.status === 'unknown' ? ['secondary_unknown'] : []),
       regular.differenceCents < 0 ? 'saves_money' : regular.differenceCents === 0 ? 'same_cost' : 'costs_more',
+      ...(tripKnown ? [] : ['trip_impact_unknown']),
       ...flags.map((f) => f.code),
     ],
     numbers: {
@@ -510,7 +553,16 @@ function evaluate(
       replacement: summarize(c),
       basis: orig.basis,
       nutrients,
-      goal: { goal: input.primaryGoal, nutrient: goal.nutrient, deltaPer100: gDelta, improvementPer100: gImp, quantityBought: origTotal, tripImpact },
+      goal: {
+        goal: input.primaryGoal,
+        nutrient: goal.nutrient,
+        deltaPer100: gDelta,
+        improvementPer100: gImp,
+        quantityBought: origTotal,
+        quantityUnit: orig.unit,
+        tripImpact,
+        tripImpactNote,
+      },
       secondary,
       packagesNeeded,
       originalPackages: item.quantity,
@@ -528,13 +580,24 @@ function evaluate(
 interface SetChoice {
   options: SwapOption[];
   cost: number;
+  /** sum of known trip impacts */
   impact: number;
+  /** per-100 improvement summed over swaps with unknown trip impact */
+  unknownPer100: number;
   oldest: string;
   key: string;
 }
 
+/**
+ * Set order: (1) combined KNOWN trip impact, (2) more swaps, (3) per-100
+ * improvement of the swaps whose trip impact is unknown, (4) lower cost,
+ * (5) newer replacement labels, (6) stable key. Swaps with unknown trip
+ * impact therefore rank after swaps with a known one, then by per-100 delta.
+ */
 function better(a: SetChoice, b: SetChoice): boolean {
   if (Math.abs(a.impact - b.impact) > EPS) return a.impact > b.impact;
+  if (a.options.length !== b.options.length) return a.options.length > b.options.length;
+  if (Math.abs(a.unknownPer100 - b.unknownPer100) > EPS) return a.unknownPer100 > b.unknownPer100;
   if (a.cost !== b.cost) return a.cost < b.cost;
   if (a.oldest !== b.oldest) return a.oldest > b.oldest; // newer label dates win
   return a.key < b.key;
@@ -544,7 +607,8 @@ function makeSet(options: SwapOption[]): SetChoice {
   return {
     options,
     cost: options.reduce((s, o) => s + o.cost.regular.differenceCents, 0),
-    impact: options.reduce((s, o) => s + o.goal.tripImpact, 0),
+    impact: options.reduce((s, o) => s + (o.goal.tripImpact ?? 0), 0),
+    unknownPer100: options.reduce((s, o) => s + (o.goal.tripImpact == null ? o.goal.improvementPer100 : 0), 0),
     // oldest replacement label in the set; newer is better
     oldest: options.map((o) => o.replacementLabelDate ?? '0000-00-00').sort()[0] ?? '',
     key: options.map((o) => `${o.itemId}>${o.replacement.ref}`).sort().join('|'),
@@ -568,7 +632,16 @@ export function chooseBestSet(options: SwapOption[], budgetCents: number, maxSwa
     }
   }
   const chosen = best as SetChoice | null;
-  return chosen ? [...chosen.options].sort((a, b) => b.goal.tripImpact - a.goal.tripImpact) : [];
+  return chosen ? [...chosen.options].sort(compareSingle) : [];
+}
+
+/** Single swaps: known trip impact first (largest), then unknown by per-100 improvement. */
+export function compareSingle(a: SwapOption, b: SwapOption): number {
+  const ak = a.goal.tripImpact != null;
+  const bk = b.goal.tripImpact != null;
+  if (ak !== bk) return ak ? -1 : 1;
+  if (ak && bk) return b.goal.tripImpact! - a.goal.tripImpact!;
+  return b.goal.improvementPer100 - a.goal.improvementPer100;
 }
 
 const REASON_PRIORITY: CandidateReason[] = [
@@ -577,8 +650,11 @@ const REASON_PRIORITY: CandidateReason[] = [
   'goal_nutrient_unknown',
   'size_unknown',
   'basis_mismatch',
+  'package_dimension_mismatch',
   'price_unknown',
 ];
+
+const DIMENSION: Record<'g' | 'ml' | 'each', string> = { g: 'weight', ml: 'volume', each: 'count' };
 
 // ---------- main ----------
 export function planSwaps(input: PlanInput): PlanResult {
@@ -665,12 +741,13 @@ export function planSwaps(input: PlanInput): PlanResult {
       outcomes.set(itemId, { ...o, code: 'swapped', detail: 'swap chosen' });
       continue;
     }
-    const cheapest = [...opts].sort((a, b) => a.cost.regular.differenceCents - b.cost.regular.differenceCents || b.goal.tripImpact - a.goal.tripImpact)[0]!;
+    const cheapest = [...opts].sort((a, b) => a.cost.regular.differenceCents - b.cost.regular.differenceCents || compareSingle(a, b))[0]!;
     const cq = {
       replacementRef: cheapest.replacement.ref,
       description: cheapest.replacement.description,
       differenceCents: cheapest.cost.regular.differenceCents,
       tripImpact: cheapest.goal.tripImpact,
+      group: cheapest.group,
     };
     if (cheapest.cost.regular.differenceCents > input.maxExtraSpendCents) {
       outcomes.set(itemId, {
@@ -700,7 +777,8 @@ export function planSwaps(input: PlanInput): PlanResult {
       ? {
           differenceCents: swaps.reduce((s, o) => s + o.cost.regular.differenceCents, 0),
           promoDifferenceCents: swaps.some((s) => s.cost.promo) ? promoParts.reduce((a, b) => a + b, 0) : null,
-          tripImpact: swaps.reduce((s, o) => s + o.goal.tripImpact, 0),
+          tripImpact: swaps.reduce((s, o) => s + (o.goal.tripImpact ?? 0), 0),
+          tripImpactUnknown: swaps.filter((o) => o.goal.tripImpact == null).length,
           unit: NUTRIENT_UNIT[goal.nutrient],
         }
       : null,

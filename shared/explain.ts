@@ -54,10 +54,14 @@ export function explainSwap(s: SwapOption): string {
   const stale = s.sources.some((x) => x.kind === 'price' && x.stale) ? ', cached price' : '';
   const pkgs = s.packagesNeeded > 1 ? ` (${s.packagesNeeded} packages of the replacement)` : '';
   const parts: string[] = [];
+  const trip =
+    s.goal.tripImpact != null
+      ? ` (${g.better === 'higher' ? '+' : '-'}${num(s.goal.tripImpact)} ${unit} across ${qtyLabel} you're buying)`
+      : ` (total for the trip unknown: it's sold by ${s.goal.quantityUnit === 'ml' ? 'volume' : s.goal.quantityUnit === 'g' ? 'weight' : 'count'} but the label is per 100 ${s.basis})`;
   parts.push(
     `Swapping ${shortName(s.original.description)} for ${shortName(s.replacement.description)} ${verb} ` +
-      `${num(s.goal.improvementPer100)} ${unit} ${g.label} per 100 ${s.basis} ` +
-      `(${g.better === 'higher' ? '+' : '-'}${num(s.goal.tripImpact)} ${unit} across ${qtyLabel} you're buying)${pkgs} ` +
+      `${num(s.goal.improvementPer100)} ${unit} ${g.label} per 100 ${s.basis}` +
+      `${trip}${pkgs} ` +
       `${costPhrase(s.cost.regular.differenceCents)}${branch} (regular price, checked ${monthDay(price?.date)}${stale}).`,
   );
   if (s.cost.promo) {
@@ -111,7 +115,8 @@ const OUTCOME_TEXT: Record<ItemOutcome['code'], (o: ItemOutcome) => string> = {
   },
   price_unknown: (o) => `${name(o)} has no regular price at this store.`,
   size_unknown: (o) => `${name(o)}: package size unknown, so cost can't be compared.`,
-  basis_mismatch: (o) => `${name(o)}: ${o.detail.replace(/^original: /, '')}.`,
+  basis_mismatch: (o) => `${name(o)}: alternatives list nutrition per 100 g vs per 100 mL, so they can't be compared.`,
+  package_dimension_mismatch: (o) => `${name(o)}: alternatives are sold by a different measure (weight vs volume vs count), so cost can't be compared.`,
   goal_nutrient_unknown: (o) => `${name(o)}: the goal nutrient isn't known for this product (${o.detail.replace(/^original: /, '')}).`,
   no_candidates: (o) => `${name(o)}: ${o.detail}.`,
   below_threshold: (o) =>

@@ -111,6 +111,35 @@ export interface NutritionRecord {
   method?: 'label_scaled' | 'fdc_per100' | 'label_per100';
   /** FDC packageWeight, kept for the size-conflict check */
   packageWeight?: string | null;
+  /** non-empty = values are physically implausible; the engine treats them as unknown */
+  qualityIssues?: string[];
+}
+
+/**
+ * Physical plausibility of per-100 g / 100 mL values. Catches source errors
+ * such as a serving size off by 100x (seen live 2026-11-22: an FDC milk record
+ * giving 96.7 g protein and 150 g sugars per 100 g).
+ */
+export function per100QualityIssues(v: Per100Values): string[] {
+  const out: string[] = [];
+  const grams: Array<[keyof Per100Values, string]> = [
+    ['protein_g', 'protein'],
+    ['fiber_g', 'fiber'],
+    ['totalSugars_g', 'total sugars'],
+    ['addedSugars_g', 'added sugar'],
+  ];
+  for (const [k, label] of grams) {
+    const x = v[k];
+    if (x != null && x > 100) out.push(`${label} ${x.toFixed(1)} g per 100 is over 100 g`);
+  }
+  const sum = (v.protein_g ?? 0) + (v.fiber_g ?? 0) + (v.totalSugars_g ?? 0);
+  if (sum > 105) out.push(`protein + fiber + sugars = ${sum.toFixed(1)} g per 100 is over 100 g`);
+  if (v.addedSugars_g != null && v.totalSugars_g != null && v.addedSugars_g > v.totalSugars_g + 1) {
+    out.push(`added sugar ${v.addedSugars_g.toFixed(1)} g exceeds total sugars ${v.totalSugars_g.toFixed(1)} g`);
+  }
+  if (v.calories != null && v.calories > 950) out.push(`${v.calories.toFixed(0)} kcal per 100 is over the 900 kcal of pure fat`);
+  if (v.sodium_mg != null && v.sodium_mg > 40000) out.push(`sodium ${v.sodium_mg.toFixed(0)} mg per 100 is more than pure salt`);
+  return out;
 }
 
 /** Map a parsed retailer size string to the model Size. */
