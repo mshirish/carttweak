@@ -45,14 +45,14 @@ for (const [file, t] of Object.entries(truth)) {
   const b64 = readFileSync(p).toString('base64');
   const t0 = Date.now();
   const res: any = await page.evaluate(
-    async ({ b64, mime }) => {
+    async ({ save, b64, mime }) => {
       const blob = await (await fetch(`data:${mime};base64,${b64}`)).blob();
       const img = await createImageBitmap(blob);
       const url = '/src/receiptPipeline.ts';
       const m = await import(/* @vite-ignore */ url);
-      return m.readReceiptImage(img, {});
+      return m.readReceiptImage(img, { keepOcr: save });
     },
-    { b64, mime: MIME[path.extname(file).toLowerCase()] ?? 'image/png' },
+    { save, b64, mime: MIME[path.extname(file).toLowerCase()] ?? 'image/png' },
   );
   const ms = Date.now() - t0;
   raw[file] = res;

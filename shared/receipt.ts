@@ -63,6 +63,8 @@ export interface ParsedReceipt {
   dropped: Record<string, number>;
   skipped: number;
   check: { itemsCents: number; subtotalCents: number | null; matches: boolean | null };
+  /** more than one receipt in the photo: each one separately (never merged); the top level is the first */
+  receipts?: ParsedReceipt[];
 }
 
 export interface ReceiptParser {
@@ -315,4 +317,28 @@ export function parseReceipt(input: OcrLine[] | string): ParsedReceipt {
 /** Count rows that need the shopper's attention ("x of y lines need a look"). */
 export function needsLookCount(r: Pick<ParsedReceipt, 'items' | 'unparsed'>): { need: number; total: number } {
   return { need: r.items.filter((i) => i.needsLook).length + r.unparsed.length, total: r.items.length + r.unparsed.length };
+}
+
+/**
+ * Parse separately reconstructed blocks (e.g. two receipts side by side).
+ * Blocks without items are dropped; with more than one receipt left, the
+ * result lists them all in `receipts` and the top level is the first.
+ */
+export function parseReceiptBlocks(blocks: OcrLine[][]): ParsedReceipt {
+  const parsed = blocks.map((b) => parseReceipt(b)).filter((r) => r.items.length || r.totalCents != null);
+  if (!parsed.length) return parseReceipt(blocks.flat());
+  if (parsed.length === 1) return parsed[0]!;
+  return { ...parsed[0]!, receipts: parsed };
+}
+
+/** Higher is better: used to pick between reconstructions and rotations. */
+export function parseScore(r: ParsedReceipt): number {
+  const all = r.receipts ?? [r];
+  let s = 0;
+  for (const x of all) {
+    const conf = x.items.length ? x.items.reduce((a, i) => a + (i.confidence ?? 60), 0) / x.items.length : 0;
+    const suspect = x.items.filter((i) => !/[A-Za-z]{3}/.test(i.name)).length;
+    s += (x.check.matches ? 100 : 0) + Math.min(x.items.length, 40) * 2 + conf * 0.3 - suspect * 5 - x.unparsed.length;
+  }
+  return s;
 }

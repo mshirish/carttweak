@@ -5,7 +5,7 @@
  * (tesseract.js downloads its worker, wasm core and English model on first use;
  * those downloads carry no image data.)
  */
-import type { OcrLine } from '@carttweak/shared';
+import type { OcrLine, OcrLineBox } from '@carttweak/shared';
 
 export interface Prep {
   /** quarter turns clockwise: 0..3 */
@@ -56,13 +56,17 @@ export function rotationsToTry(w: number, h: number): number[] {
  * Returns the rotation with the highest rotationScore (ties keep the first).
  */
 export async function autoRotation(img: HTMLImageElement | ImageBitmap, prep: Prep, onProgress: (p: OcrProgress) => void): Promise<number> {
+  return (await rotationCandidates(img, prep, onProgress))[0]!;
+}
+
+/** Quick-pass scores for each plausible quarter turn, best first. */
+export async function rotationScores(img: HTMLImageElement | ImageBitmap, prep: Prep, onProgress: (p: OcrProgress) => void): Promise<Array<{ rotation: number; score: number }>> {
   const tries = rotationsToTry(img.width, img.height);
   const { createWorker, PSM } = await import('tesseract.js');
   const worker = await createWorker('eng', 1);
   try {
     await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_BLOCK } as any);
-    let best = tries[0]!;
-    let bestScore = -1;
+    const out: Array<{ rotation: number; score: number }> = [];
     for (const [i, r] of tries.entries()) {
       onProgress({ status: 'finding which way is up', progress: i / tries.length });
       const full = preprocess(img, { ...prep, rotation: r });
@@ -73,16 +77,19 @@ export async function autoRotation(img: HTMLImageElement | ImageBitmap, prep: Pr
       small.getContext('2d')!.drawImage(full, 0, 0, small.width, small.height);
       const { data } = await worker.recognize(small);
       const lines: OcrLine[] = ((data as any).lines ?? []).map((l: any) => ({ text: String(l.text), confidence: Math.round(l.confidence) }));
-      const sc = rotationScore(lines);
-      if (sc > bestScore) {
-        bestScore = sc;
-        best = r;
-      }
+      out.push({ rotation: r, score: rotationScore(lines) });
     }
-    return best;
+    // stable: ties keep the first tried
+    return out.map((x, i) => ({ ...x, i })).sort((x, y) => y.score - x.score || x.i - y.i).map(({ rotation, score }) => ({ rotation, score }));
   } finally {
     await worker.terminate();
   }
+}
+
+/** The best rotation, plus the runner-up when it scored close (both then get a full read; the parse decides). */
+export async function rotationCandidates(img: HTMLImageElement | ImageBitmap, prep: Prep, onProgress: (p: OcrProgress) => void): Promise<number[]> {
+  const s = await rotationScores(img, prep, onProgress);
+  return s.filter((x, i) => i === 0 || (i === 1 && x.score >= s[0]!.score * 0.6)).map((x) => x.rotation);
 }
 
 export function otsu(gray: Uint8ClampedArray | number[]): number {
@@ -163,6 +170,11 @@ export interface OcrProgress {
 
 /** OCR lines with per-line confidence. PSM 6 (one uniform block) keeps each printed row together. */
 export async function recognize(canvas: HTMLCanvasElement, onProgress: (p: OcrProgress) => void): Promise<OcrLine[]> {
+  return (await recognizeBoxes(canvas, onProgress)).lines;
+}
+
+/** Line text plus word boxes and baselines (for row reconstruction, see shared/receiptRows.ts). */
+export async function recognizeBoxes(canvas: HTMLCanvasElement, onProgress: (p: OcrProgress) => void): Promise<{ lines: OcrLine[]; boxes: OcrLineBox[] }> {
   const { createWorker, PSM } = await import('tesseract.js');
   const worker = await createWorker('eng', 1, {
     logger: (m: { status: string; progress: number }) => onProgress({ status: m.status, progress: m.progress ?? 0 }),
@@ -170,10 +182,15 @@ export async function recognize(canvas: HTMLCanvasElement, onProgress: (p: OcrPr
   try {
     await worker.setParameters({ tessedit_pageseg_mode: PSM.SINGLE_BLOCK, preserve_interword_spaces: '1' } as any);
     const { data } = await worker.recognize(canvas);
-    const lines: OcrLine[] = ((data as any).lines ?? []).map((l: any) => ({ text: String(l.text).replace(/\n$/, ''), confidence: Math.round(l.confidence) }));
+    const raw: any[] = (data as any).lines ?? [];
+    const lines: OcrLine[] = raw.map((l: any) => ({ text: String(l.text).replace(/\n$/, ''), confidence: Math.round(l.confidence) }));
+    const boxes: OcrLineBox[] = raw.map((l: any) => ({
+      baseline: l.baseline ? { x0: l.baseline.x0, y0: l.baseline.y0, x1: l.baseline.x1, y1: l.baseline.y1 } : null,
+      words: (l.words ?? []).map((w: any) => ({ text: String(w.text), confidence: Math.round(w.confidence), x0: w.bbox.x0, y0: w.bbox.y0, x1: w.bbox.x1, y1: w.bbox.y1 })),
+    }));
     // dev server only: keep the last OCR lines in this page's memory for local debugging (never sent anywhere)
     if ((import.meta as any).env?.DEV) (window as any).__carttweakLastOcr = lines;
-    return lines;
+    return { lines, boxes };
   } finally {
     await worker.terminate();
   }

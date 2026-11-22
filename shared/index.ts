@@ -12,7 +12,7 @@ export * from './demoList.ts';
 export * from './labelEntry.ts';
 export * from './display.ts';
 export * from './receipt.ts';
-export * from './ocrRows.ts';
+export * from './receiptRows.ts';
 export * from './nutriscore.ts';
 export * from './haul.ts';
 export * from './produce.ts';
