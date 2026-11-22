@@ -24,6 +24,33 @@ function positive(v: unknown): v is number {
   return typeof v === 'number' && Number.isFinite(v) && v > 0;
 }
 
+/** Regular shelf price only; null if missing/0. */
+export function regularPrice(p: ShelfPrice | null | undefined): EffectivePrice | null {
+  if (!p || !positive(p.regular)) return null;
+  return { cents: toCents(p.regular), dollars: toCents(p.regular) / 100, type: 'regular' };
+}
+
+/** True when a promo price (> 0) is present. */
+export function hasPromo(p: ShelfPrice | null | undefined): boolean {
+  return !!p && positive(p.promo);
+}
+
+/**
+ * 'regular': both products at regular price (the headline number).
+ * 'with_promo': each product at its promo price when it has one, else regular.
+ *   Always shown as a separate, labelled line ("with current promo").
+ */
+export type PriceMode = 'regular' | 'with_promo';
+
+export const PRICE_MODE_LABEL: Record<PriceMode, string> = {
+  regular: 'regular price',
+  with_promo: 'with current promo (may require Kroger card)',
+};
+
+export function priceFor(p: ShelfPrice | null | undefined, mode: PriceMode): EffectivePrice | null {
+  return mode === 'regular' ? regularPrice(p) : effectivePrice(p);
+}
+
 /**
  * Promo price only when present (Kroger reports 0 for "no promo").
  * Returns null if no usable price exists.
@@ -36,6 +63,8 @@ export function effectivePrice(p: ShelfPrice | null | undefined): EffectivePrice
 }
 
 export interface CheckoutComparison {
+  priceMode: PriceMode;
+  label: string;
   targetQuantity: Quantity;
   replacementPackageQuantity: Quantity;
   packagesNeeded: number;
@@ -49,7 +78,8 @@ export interface CheckoutComparison {
 
 /**
  * Target quantity = one package of the original. Buy whole packages of the
- * replacement (ceil) to reach it, at the current branch price.
+ * replacement (ceil) to reach it, at the current branch price. By default
+ * both sides use REGULAR price, so the headline number never mixes price types.
  * Returns null if sizes are missing, bases differ, or a price is missing.
  */
 export function checkoutDifference(args: {
@@ -57,13 +87,16 @@ export function checkoutDifference(args: {
   originalPrice: ShelfPrice | null;
   replacementSize: Quantity | null;
   replacementPrice: ShelfPrice | null;
+  /** default 'regular' */
+  priceMode?: PriceMode;
 }): CheckoutComparison | null {
+  const priceMode = args.priceMode ?? 'regular';
   const { originalSize, replacementSize } = args;
   if (!originalSize || !replacementSize) return null;
   if (originalSize.basis !== replacementSize.basis) return null;
   if (!(originalSize.amount > 0) || !(replacementSize.amount > 0)) return null;
-  const orig = effectivePrice(args.originalPrice);
-  const repl = effectivePrice(args.replacementPrice);
+  const orig = priceFor(args.originalPrice, priceMode);
+  const repl = priceFor(args.replacementPrice, priceMode);
   if (!orig || !repl) return null;
   // tolerance so e.g. 32 oz vs 2 x 16 oz (float conversions) isn't rounded to 3
   const ratio = originalSize.amount / replacementSize.amount;
@@ -71,6 +104,8 @@ export function checkoutDifference(args: {
   const replacementTotalCents = packagesNeeded * repl.cents;
   const differenceCents = replacementTotalCents - orig.cents;
   return {
+    priceMode,
+    label: PRICE_MODE_LABEL[priceMode],
     targetQuantity: originalSize,
     replacementPackageQuantity: replacementSize,
     packagesNeeded,

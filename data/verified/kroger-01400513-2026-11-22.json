@@ -1,0 +1,579 @@
+{
+  "schema": "carttweak.verified-comparison.v1",
+  "retrievedAt": "2026-11-22T05:15:18.123Z",
+  "goal": "more fiber",
+  "pairId": "bread",
+  "targetNutrient": {
+    "nutrient": "fiber",
+    "better": "higher"
+  },
+  "branch": {
+    "locationId": "01400513",
+    "chain": "KROGER",
+    "name": "Kroger - Kroger On the Rhine",
+    "address": {
+      "addressLine1": "100 E Court St",
+      "city": "Cincinnati",
+      "state": "OH",
+      "zipCode": "45202",
+      "county": "HAMILTON COUNTY"
+    },
+    "phone": "5132635900",
+    "retrievedAt": "2026-11-22T05:14:24.683Z",
+    "source": "https://api.kroger.com/v1/locations?filter.zipCode.near=45202&filter.limit=5"
+  },
+  "original": {
+    "productId": "0007225001137",
+    "upc": "0007225001137",
+    "brand": "Wonder",
+    "description": "Wonder Classic White Bread",
+    "size": "20 oz",
+    "sizeParsed": {
+      "original": "20 oz",
+      "amount": 566.9904625,
+      "basis": "g",
+      "unit": "oz",
+      "sizeBasis": "explicit"
+    },
+    "sizeBasis": "explicit",
+    "sizeCheck": null,
+    "price": {
+      "regular": 3.29,
+      "promo": 2.79
+    },
+    "priceUsed": {
+      "cents": 329,
+      "dollars": 3.29,
+      "type": "regular"
+    },
+    "priceTypeUsed": "regular",
+    "promoAvailable": true,
+    "fulfillment": {
+      "curbside": true,
+      "delivery": true,
+      "inStore": true,
+      "shipToHome": false
+    },
+    "krogerRetrievedAt": "2026-11-22T05:14:53.835Z",
+    "fdc": {
+      "fdcId": 2569016,
+      "matchMethod": {
+        "rule": "Kroger UPC and FDC gtinUpc normalize to the same GTIN-14",
+        "lookupMethod": "barcode",
+        "query": "0072250011372",
+        "candidateForm": "ean13+check",
+        "candidateValue": "0072250011372",
+        "krogerUpcInterpretation": "check-digit-appended",
+        "gtin14": "00072250011372",
+        "matchingFdcRecords": 1
+      },
+      "description": "CLASSIC WHITE BREAD",
+      "brandOwner": "Flowers Foods, Inc.",
+      "brandName": "WONDER",
+      "gtinUpc": "0072250011372",
+      "servingSize": 57,
+      "servingSizeUnit": "GRM",
+      "householdServingFullText": "2 Slices (57g/2.0oz)",
+      "packageWeight": "20 oz",
+      "publishedDate": "2023-06-29",
+      "modifiedDate": "2023-05-23",
+      "availableDate": "2023-05-23",
+      "dataSource": "LI",
+      "labelNutrients": {
+        "calories": 140,
+        "protein": 4,
+        "fiber": 2,
+        "addedSugars": 5.02,
+        "sugars": 5,
+        "sodium": 180
+      },
+      "foodNutrientsPer100": {
+        "calories": 246,
+        "protein": 7.02,
+        "fiber": 3.5,
+        "addedSugars": 8.8,
+        "sugars": 8.77,
+        "sodium": 316
+      },
+      "per100": {
+        "basis": "g",
+        "values": {
+          "calories": 245.61,
+          "protein": 7.02,
+          "fiber": 3.51,
+          "addedSugars": 8.81,
+          "sugars": 8.77,
+          "sodium": 315.79
+        }
+      },
+      "retrievedAt": "2026-11-22T05:14:56.745Z"
+    },
+    "sources": {
+      "krogerProductSearch": "https://api.kroger.com/v1/products?filter.term=white%20bread&filter.locationId=01400513&filter.limit=10",
+      "krogerProductPage": "https://www.kroger.com/p/wonder-classic-white-bread/0007225001137?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+      "fdcSearch": "https://api.nal.usda.gov/fdc/v1/foods/search?query=0072250011372&dataType=Branded&pageSize=50",
+      "fdcFood": "https://api.nal.usda.gov/fdc/v1/food/2569016",
+      "fdcPage": "https://fdc.nal.usda.gov/food-details/2569016/nutrients"
+    }
+  },
+  "replacement": {
+    "productId": "0007131400185",
+    "upc": "0007131400185",
+    "brand": "Aunt Millie's",
+    "description": "Aunt Millie's Live Light! Whole Grain Bread",
+    "size": "20 oz",
+    "sizeParsed": {
+      "original": "20 oz",
+      "amount": 566.9904625,
+      "basis": "g",
+      "unit": "oz",
+      "sizeBasis": "explicit"
+    },
+    "sizeBasis": "explicit",
+    "sizeCheck": null,
+    "price": {
+      "regular": 3.79,
+      "promo": null
+    },
+    "priceUsed": {
+      "cents": 379,
+      "dollars": 3.79,
+      "type": "regular"
+    },
+    "priceTypeUsed": "regular",
+    "promoAvailable": false,
+    "fulfillment": {
+      "curbside": true,
+      "delivery": true,
+      "inStore": true,
+      "shipToHome": false
+    },
+    "krogerRetrievedAt": "2026-11-22T05:15:09.011Z",
+    "fdc": {
+      "fdcId": 2032747,
+      "matchMethod": {
+        "rule": "Kroger UPC and FDC gtinUpc normalize to the same GTIN-14",
+        "lookupMethod": "barcode",
+        "query": "071314001854",
+        "candidateForm": "upca12+check",
+        "candidateValue": "071314001854",
+        "krogerUpcInterpretation": "check-digit-appended",
+        "gtin14": "00071314001854",
+        "matchingFdcRecords": 1
+      },
+      "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+      "brandOwner": "Perfection Bakeries, Inc.",
+      "brandName": "AUNT MILLIE'S",
+      "gtinUpc": "071314001854",
+      "servingSize": 47,
+      "servingSizeUnit": "g",
+      "householdServingFullText": "2 SLICES",
+      "packageWeight": "20 oz/567 g",
+      "publishedDate": "2021-10-28",
+      "modifiedDate": "2020-04-08",
+      "availableDate": "2020-04-08",
+      "dataSource": "LI",
+      "labelNutrients": {
+        "calories": 70,
+        "protein": 4,
+        "fiber": 6.02,
+        "addedSugars": null,
+        "sugars": 1,
+        "sodium": 170
+      },
+      "foodNutrientsPer100": {
+        "calories": 149,
+        "protein": 8.51,
+        "fiber": 12.8,
+        "addedSugars": null,
+        "sugars": 2.13,
+        "sodium": 362
+      },
+      "per100": {
+        "basis": "g",
+        "values": {
+          "calories": 148.94,
+          "protein": 8.51,
+          "fiber": 12.81,
+          "addedSugars": null,
+          "sugars": 2.13,
+          "sodium": 361.7
+        }
+      },
+      "retrievedAt": "2026-11-22T05:15:14.891Z"
+    },
+    "sources": {
+      "krogerProductSearch": "https://api.kroger.com/v1/products?filter.term=whole%20grain%20bread&filter.locationId=01400513&filter.limit=10",
+      "krogerProductPage": "https://www.kroger.com/p/aunt-millie-s-live-light-whole-grain-bread/0007131400185?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+      "fdcSearch": "https://api.nal.usda.gov/fdc/v1/foods/search?query=071314001854&dataType=Branded&pageSize=50",
+      "fdcFood": "https://api.nal.usda.gov/fdc/v1/food/2032747",
+      "fdcPage": "https://fdc.nal.usda.gov/food-details/2032747/nutrients"
+    }
+  },
+  "nutrientDeltasPer100": [
+    {
+      "nutrient": "calories",
+      "unit": "kcal",
+      "basis": "g",
+      "original": 245.61,
+      "replacement": 148.94,
+      "delta": -96.68
+    },
+    {
+      "nutrient": "protein",
+      "unit": "g",
+      "basis": "g",
+      "original": 7.02,
+      "replacement": 8.51,
+      "delta": 1.49
+    },
+    {
+      "nutrient": "fiber",
+      "unit": "g",
+      "basis": "g",
+      "original": 3.51,
+      "replacement": 12.81,
+      "delta": 9.3
+    },
+    {
+      "nutrient": "addedSugars",
+      "unit": "g",
+      "basis": "g",
+      "original": 8.81,
+      "replacement": null,
+      "delta": null,
+      "reason": "nutrient missing on label"
+    },
+    {
+      "nutrient": "sugars",
+      "unit": "g",
+      "basis": "g",
+      "original": 8.77,
+      "replacement": 2.13,
+      "delta": -6.64
+    },
+    {
+      "nutrient": "sodium",
+      "unit": "mg",
+      "basis": "g",
+      "original": 315.79,
+      "replacement": 361.7,
+      "delta": 45.91
+    }
+  ],
+  "sizes": {
+    "bothExplicit": true,
+    "warning": null
+  },
+  "checkout": {
+    "rule": "target = 1 package of original; buy ceil(target / replacement package) packages at current branch price",
+    "priceType": "regular",
+    "label": "regular price",
+    "targetQuantity": {
+      "original": "20 oz",
+      "amount": 566.9904625,
+      "basis": "g",
+      "unit": "oz",
+      "sizeBasis": "explicit"
+    },
+    "replacementPackageQuantity": {
+      "original": "20 oz",
+      "amount": 566.9904625,
+      "basis": "g",
+      "unit": "oz",
+      "sizeBasis": "explicit"
+    },
+    "packagesNeeded": 1,
+    "originalPrice": {
+      "cents": 329,
+      "dollars": 3.29,
+      "type": "regular"
+    },
+    "replacementUnitPrice": {
+      "cents": 379,
+      "dollars": 3.79,
+      "type": "regular"
+    },
+    "replacementTotal": 3.79,
+    "difference": 0.5
+  },
+  "checkoutWithPromo": {
+    "label": "with current promo (may require Kroger card)",
+    "originalPriceType": "promo",
+    "replacementPriceType": "regular",
+    "packagesNeeded": 1,
+    "originalPrice": {
+      "cents": 279,
+      "dollars": 2.79,
+      "type": "promo"
+    },
+    "replacementUnitPrice": {
+      "cents": 379,
+      "dollars": 3.79,
+      "type": "regular"
+    },
+    "replacementTotal": 3.79,
+    "difference": 1
+  },
+  "alternativesQualified": 56,
+  "probeStats": {
+    "uniqueProducts": 40,
+    "withUpc": 40,
+    "fdcMatched": 26,
+    "matchRate": 0.65,
+    "matchedByLookupMethod": {
+      "barcode": 26
+    },
+    "matchedByCandidateForm": {
+      "gtin14+check": 12,
+      "upca12+check": 12,
+      "ean13+check": 2
+    },
+    "matchedByInterpretation": {
+      "check-digit-appended": 26
+    },
+    "krogerUpcLengths": {
+      "13": 40
+    },
+    "pricedRegular": 40,
+    "withPromo": 9,
+    "sizeParsed": 40,
+    "sizeExplicit": 39,
+    "sizeInferredKept": 1,
+    "sizeInferredRejectedByPackageWeight": 0,
+    "servingConvertible": 25,
+    "nutrientKnownAmongMatched": {
+      "addedSugars": 12,
+      "sugars": 24,
+      "protein": 24,
+      "fiber": 22,
+      "sodium": 25,
+      "calories": 24
+    },
+    "failuresByReason": {
+      "FDC serving size not convertible to g/mL": 1,
+      "no FDC Branded record with matching GTIN-14": 14,
+      "off-target search result for bread/replacement": 3
+    },
+    "fdcRecordDates": [
+      {
+        "upc": "0007047000439",
+        "fdcId": 2756001,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0005215900002",
+        "fdcId": 2756931,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0081829001979",
+        "fdcId": 2756313,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0003663200260",
+        "fdcId": 2779035,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-10-22",
+        "modifiedDate": "2026-09-23",
+        "dataSource": "GDSN"
+      },
+      {
+        "upc": "0007047000323",
+        "fdcId": 2737261,
+        "lookupMethod": "barcode",
+        "publishedDate": "2025-07-24",
+        "modifiedDate": "2025-07-07",
+        "dataSource": "GDSN"
+      },
+      {
+        "upc": "0007047018388",
+        "fdcId": 2740284,
+        "lookupMethod": "barcode",
+        "publishedDate": "2025-08-21",
+        "modifiedDate": "2025-07-29",
+        "dataSource": "GDSN"
+      },
+      {
+        "upc": "0001111050481",
+        "fdcId": 1947113,
+        "lookupMethod": "barcode",
+        "publishedDate": "2021-07-29",
+        "modifiedDate": "2018-05-03",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0089470001001",
+        "fdcId": 2757147,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0007835555000",
+        "fdcId": 2757309,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0089470001013",
+        "fdcId": 2755837,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0007835558000",
+        "fdcId": 2490000,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-02-16",
+        "modifiedDate": "2021-10-30",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0089470001043",
+        "fdcId": 2757438,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0068954408020",
+        "fdcId": 2756767,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-04-23",
+        "modifiedDate": null,
+        "dataSource": "Euromonitor"
+      },
+      {
+        "upc": "0007225001137",
+        "fdcId": 2569016,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-06-29",
+        "modifiedDate": "2023-05-23",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007130104737",
+        "fdcId": 2033091,
+        "lookupMethod": "barcode",
+        "publishedDate": "2021-10-28",
+        "modifiedDate": "2020-12-10",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0001111008415",
+        "fdcId": 2462854,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-02-16",
+        "modifiedDate": "2021-04-12",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0001410007083",
+        "fdcId": 2794321,
+        "lookupMethod": "barcode",
+        "publishedDate": "2026-11-19",
+        "modifiedDate": "2026-10-29",
+        "dataSource": "GDSN"
+      },
+      {
+        "upc": "0007882110008",
+        "fdcId": 2033292,
+        "lookupMethod": "barcode",
+        "publishedDate": "2021-10-28",
+        "modifiedDate": "2020-04-15",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007313000367",
+        "fdcId": 872918,
+        "lookupMethod": "barcode",
+        "publishedDate": "2020-05-28",
+        "modifiedDate": "2019-03-18",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0001376402713",
+        "fdcId": 2674261,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-11-16",
+        "modifiedDate": "2023-05-31",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007313000026",
+        "fdcId": 2679921,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-11-16",
+        "modifiedDate": "2022-11-05",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007313002855",
+        "fdcId": 869654,
+        "lookupMethod": "barcode",
+        "publishedDate": "2020-05-28",
+        "modifiedDate": "2019-03-18",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007225001767",
+        "fdcId": 2634131,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-09-14",
+        "modifiedDate": "2023-08-01",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0001376402705",
+        "fdcId": 2674263,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-11-16",
+        "modifiedDate": "2023-05-31",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007131400185",
+        "fdcId": 2032747,
+        "lookupMethod": "barcode",
+        "publishedDate": "2021-10-28",
+        "modifiedDate": "2020-04-08",
+        "dataSource": "LI"
+      },
+      {
+        "upc": "0007294570544",
+        "fdcId": 2569522,
+        "lookupMethod": "barcode",
+        "publishedDate": "2023-06-29",
+        "modifiedDate": "2023-05-23",
+        "dataSource": "LI"
+      }
+    ],
+    "oldestFdcRecord": "2020-05-28",
+    "newestFdcRecord": "2026-11-19",
+    "termsSearched": [
+      "vanilla yogurt",
+      "plain greek yogurt",
+      "white bread",
+      "whole grain bread"
+    ],
+    "fallbacksUsed": 0
+  },
+  "rawDir": "data/raw/2026-11-22T05-14-24-045Z"
+}
