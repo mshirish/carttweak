@@ -103,3 +103,32 @@ Yogurt pairs: 56 candidate pairs qualified overall (yogurt + bread). Added sugar
   - ~~FDC full-text `query` matches on `gtinUpc`.~~ **Verified**, only for forms with the check digit appended.
   - ~~FDC Branded `labelNutrients` includes `addedSugar` for most products.~~ **False**: 12/26 matches.
   - ~~Kroger returns `price.regular` / `price.promo` with `product.compact` when `filter.locationId` is set.~~ **Verified** (40/40 regular, 9/40 promo).
+
+### 2026-11-22: Milestone 2 live findings
+
+- **Kroger search term limit:** Kroger rejects `filter.term` values with more than 8 words (HTTP 400 `PRODUCT-2019`; "/" counts as a word). The server drops size expressions and punctuation from long terms and caps them at 8 words. Matching still uses the full query, size included.
+- **`filter.brand` works:** "Prego Traditional Italian Sauce" returns 0 results, but `filter.brand=Prego` lists 20 Prego sauces. Prego names its jars "Traditional Sauce" / "Marinara Sauce", so the pasta-sauce swap group now matches any sauce in the "Pasta, Sauces, Grain" category.
+- **Implausible FDC records exist:** a Kroger half-gallon 2% milk record gives 96.7 g protein and 150 g total sugars per 100 g, most likely a serving size off by 100×. Records that fail physical plausibility checks are kept but treated as unknown (`qualityIssues`).
+- **Units:**
+  - Milk is sold by volume, but FDC often labels it per 100 g.
+  - Campbell's condensed soup is sold by weight but labelled per 100 mL.
+  - Since Milestone 2 these still compare per 100 (against candidates with the same basis), with no trip total.
+- **Demo list (`docs/demo-list.txt`, names and sizes chosen 2026-11-22):**
+
+  | Tag | Result |
+  |---|---|
+  | `[exact]` | 17/17 resolve without a choice |
+  | `[vague]` | 2/2 ask "which one?" |
+  | `[nobar]` | bananas skipped as produce |
+
+  - 22 of the 32 products a shopper can pick have a USDA record.
+  - **248 of 358 swap candidates (69%)** across 17 swap groups have a USDA record.
+- **Speed** (20-item demo list, same machine):
+
+  | Plan | Time | Live calls |
+  |---|---|---|
+  | Cold, empty cache | 20.9 s | 423, 0 throttled (Milestone 1: 58.7 s) |
+  | Warm, smoke script | 0.4 s | none |
+  | Warm, through the UI (job + 300 ms polling) | 1.2–2.0 s | none |
+
+  The FDC key reported about 2,300–2,650 requests remaining per hour (`X-RateLimit-Remaining`).

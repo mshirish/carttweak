@@ -112,3 +112,41 @@ Every item gets one outcome code, plus candidate rejection counts. `noSwapReason
   - **Never a price without its date:** every `PriceObservation` has `observedAt` = the response's `retrievedAt`.
 - **Secrets:** they are only read in `server/`. Bodies are redacted before caching; Kroger's `cid` URL parameter is stripped because it embeds the client ID. Every JSON response is checked for registered secrets and withheld if one appears.
 - **Sample data:** only in `data/sample/`, every record `isSample: true`. It is used only when a request sets `includeSample: true`, and results then carry `containsSample: true`.
+
+## 2026-11-22: Milestone 2 (fixes + "Plan my next trip" UI)
+
+### Units, decoupled (replaces the Milestone 1 single basis rule)
+- **Nutrients:** compared only when both **nutrition records** share a basis (per 100 g or per 100 mL). Otherwise `basis_mismatch`.
+- **Cost:** computed only when both **packages** share a dimension (weight, volume or count). Otherwise `package_dimension_mismatch`.
+- **Trip impact:** computed only when the original's package dimension matches the nutrition basis. Otherwise `tripImpact = null`, with a note; the UI shows per-100 values only.
+- **Ranking:** sets compare (1) known trip impact, (2) number of swaps, (3) per-100 improvement of the unknown-impact swaps, (4) cost, (5) label dates. Swaps with an unknown trip impact therefore rank after known ones.
+- **Never** convert g ↔ mL.
+- **Data guards:**
+  - Nutrition records failing physical plausibility (e.g. more than 100 g of a nutrient per 100 g, sugars above total mass, more than 950 kcal, sodium above pure salt) count as unknown.
+  - "Same product, other size" (same brand and name once size/package words are removed) is not a swap.
+
+### Speed
+- **Concurrency:** live calls go through an adaptive limiter per upstream: 6 concurrent, halved on 429 (min 1), +1 after 20 straight successes.
+- **429 handling:** up to 4 retries, honouring Retry-After (else 1/2/4/8 s).
+- **Parallelism:** all swap groups' candidate searches run in parallel.
+- **`npm run warm`:** pre-fetches everything for the demo list. Prices stay cached 12 h, so re-run it within 12 h of a demo.
+- **Progress:** plans run as jobs (`POST /api/plan/jobs`, then poll `GET /api/plan/jobs/:id`). Polling was chosen over SSE because it is simpler through the Vite proxy and survives reconnects.
+
+### Nutrition sources
+- **Types:** `fdc`, `label_observation` (photo), and `retailer_listing` (Nutrition Facts transcribed from the product's page on the chain's own site, with `sourceUrl`, `transcribedAt` and `transcribedBy`).
+- **Precedence:** photo > listing > FDC, newest first within a source. A manual record must be newer than the newest dated FDC label to be used (Milestone 1 rule kept).
+- **Entry:** `npm run add-label` writes to `data/labels/labels.json`. Real data only; sample data stays in `data/sample/`.
+
+### Other rules
+- **Rejected swaps:** `excludedCandidateIds` lists candidate product refs the shopper rejected. They are never re-suggested (reason `excluded`).
+- **Promo wording:** the promo line names the chain's card ("may require Kroger card").
+- **Combined budget:** with a $0 budget, a set may include a swap that costs more if another swap's savings cover it. Seen live with less added sugar at $0: Coke → Bubly saves $2.01, Wonder → Sara Lee costs $0.50.
+
+### UI (`web/`)
+- **Stack:** React + TypeScript + Vite, plain CSS (no Tailwind; one accent colour, Nutrition-Facts rules, tabular numbers, 48 px tap targets).
+- **Routing:** hash routes (`#/start`, `#/saved/<id>`, …), with no router dependency.
+- **Server-only data:** the browser only talks to `/api`. Kroger product images are loaded from kroger.com with `referrerPolicy="no-referrer"`.
+- **Never auto-picks:** "Which one?" rows must be chosen by the shopper, even for the demo list.
+- **Saved trips:** stored in `localStorage` under `carttweak.trips` (`schemaVersion: 1`). Accepted swaps are stored in full, including source snapshots. If storage fails, trips are kept in memory for the tab and a warning is shown.
+- **Dev setup:** `npm run dev` starts the API (:8787) and Vite (:5173, proxying `/api`).
+- **Screenshots:** `scripts/screenshots.ts` drives installed Edge via `playwright-core` (no browser download).

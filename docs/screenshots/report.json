@@ -1,0 +1,195 @@
+{
+  "problems": [],
+  "runs": {
+    "375": {
+      "statuses": {
+        "matched": 17,
+        "choose": 2,
+        "no_barcode": 1
+      },
+      "fiber": [
+        {
+          "label": "Swap Wonder Classic White Bread for Aunt Millie's Live Light! Whole Grain Bread",
+          "impact": "+52.7 g fiber across what you buy",
+          "regular": "$0.50 more",
+          "promo": "With current promo, may require Kroger card: $1.00 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        },
+        {
+          "label": "Swap RITZ Original Crackers for Premium with Whole Grain Wheat Saltine Crackers",
+          "impact": "+24.1 g fiber across what you buy",
+          "regular": "Saves $0.50",
+          "promo": "With current promo, may require Kroger card: $0.50 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        }
+      ],
+      "afterReject": [
+        {
+          "label": "Swap Wonder Classic White Bread for Aunt Millie's Live Light! Whole Grain Bread",
+          "impact": "+52.7 g fiber across what you buy",
+          "regular": "$0.50 more",
+          "promo": "With current promo, may require Kroger card: $1.00 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        },
+        {
+          "label": "Swap Barilla Spaghetti Pasta, Quality Non-GMO and Kosher Certified Pasta for Kroger 100% Whole Grain Rotini",
+          "impact": "+24.1 g fiber across what you buy",
+          "regular": "Saves $0.66",
+          "promo": "With current promo, may require Kroger card: Saves $0.25",
+          "badges": [
+            "Label may be outdated"
+          ]
+        }
+      ],
+      "revisedSwapped": [
+        "1×Aunt Millie's Live Light! Whole Grain Bread (20 oz)was Wonder Classic White BreadSwapped"
+      ],
+      "sugar": [
+        {
+          "label": "Swap Coca-Cola Soda Cans for Bubly Lime Sparkling Water Cans",
+          "impact": "−467.8 g added sugar across what you buy",
+          "regular": "Saves $2.01",
+          "promo": "With current promo, may require Kroger card: Saves $3.99",
+          "badges": [
+            "Label may be outdated"
+          ]
+        },
+        {
+          "label": "Swap Wonder Classic White Bread for Sara Lee White made with Whole Grain Bread",
+          "impact": "−30.0 g added sugar across what you buy",
+          "regular": "$0.50 more",
+          "promo": "With current promo, may require Kroger card: $1.00 more",
+          "badges": [
+            "Sodium +157.9 mg/100 g",
+            "Label may be outdated"
+          ]
+        }
+      ],
+      "sugarNoSwap": null,
+      "timingsMs": {
+        "resolveMs": 131,
+        "planMs": 1495,
+        "replanMs": 802
+      },
+      "shots": [
+        "docs/screenshots/375-01-start.png",
+        "docs/screenshots/375-02-list.png",
+        "docs/screenshots/375-03-check.png",
+        "docs/screenshots/375-04-check-chosen.png",
+        "docs/screenshots/375-05-goals.png",
+        "docs/screenshots/375-06-progress.png",
+        "docs/screenshots/375-07-results-fiber.png",
+        "docs/screenshots/375-08-results-after-reject.png",
+        "docs/screenshots/375-09-saved-trip.png",
+        "docs/screenshots/375-10-saved-list.png",
+        "docs/screenshots/375-11-goals-sugar.png",
+        "docs/screenshots/375-12-results-sugar.png",
+        "docs/screenshots/375-13-receipt.png",
+        "docs/screenshots/375-14-store.png",
+        "docs/screenshots/375-15-about.png"
+      ],
+      "consoleErrors": []
+    },
+    "1280": {
+      "statuses": {
+        "matched": 17,
+        "choose": 2,
+        "no_barcode": 1
+      },
+      "fiber": [
+        {
+          "label": "Swap Wonder Classic White Bread for Aunt Millie's Live Light! Whole Grain Bread",
+          "impact": "+52.7 g fiber across what you buy",
+          "regular": "$0.50 more",
+          "promo": "With current promo, may require Kroger card: $1.00 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        },
+        {
+          "label": "Swap RITZ Original Crackers for Premium with Whole Grain Wheat Saltine Crackers",
+          "impact": "+24.1 g fiber across what you buy",
+          "regular": "Saves $0.50",
+          "promo": "With current promo, may require Kroger card: $0.50 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        }
+      ],
+      "afterReject": [
+        {
+          "label": "Swap Wonder Classic White Bread for Aunt Millie's Live Light! Whole Grain Bread",
+          "impact": "+52.7 g fiber across what you buy",
+          "regular": "$0.50 more",
+          "promo": "With current promo, may require Kroger card: $1.00 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        },
+        {
+          "label": "Swap Barilla Spaghetti Pasta, Quality Non-GMO and Kosher Certified Pasta for Kroger 100% Whole Grain Rotini",
+          "impact": "+24.1 g fiber across what you buy",
+          "regular": "Saves $0.66",
+          "promo": "With current promo, may require Kroger card: Saves $0.25",
+          "badges": [
+            "Label may be outdated"
+          ]
+        }
+      ],
+      "revisedSwapped": [
+        "1×Aunt Millie's Live Light! Whole Grain Bread (20 oz)was Wonder Classic White BreadSwapped"
+      ],
+      "sugar": [
+        {
+          "label": "Swap Coca-Cola Soda Cans for Bubly Lime Sparkling Water Cans",
+          "impact": "−467.8 g added sugar across what you buy",
+          "regular": "Saves $2.01",
+          "promo": "With current promo, may require Kroger card: Saves $3.99",
+          "badges": [
+            "Label may be outdated"
+          ]
+        },
+        {
+          "label": "Swap Wonder Classic White Bread for Sara Lee White made with Whole Grain Bread",
+          "impact": "−30.0 g added sugar across what you buy",
+          "regular": "$0.50 more",
+          "promo": "With current promo, may require Kroger card: $1.00 more",
+          "badges": [
+            "Sodium +157.9 mg/100 g",
+            "Label may be outdated"
+          ]
+        }
+      ],
+      "sugarNoSwap": null,
+      "timingsMs": {
+        "resolveMs": 162,
+        "planMs": 839,
+        "replanMs": 763
+      },
+      "shots": [
+        "docs/screenshots/1280-01-start.png",
+        "docs/screenshots/1280-02-list.png",
+        "docs/screenshots/1280-03-check.png",
+        "docs/screenshots/1280-04-check-chosen.png",
+        "docs/screenshots/1280-05-goals.png",
+        "docs/screenshots/1280-06-progress.png",
+        "docs/screenshots/1280-07-results-fiber.png",
+        "docs/screenshots/1280-08-results-after-reject.png",
+        "docs/screenshots/1280-09-saved-trip.png",
+        "docs/screenshots/1280-10-saved-list.png",
+        "docs/screenshots/1280-11-goals-sugar.png",
+        "docs/screenshots/1280-12-results-sugar.png",
+        "docs/screenshots/1280-13-receipt.png",
+        "docs/screenshots/1280-14-store.png",
+        "docs/screenshots/1280-15-about.png"
+      ],
+      "consoleErrors": []
+    }
+  }
+}

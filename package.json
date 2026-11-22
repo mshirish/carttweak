@@ -12,18 +12,23 @@
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p web/tsconfig.json --noEmit",
     "gen:walmart-keys": "tsx scripts/gen-walmart-keys.ts",
     "probe:kroger-fdc": "tsx scripts/probe-kroger-fdc.ts",
     "smoke:plan": "tsx scripts/smoke-plan.ts",
     "warm": "tsx scripts/warm.ts",
     "add-label": "tsx scripts/add-label.ts",
+    "dev": "tsx scripts/dev.ts",
     "dev:server": "npm run dev -w @carttweak/server",
     "dev:web": "npm run dev -w @carttweak/web"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/node": "^22.10.0",
     "dotenv": "^16.4.7",
+    "jsdom": "^25.0.1",
+    "playwright-core": "^1.65.1",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vitest": "^3.0.0"
