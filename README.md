@@ -1,6 +1,6 @@
 <h1 align="center">CartTweak</h1>
 
-<p align="center">Shirish · Adnan · Diksha · Rojesh</p>
+<p align="center">Shirish · Adnan · Dikshya · Rojesh</p>
 
 ![CartTweak walkthrough showing shopping list entry, nutrition goals, a budget, and a grocery swap](brag-output/brag.gif)
 
