@@ -125,6 +125,7 @@ const OUTCOME_TEXT: Record<ItemOutcome['code'], (o: ItemOutcome) => string> = {
   over_budget: (o) =>
     `${name(o)}: the cheapest good swap (${shortName(o.cheapestQualifying!.description)}) costs ${dollars(o.cheapestQualifying!.differenceCents)} more, over your budget.`,
   not_selected: (o) => `${name(o)}: a good swap exists, but other swaps did more within the budget.`,
+  excluded: (o) => `${name(o)}: you rejected the swap for this item, and no other option qualifies.`,
 };
 
 function name(o: ItemOutcome): string {

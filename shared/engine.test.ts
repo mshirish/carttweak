@@ -445,3 +445,28 @@ describe('ranking & determinism', () => {
     expect(chooseBestSet([], 100)).toEqual([]);
   });
 });
+
+describe('A5: excludedCandidateIds', () => {
+  const items = [item('bread', whiteBread())];
+  const candidates = { bread: [wgBread('best', 379, 14), wgBread('next', 379, 10), wgBread('third', 379, 6)] };
+  it('a rejected swap is re-planned without it: the next best is chosen', () => {
+    const first = plan({ items, candidates });
+    expect(first.swaps[0]!.replacement.ref).toBe('kroger:best');
+    const again = plan({ items, candidates, excludedCandidateIds: ['kroger:best'] });
+    expect(again.swaps[0]!.replacement.ref).toBe('kroger:next');
+    const rej = again.itemOutcomes[0]!.rejections!.find((r) => r.candidateRef === 'kroger:best')!;
+    expect(rej).toMatchObject({ reason: 'excluded', detail: 'you rejected this swap' });
+  });
+  it('all qualifying options rejected -> outcome excluded with an explanation', () => {
+    const r = plan({ items, candidates, excludedCandidateIds: ['kroger:best', 'kroger:next', 'kroger:third'] });
+    expect(r.swaps).toHaveLength(0);
+    expect(r.noSwapReason!.items[0]!.code).toBe('excluded');
+    expect(explainOutcome(r.noSwapReason!.items[0]!)).toMatch(/you rejected/);
+  });
+  it('excluding one item\'s swap frees budget for another item', () => {
+    const two = [item('bread', whiteBread()), item('yog', yogurt('y0', 300, { fiber_g: 0 }))];
+    const c = { bread: [wgBread('b1', 429, 12)], yog: [yogurt('y1', 400, { fiber_g: 4 })] };
+    expect(plan({ items: two, candidates: c, maxExtraSpendCents: 100 }).swaps[0]!.itemId).toBe('bread');
+    expect(plan({ items: two, candidates: c, maxExtraSpendCents: 100, excludedCandidateIds: ['kroger:b1'] }).swaps[0]!.itemId).toBe('yog');
+  });
+});

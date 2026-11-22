@@ -105,12 +105,15 @@ export interface PlanInput {
   /** ISO date used to flag outdated labels (keeps the engine deterministic) */
   asOf: string;
   maxSwaps?: number;
+  /** candidate product refs the shopper rejected; never suggested again (reason 'excluded') */
+  excludedCandidateIds?: string[];
 }
 
 // ---------- output ----------
 export type CandidateReason =
   | 'same_product'
   | 'not_same_kind'
+  | 'excluded'
   | 'price_unknown'
   | 'size_unknown'
   | 'basis_mismatch' // nutrition per 100 g vs per 100 mL
@@ -237,6 +240,7 @@ export type ItemOutcomeCode =
   | 'below_threshold'
   | 'secondary_worse'
   | 'over_budget'
+  | 'excluded'
   | 'not_selected';
 
 export interface ItemOutcome {
@@ -652,6 +656,7 @@ const REASON_PRIORITY: CandidateReason[] = [
   'basis_mismatch',
   'package_dimension_mismatch',
   'price_unknown',
+  'excluded',
 ];
 
 const DIMENSION: Record<'g' | 'ml' | 'each', string> = { g: 'weight', ml: 'volume', each: 'count' };
@@ -660,6 +665,7 @@ const DIMENSION: Record<'g' | 'ml' | 'each', string> = { g: 'weight', ml: 'volum
 export function planSwaps(input: PlanInput): PlanResult {
   const goal = GOALS[input.primaryGoal];
   const locked = new Set(input.lockedItemIds);
+  const excluded = new Set(input.excludedCandidateIds ?? []);
   const outcomes = new Map<string, ItemOutcome>();
   const allOptions: SwapOption[] = [];
   const optionsByItem = new Map<string, SwapOption[]>();
@@ -693,6 +699,10 @@ export function planSwaps(input: PlanInput): PlanResult {
     const opts: SwapOption[] = [];
     for (const cand of cands) {
       if (itemSample(cand)) containsSample = true;
+      if (excluded.has(cand.product.ref)) {
+        rejections.push({ candidateRef: cand.product.ref, description: cand.product.description, reason: 'excluded', detail: 'you rejected this swap' });
+        continue;
+      }
       const res = evaluate(item, orig, cand, input);
       if ('option' in res) opts.push(res.option);
       else rejections.push(res.rejection);
