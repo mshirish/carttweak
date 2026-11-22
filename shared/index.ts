@@ -3,3 +3,6 @@ export * from './units.ts';
 export * from './nutrition.ts';
 export * from './cost.ts';
 export * from './model.ts';
+export * from './swapGroups.ts';
+export * from './engine.ts';
+export * from './explain.ts';
