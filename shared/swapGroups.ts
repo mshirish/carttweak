@@ -165,7 +165,7 @@ export const SWAP_GROUPS: SwapGroup[] = [
 ];
 
 /** Categories too generic to prove two products are the same kind of food. */
-export const GENERIC_CATEGORIES = new Set(['natural & organic', 'international', 'kitchen', 'grocery']);
+export const GENERIC_CATEGORIES = new Set(['natural & organic', 'international', 'kitchen', 'grocery', 'food', 'home page', 'walmart']);
 
 export function swapGroupFor(p: Pick<Product, 'description' | 'categories'>): SwapGroup | null {
   for (const g of SWAP_GROUPS) {
@@ -193,4 +193,32 @@ export function sameKind(
   const gb = swapGroupFor(b);
   if (!gb || gb.id !== ga.id) return { ok: false, reason: 'different_swap_group' };
   return { ok: true, group: ga };
+}
+
+/**
+ * Walmart.com search terms per swap group (Walmart's catalogue search is
+ * online-wide, so terms name the healthier option and Great Value equivalents).
+ */
+export const WALMART_SEARCH_TERMS: Record<string, string[]> = {
+  frozen_meal: ['high protein frozen meal', 'healthy choice frozen meal', 'lean cuisine'],
+  plant_milk: ['unsweetened almond milk', 'unsweetened oat milk', 'unsweetened soy milk'],
+  milk: ['fat free milk gallon', 'ultra filtered milk', '1% milk gallon'],
+  yogurt: ['plain greek yogurt', 'nonfat greek yogurt', 'great value greek yogurt'],
+  cheese: ['reduced fat cheese slices', 'part skim mozzarella', 'swiss cheese slices'],
+  eggs: ['large eggs', 'egg whites'],
+  bread: ['whole wheat bread', 'whole grain bread', 'high fiber bread'],
+  cereal: ['high fiber cereal', 'bran flakes', 'shredded wheat'],
+  pasta_sauce: ['no sugar added pasta sauce', 'low sodium marinara', 'marinara sauce'],
+  pasta: ['whole wheat spaghetti', 'protein pasta', 'chickpea pasta'],
+  crackers: ['whole grain crackers', 'reduced fat crackers', 'low sodium crackers'],
+  chips: ['baked potato chips', 'lightly salted potato chips', 'unsalted chips'],
+  bars: ['high fiber granola bars', 'protein bars', 'low sugar granola bars'],
+  peanut_butter: ['natural peanut butter', 'no salt added peanut butter', 'no sugar added peanut butter'],
+  soup: ['low sodium soup', 'reduced sodium soup', 'heart healthy soup'],
+  soda: ['zero sugar soda', 'sparkling water', 'diet soda'],
+  juice: ['100% orange juice', 'no sugar added juice', 'vegetable juice'],
+};
+
+export function searchTermsFor(group: SwapGroup, chain: 'kroger' | 'walmart' | 'target'): string[] {
+  return chain === 'walmart' ? WALMART_SEARCH_TERMS[group.id] ?? group.searchTerms : group.searchTerms;
 }

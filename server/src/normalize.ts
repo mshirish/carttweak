@@ -13,7 +13,9 @@ import {
   productRef,
   reconcileSize,
   sizeFromParsed,
+  splitSize,
   stripLeadingZeros,
+  toGtin14,
   toPer100,
   type Branch,
   type NutritionRecord,
@@ -195,4 +197,66 @@ export function normalizeFdcFood(food: any, ref: string): NutritionRecord {
 export function applyPackageWeight(product: Product, packageWeight: string | null | undefined): Product {
   const r = reconcileSize(product.size, packageWeight);
   return { ...product, size: r.size, flags: [...product.flags.filter((f) => !['size_conflict', 'size_rejected', 'size_inferred'].includes(f.code)), ...r.flags] };
+}
+
+// ---------- Walmart ----------
+/** Walmart.com prices are online prices for a ZIP code, not a shelf price at a store. */
+export function walmartBranch(zip: string): Branch {
+  return { chain: 'walmart', locationId: `zip:${zip}`, name: `Walmart.com (ZIP ${zip})`, address: `Walmart.com prices for ZIP ${zip}` };
+}
+
+/** Walmart Affiliate API item -> Product + PriceObservation (source walmart_api). */
+export function normalizeWalmartItem(raw: any, zip: string, meta: { observedAt: string; sourceRef: string; stale: boolean }): KrogerNormalized {
+  const upc: string | null = raw?.upc ? String(raw.upc) : null;
+  const ref = productRef('walmart', String(raw?.itemId));
+  // size: the documented `size` field, else a size in the name ("... 20 oz")
+  let size = sizeFromParsed(parsePackageSize(raw?.size ?? null));
+  if (!size) size = splitSize(String(raw?.name ?? '')).size;
+  const product: Product = {
+    ref,
+    chain: 'walmart',
+    chainProductId: String(raw?.itemId),
+    gtin14: upc ? toGtin14(upc) : null,
+    brand: raw?.brandName ?? null,
+    description: String(raw?.name ?? ''),
+    size,
+    categories: String(raw?.categoryPath ?? '')
+      .split('/')
+      .map((s) => s.trim())
+      .filter(Boolean),
+    flags: [],
+    isSample: false,
+    imageUrl: typeof raw?.thumbnailImage === 'string' && /^https:\/\/([a-z0-9-]+\.)*walmartimages\.com\//i.test(raw.thumbnailImage) ? raw.thumbnailImage : null,
+  };
+  const regular = positiveCents(raw?.salePrice);
+  const price: PriceObservation | null =
+    regular == null
+      ? null
+      : {
+          productRef: ref,
+          branch: walmartBranch(zip),
+          regularCents: regular,
+          promoCents: null,
+          source: 'walmart_api',
+          observedAt: meta.observedAt,
+          sourceRef: meta.sourceRef,
+          isSample: false,
+          ...(meta.stale ? { stale: true } : {}),
+        };
+  return { product, price, upc, noBarcode: false, packageSizeRaw: raw?.size ?? null };
+}
+
+/** A price the shopper actually paid, read from their receipt (context only; never used for swap cost math). */
+export function receiptPrice(itemRef: string, paid: { cents: number; date: string | null; storeNumber: string | null; quantity: number }): PriceObservation {
+  const store = paid.storeNumber ? `Walmart #${paid.storeNumber.replace(/^0+/, '')}` : 'Walmart';
+  return {
+    productRef: itemRef,
+    branch: { chain: 'walmart', locationId: `store:${paid.storeNumber ?? 'unknown'}`, name: store, address: '' },
+    regularCents: paid.cents,
+    promoCents: null,
+    source: 'receipt',
+    observedAt: paid.date ?? '',
+    sourceRef: 'receipt (image not stored)',
+    isSample: false,
+  };
 }

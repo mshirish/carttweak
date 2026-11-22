@@ -101,6 +101,12 @@ export function search(cfg: WalmartConfig, query: string, opts: { numItems?: num
   return get<any>(cfg, 'walmart-search', `${WALMART_BASE}/search?${q}`, WALMART_TTL.search);
 }
 
+/** Live availability check: never cached, no stale fallback. */
+export function ping(cfg: WalmartConfig) {
+  const url = `${WALMART_BASE}/search?query=milk&numItems=1`;
+  return cachedJson<any>('walmart-ping', url, async () => ({ headers: walmartHeaders(cfg) }), 0, { service: 'walmart', retries: 0, live: true });
+}
+
 export function stores(cfg: WalmartConfig, zip: string) {
   return get<any>(cfg, 'walmart-stores', `${WALMART_BASE}/stores?zip=${encodeURIComponent(zip)}`, WALMART_TTL.stores);
 }

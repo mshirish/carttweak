@@ -20,3 +20,6 @@ Thumbs.db
 # API response cache (server)
 data/cache/
 data/receipts/private/
+
+# tesseract.js language data (downloaded at runtime)
+*.traineddata

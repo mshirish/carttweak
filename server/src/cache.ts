@@ -162,11 +162,12 @@ export async function cachedJson<T = any>(
   /** request init, or a lazy factory (e.g. needs an auth token) called only for a live call */
   init: RequestInit | (() => Promise<RequestInit>),
   ttlMs: number,
-  opts: { service: string; retries?: number } = { service: namespace },
+  opts: { service: string; retries?: number; live?: boolean } = { service: namespace },
 ): Promise<Fetched<T>> {
   const sourceUrl = publicUrl(url);
   const file = fileFor(namespace, sourceUrl);
-  const cached = readEntry(file);
+  // live: availability checks must never be answered from the cache
+  const cached = opts.live ? null : readEntry(file);
   if (cached && now() - Date.parse(cached.retrievedAt) < ttlMs) {
     cacheStats.hits++;
     return { status: cached.status, ok: true, body: cached.body as T, retrievedAt: cached.retrievedAt, fromCache: true, stale: false, sourceUrl };

@@ -46,6 +46,9 @@ export function createApp(svc: Service, config: { kroger: boolean; fdc: boolean 
   app.get('/api/config', async (c) => send(c, 200, await svc.config()));
   app.get('/api/demo-list', (c) => send(c, 200, svc.demoList()));
   app.post('/api/resolve', async (c) => send(c, 200, await svc.resolveList(await c.req.json())));
+  app.get('/api/walmart/status', async (c) => send(c, 200, await svc.walmartStatus()));
+  // receipt lines only (name, code, qty, price): the image never leaves the browser
+  app.post('/api/receipt/match', async (c) => send(c, 200, await svc.matchReceipt(await c.req.json())));
 
   app.get('/api/locations', async (c) => send(c, 200, await svc.stores(String(c.req.query('zip') ?? ''))));
 
