@@ -16,7 +16,7 @@ const LINES = [
   { text: 'Your cashier was SAMPLE', confidence: 90 },
   { text: 'SAMPLE OATS 3.48 F', confidence: 96 },
   { text: 'SAMPLE JAM 2.18 F', confidence: 55 },
-  { text: 'S4MPLE ??? 3.1O ~ ?', confidence: 30 },
+  { text: 'S4MPLE ??? 3.1O SAMPLE 9', confidence: 30 },
   { text: 'VISA ************4242', confidence: 92 },
   { text: 'SPRINGFIELD, OH 45000', confidence: 94 },
   { text: '02/03/26 10:11am', confidence: 90 },
@@ -29,7 +29,7 @@ describe('receipt state', () => {
     expect(state.rows.map((r) => [r.name, r.price, rowNeedsLook(r)])).toEqual([
       ['SAMPLE OATS', '3.48', false],
       ['SAMPLE JAM', '2.18', true],
-      ['S4MPLE ??? 3.1O ~ ?', '', true],
+      ['S4MPLE ??? 3.1O SAMPLE 9', '', true],
     ]);
     expect(state.dropped).toBe(2); // card line + cashier line
     expect(JSON.stringify(state)).not.toContain('4242');
@@ -44,7 +44,7 @@ describe('receipt state', () => {
       items: [
         { id: 'r01', name: 'SAMPLE OATS', code: null, quantity: 1, priceCents: 348, skipSearch: false },
         { id: 'r02', name: 'SAMPLE JAM', code: null, quantity: 1, priceCents: 218, skipSearch: false },
-        { id: 'u01', name: 'S4MPLE ??? 3.1O ~ ?', code: null, quantity: 1, priceCents: null },
+        { id: 'u01', name: 'S4MPLE ??? 3.1O SAMPLE 9', code: null, quantity: 1, priceCents: null },
       ],
     });
     expect(JSON.stringify(req)).not.toContain('cashier');
@@ -164,5 +164,18 @@ describe('P2: produce confirm + non-food', () => {
     expect(screen.queryByText('Not food?')).toBeNull();
     fireEvent.click(screen.getAllByRole('button', { name: 'Not food' })[1]!);
     expect(screen.getByText('Not food', { selector: '.chip' })).toBeTruthy();
+  });
+});
+
+describe('several receipts in one photo', () => {
+  it('asks which receipt to use and passes the chosen one on (never merged)', async () => {
+    const { parseKrogerReceipt } = await import('@carttweak/shared');
+    const { ReceiptChooser } = await import('./ReceiptScreens.tsx');
+    const both = parseKrogerReceipt('100 Sample Ave\nSAMPLE OATS    3.00 F\n**** BALANCE    3.00\n100 Sample Ave\nSAMPLE JAM    2.00 F\nSAMPLE TEA    1.00 F\n**** BALANCE    3.00');
+    let picked: any = null;
+    render(<ReceiptChooser receipts={both.receipts!} onPick={(r) => (picked = r)} />);
+    expect(screen.getByText('We found 2 receipts in this photo')).toBeTruthy();
+    fireEvent.click(screen.getByRole('button', { name: /Receipt 2/ }));
+    expect(picked.items.map((i: any) => i.name)).toEqual(['SAMPLE JAM', 'SAMPLE TEA']);
   });
 });

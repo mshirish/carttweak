@@ -40,7 +40,7 @@ YOU COULD HAVE SAVED $1.25 MORE
 describe('parseKrogerReceipt (synthetic SAMPLE)', () => {
   const r = parseKrogerReceipt(SAMPLE);
   it('header: store address, ZIP printed near payment, footer date/time; cashier dropped', () => {
-    expect(r.header).toEqual({ chain: 'kroger', store: '100 Sample Parkway', zip: '45000', date: '2026-02-03', time: '09:33am' });
+    expect(r.header).toEqual({ chain: 'kroger', store: '100 Sample Parkway', zip: '45000', city: 'Sampletown', state: 'OH', storeNumber: null, date: '2026-02-03', time: '09:33am' });
   });
   it('items: markers (PC, <+) stripped, tax flags F/T/B', () => {
     expect(r.items.map((i) => [i.name, i.priceCents, i.taxFlag])).toEqual([
@@ -109,7 +109,7 @@ describe('handheld photo noise (synthetic)', () => {
     ]);
     expect(r.items.map((i) => [i.name, i.priceCents])).toEqual([
       ['SAMPLE GRN BEANS', 129],
-      ['= SAMPLE JAM', 399],
+      ['SAMPLE JAM', 399],
       ['SAMPLE APPLES', 424],
     ]);
     expect(r.items[1]!.issues.join()).toMatch(/decimal point/);

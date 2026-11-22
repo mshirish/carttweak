@@ -112,13 +112,17 @@ export function mergeMatchedRows(rows: MatchRow[]): Array<MatchRow & { mergedIds
 }
 
 export function receiptFromOcr(lines: OcrLine[]): { state: ReceiptState; parsed: ParsedReceipt } {
-  const parsed = parseReceipt(lines);
+  return receiptFromParsed(parseReceipt(lines));
+}
+
+/** Editable check-screen state from one parsed receipt (pick one first when a photo held several). */
+export function receiptFromParsed(parsed: ParsedReceipt): { state: ReceiptState; parsed: ParsedReceipt } {
   const rows: ReceiptRow[] = parsed.items.map((i) => ({
     id: i.id,
     name: i.name,
     code: i.code ?? '',
     quantity: String(i.quantity),
-    price: dollarsText(i.priceCents == null ? null : i.priceCents - i.savingsCents),
+    price: dollarsText(i.paidCents),
     confidence: i.confidence,
     needsLook: i.needsLook,
     reviewed: false,

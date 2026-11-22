@@ -81,6 +81,8 @@ export function skewAngle(lines: OcrLineBox[]): number {
 }
 
 interface Placed extends WordBox {
+  /** the word box as the OCR engine reported it (page coordinates) */
+  orig: WordBox;
   cx: number;
   cy: number;
   h: number;
@@ -96,7 +98,7 @@ function place(words: WordBox[], angleDeg: number): Placed[] {
     const cx = x * cos - y * sin;
     const cy = x * sin + y * cos;
     const hw = (w.x1 - w.x0) / 2;
-    return { ...w, cx, cy, h: Math.max(1, w.y1 - w.y0), x0: cx - hw, x1: cx + hw };
+    return { ...w, orig: w, cx, cy, h: Math.max(1, w.y1 - w.y0), x0: cx - hw, x1: cx + hw };
   });
 }
 
@@ -116,7 +118,47 @@ function splitColumns(ws: Placed[], minGap: number): Placed[][] {
   return groups.filter((g) => g.length);
 }
 
-function rowsOf(ws: Placed[]): OcrLine[] {
+const quantile = (xs: number[], q: number) => {
+  const s = [...xs].sort((a, b) => a - b);
+  return s[Math.min(s.length - 1, Math.max(0, Math.round((s.length - 1) * q)))]!;
+};
+
+/**
+ * Keep the receipt's own text band. A hand-held photo puts background words
+ * (labels, packaging) on the same rows as the receipt. The receipt's left edge
+ * is where its confident words start; its right edge is just past the price
+ * column (room for a tax flag).
+ */
+export function cropToTextBand<T extends { x0: number; x1: number; confidence: number; text: string }>(ws: T[]): T[] {
+  const good = ws.filter((w) => w.confidence >= 75 && /[A-Za-z0-9]{3}/.test(w.text));
+  const money = ws.filter((w) => /\d[.,]\d{2}/.test(w.text) && w.confidence >= 60);
+  if (good.length < 12 || money.length < 3) return ws;
+  const charW = median(good.map((w) => (w.x1 - w.x0) / Math.max(1, w.text.length))) || 10;
+  const left = quantile(good.map((w) => w.x0), 0.03) - charW * 3;
+  const right = Math.max(quantile(money.map((w) => w.x1), 0.97), quantile(good.map((w) => w.x1), 0.97)) + charW * 4;
+  return ws.filter((w) => (w.x0 + w.x1) / 2 >= left && (w.x0 + w.x1) / 2 <= right);
+}
+
+/**
+ * Where the receipt's text sits on the page (canvas pixels), when it fills
+ * well under the page width: worth cropping and reading again at a larger scale.
+ */
+export function textBounds(lines: OcrLineBox[], pageW: number, pageH: number): { x0: number; y0: number; x1: number; y1: number } | null {
+  const words = lines.flatMap((l) => l.words).filter((w) => w.text.trim());
+  const band = cropToTextBand(words);
+  const good = band.filter((w) => w.confidence >= 60 && /[A-Za-z0-9]{2}/.test(w.text));
+  if (good.length < 12) return null;
+  const h = median(good.map((w) => w.y1 - w.y0)) || 10;
+  const x0 = Math.max(0, quantile(good.map((w) => w.x0), 0.02) - h * 2);
+  const x1 = Math.min(pageW, quantile(good.map((w) => w.x1), 0.98) + h * 3);
+  const y0 = Math.max(0, Math.min(...good.map((w) => w.y0)) - h * 2);
+  const y1 = Math.min(pageH, Math.max(...good.map((w) => w.y1)) + h * 2);
+  if (x1 - x0 > pageW * 0.6) return null;
+  return { x0, y0, x1, y1 };
+}
+
+function rowsOf(all: Placed[]): OcrLine[] {
+  const ws = cropToTextBand(all);
   const h = median(ws.map((w) => w.h)) || 10;
   const sorted = [...ws].sort((a, b) => a.cy - b.cy);
   const rows: Array<{ cy: number; words: Placed[] }> = [];
@@ -145,10 +187,10 @@ function rowsOf(ws: Placed[]): OcrLine[] {
  * Rows from word boxes. Returns one block of rows per side-by-side column
  * (usually one), plus the skew angle that was corrected.
  */
-export function rowsFromWords(lines: OcrLineBox[]): { blocks: OcrLine[][]; angle: number } {
+export function rowsFromWords(lines: OcrLineBox[]): { blocks: OcrLine[][]; angle: number; bounds: Array<{ x0: number; y0: number; x1: number; y1: number }> } {
   const angle = skewAngle(lines);
   const words = lines.flatMap((l) => l.words).filter((w) => w.text.trim());
-  if (!words.length) return { blocks: [], angle };
+  if (!words.length) return { blocks: [], angle, bounds: [] };
   const placed = place(words, angle);
   const h = median(placed.map((w) => w.h)) || 10;
   const hasMoney = (g: Placed[]) => g.some((w) => /\d[.,]\d{2}/.test(w.text));
@@ -162,5 +204,10 @@ export function rowsFromWords(lines: OcrLineBox[]): { blocks: OcrLine[][]; angle
   }
   // background junk carries no prices
   const cols = merged.filter(hasMoney);
-  return { blocks: (cols.length ? cols : [placed]).map(rowsOf), angle };
+  const use = cols.length ? cols : [placed];
+  const bounds = use.map((g) => {
+    const o = g.map((w) => w.orig);
+    return { x0: Math.max(0, Math.min(...o.map((w) => w.x0)) - h * 2), y0: Math.max(0, Math.min(...o.map((w) => w.y0)) - h * 2), x1: Math.max(...o.map((w) => w.x1)) + h * 3, y1: Math.max(...o.map((w) => w.y1)) + h * 2 };
+  });
+  return { blocks: use.map(rowsOf), angle, bounds };
 }

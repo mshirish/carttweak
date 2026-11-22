@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { dollars, shortName } from '@carttweak/shared';
+import { dollars, shortName, type ParsedReceipt } from '@carttweak/shared';
 import { Heart } from '../components/Icons.tsx';
-import { autoRotation, DEFAULT_PREP, preprocess, recognize, type Prep } from '../ocr.ts';
-import { priceCents, receiptFromOcr, rowNeedsLook, type MatchCard, type MatchRow, type ReceiptRow, type ReceiptState } from '../receipt.ts';
+import { DEFAULT_PREP, preprocess, type Prep } from '../ocr.ts';
+import { readReceiptImage } from '../receiptPipeline.ts';
+import { priceCents, receiptFromParsed, rowNeedsLook, type MatchCard, type MatchRow, type ReceiptRow, type ReceiptState } from '../receipt.ts';
 import { go } from '../router.ts';
 import type { Branch } from '../types.ts';
 
@@ -15,6 +16,7 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
   const [busy, setBusy] = useState(false);
   const [progress, setProgress] = useState<{ status: string; progress: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [choices, setChoices] = useState<ParsedReceipt[] | null>(null);
   const canvas = useRef<HTMLCanvasElement>(null);
   const url = useRef<string | null>(null);
 
@@ -42,29 +44,29 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
     i.src = url.current;
   }
 
+  function finish(parsed: ParsedReceipt) {
+    const { state } = receiptFromParsed(parsed);
+    if (!state.rows.length) {
+      setError('No item lines were found. Try rotating the photo, cropping to the items, or turning on black & white.');
+      return;
+    }
+    // drop the photo: it is never stored or sent
+    if (url.current) URL.revokeObjectURL(url.current);
+    url.current = null;
+    onRead(state);
+  }
+
   async function read() {
     if (!img || !canvas.current) return;
     setBusy(true);
     setError(null);
+    setChoices(null);
     try {
-      let p = prep;
-      if (!rotatedByHand) {
-        const r = await autoRotation(img, prep, setProgress).catch(() => prep.rotation);
-        if (r !== prep.rotation) {
-          p = { ...prep, rotation: r };
-          setPrep(p);
-        }
-      }
-      const lines = await recognize(preprocess(img, p, document.createElement('canvas')), setProgress);
-      const { state } = receiptFromOcr(lines);
-      if (!state.rows.length) {
-        setError('No item lines were found. Try rotating the photo, cropping to the items, or turning on black & white.');
-        return;
-      }
-      // drop the photo: it is never stored or sent
-      if (url.current) URL.revokeObjectURL(url.current);
-      url.current = null;
-      onRead(state);
+      const res = await readReceiptImage(img, { prep, autoRotate: !rotatedByHand, onProgress: setProgress });
+      if (res.rotation !== prep.rotation) setPrep((x) => ({ ...x, rotation: res.rotation }));
+      // several receipts in one photo: the shopper picks one; they are never merged
+      if (res.parsed.receipts && res.parsed.receipts.length > 1) setChoices(res.parsed.receipts);
+      else finish(res.parsed);
     } catch {
       setError('Reading the receipt failed. Check your connection (the reader downloads once) and try again.');
     } finally {
@@ -115,6 +117,7 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
                 ))}
               </details>
             </div>
+            {choices ? <ReceiptChooser receipts={choices} onPick={(r) => finish(r)} /> : null}
             {busy ? (
               <div className="progress" role="status" aria-live="polite">
                 <strong>{progress?.status ? progress.status.replace(/^./, (c) => c.toUpperCase()) : 'Starting the reader'}…</strong>
@@ -139,6 +142,32 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
         </button>
       </p>
     </section>
+  );
+}
+
+/** "We found 2 receipts in this photo. Which one?" Never merges them. */
+export function ReceiptChooser({ receipts, onPick }: { receipts: ParsedReceipt[]; onPick: (r: ParsedReceipt) => void }) {
+  return (
+    <div className="panel" data-testid="receipt-chooser" style={{ marginTop: 12 }}>
+      <h2 style={{ marginTop: 0 }}>We found {receipts.length} receipts in this photo</h2>
+      <p className="muted">Which one do you want to rate? (Or crop the photo to one receipt.)</p>
+      <ul className="store-list">
+        {receipts.map((r, i) => (
+          <li key={i}>
+            <button type="button" className="choice" onClick={() => onPick(r)}>
+              <strong>Receipt {i + 1}</strong>
+              <span className="small muted">
+                {' '}
+                · {r.items.length} item{r.items.length === 1 ? '' : 's'}
+                {r.totalCents != null ? ` · ${dollars(r.totalCents)}` : ''}
+                {r.header.date ? ` · ${r.header.date}` : ''}
+                {r.header.time ? ` ${r.header.time}` : ''}
+              </span>
+            </button>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
