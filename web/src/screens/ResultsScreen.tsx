@@ -19,6 +19,7 @@ export function projectedLine(haul: HaulItem[], resp: PlanResponse, accepted: Re
   return { before, after, text: `Haul score: ${before} → ${after} if you make ${which} (projected)` };
 }
 import { SwapCard } from '../components/SwapCard.tsx';
+import { AcceptAll } from '../components/AcceptAll.tsx';
 import type { PlanProgress, PlanResponse, SwapOption } from '../types.ts';
 
 const PHASES: Array<{ id: string; label: string }> = [
@@ -120,6 +121,7 @@ export function ResultsScreen({
   budgetCents,
   now,
   onAccept,
+  onSetAccepted,
   onReject,
   onSave,
   onRetry,
@@ -136,6 +138,7 @@ export function ResultsScreen({
   budgetCents: number;
   now: string;
   onAccept: (s: SwapOption) => void;
+  onSetAccepted?: (a: Record<string, string>) => void;
   onReject: (s: SwapOption) => void;
   onSave: () => void;
   onRetry: () => void;
@@ -188,6 +191,7 @@ export function ResultsScreen({
         {resp.containsSample ? ' ' : ''}
         {resp.containsSample ? <span className="badge sample">Sample data</span> : null}
       </p>
+      {swaps.length && onSetAccepted ? <AcceptAll swaps={swaps} accepted={accepted} onSet={onSetAccepted} /> : null}
       {swaps.length ? (
         swaps.map((s) => (
           <SwapCard

@@ -587,6 +587,7 @@ export default function App() {
           budgetCents={budgetCents}
           now={now}
           onAccept={toggleAccept}
+          onSetAccepted={setAccepted}
           onReject={reject}
           onSave={save}
           onRetry={() => void plan()}
