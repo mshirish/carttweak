@@ -288,16 +288,21 @@ export function createService(cfg: ServiceConfig) {
     const locks: string[] = Array.isArray(body?.locks) ? body.locks.map(String) : [];
     const excluded: string[] = Array.isArray(body?.excludedCandidateIds) ? body.excludedCandidateIds.map(String) : [];
     if (excluded.length > 200) throw new ServiceError(400, 'bad_excluded', 'at most 200 excludedCandidateIds');
+    const pinnedRaw: any[] = Array.isArray(body?.pinnedSwaps) ? body.pinnedSwaps : [];
+    if (pinnedRaw.length > 2 || pinnedRaw.some((p) => typeof p?.itemId !== 'string' || typeof p?.candidateRef !== 'string')) {
+      throw new ServiceError(400, 'bad_pinned', 'pinnedSwaps must be up to 2 { itemId, candidateRef } objects');
+    }
+    const pinnedSwaps = pinnedRaw.map((p) => ({ itemId: String(p.itemId), candidateRef: String(p.candidateRef) }));
     const includeSample = body?.includeSample === true;
     const ids = items.map((it, i) => String(it.id ?? `item${i + 1}`));
     if (new Set(ids).size !== ids.length) throw new ServiceError(400, 'bad_items', 'item ids must be unique');
     if (!/^[A-Za-z0-9]{8}$/.test(locationId)) throw new ServiceError(400, 'bad_location', 'locationId must be 8 characters');
-    return { items, locationId, primary, secondary, budget, locks, excluded, includeSample, ids };
+    return { items, locationId, primary, secondary, budget, locks, excluded, pinnedSwaps, includeSample, ids };
   }
 
   async function plan(body: any, onProgress: ProgressFn = () => {}) {
     const t0 = Date.now();
-    const { items, locationId, primary, secondary, budget, locks, excluded, includeSample, ids } = validatePlan(body);
+    const { items, locationId, primary, secondary, budget, locks, excluded, pinnedSwaps, includeSample, ids } = validatePlan(body);
     const sample = includeSample ? loadSample() : [];
     const before = snapshotStats();
     onProgress({ phase: 'store', done: 0, total: 1, message: 'Checking your store…' });
@@ -408,6 +413,7 @@ export function createService(cfg: ServiceConfig) {
       maxExtraSpendCents: budget,
       asOf: now().toISOString().slice(0, 10),
       excludedCandidateIds: excluded,
+      pinnedSwaps,
     });
     const after = snapshotStats();
     const t3 = Date.now();

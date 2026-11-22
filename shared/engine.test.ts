@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { chooseBestSet, planSwaps, sameLine, THRESHOLDS, type PlanInput, type ResolvedItem, type TripItem } from './engine.ts';
 import { explainOutcome, explainPlan, explainSwap } from './explain.ts';
+import { budgetSentence } from './display.ts';
 import { emptyPer100, per100QualityIssues, reconcileSize, sizeFromParsed, type NutritionRecord, type Per100Values, type Product } from './model.ts';
 import { parsePackageSize } from './units.ts';
 
@@ -468,5 +469,65 @@ describe('A5: excludedCandidateIds', () => {
     const c = { bread: [wgBread('b1', 429, 12)], yog: [yogurt('y1', 400, { fiber_g: 4 })] };
     expect(plan({ items: two, candidates: c, maxExtraSpendCents: 100 }).swaps[0]!.itemId).toBe('bread');
     expect(plan({ items: two, candidates: c, maxExtraSpendCents: 100, excludedCandidateIds: ['kroger:b1'] }).swaps[0]!.itemId).toBe('yog');
+  });
+});
+
+describe('M3 A1: accepted swaps are pinned', () => {
+  // three items, each with one candidate; budget $2.00
+  const items = [item('bread', whiteBread()), item('yog', yogurt('y0', 300, { fiber_g: 0 })), item('b2', whiteBread('w2'))];
+  const candidates = {
+    bread: [wgBread('b1', 429, 12)], // +$1.00, biggest impact
+    yog: [yogurt('y1', 380, { fiber_g: 4 })], // +$0.80
+    b2: [wgBread('b3', 329, 6)], // $0.00, small impact
+  };
+  it('rejecting the open swap keeps the accepted one and re-plans only the open slot with the remaining budget', () => {
+    const first = plan({ items, candidates, maxExtraSpendCents: 200 });
+    expect(first.swaps.map((s) => s.itemId).sort()).toEqual(['bread', 'yog']);
+    // accept bread (+$1.00), reject the yogurt swap
+    const again = plan({ items, candidates, maxExtraSpendCents: 200, pinnedSwaps: [{ itemId: 'bread', candidateRef: 'kroger:b1' }], excludedCandidateIds: ['kroger:y1'] });
+    expect(again.swaps.map((s) => [s.itemId, !!s.pinned])).toEqual([['bread', true], ['b2', false]]);
+    expect(again.budget).toEqual({ maxExtraSpendCents: 200, pinnedCents: 100, remainingCents: 100, openSlots: 1 });
+  });
+  it('the open slot only gets what is left of the budget', () => {
+    // accept bread (+$1.00) with a $1.50 budget: the +$0.80 yogurt no longer fits; the $0 bread does
+    const r = plan({ items, candidates, maxExtraSpendCents: 150, pinnedSwaps: [{ itemId: 'bread', candidateRef: 'kroger:b1' }] });
+    expect(r.swaps.map((s) => s.itemId)).toEqual(['bread', 'b2']);
+    expect(r.itemOutcomes.find((o) => o.itemId === 'yog')!.code).toBe('over_budget');
+  });
+  it('a pinned swap wins even when a re-plan would pick something else', () => {
+    const r = plan({ items, candidates, maxExtraSpendCents: 200, pinnedSwaps: [{ itemId: 'b2', candidateRef: 'kroger:b3' }] });
+    expect(r.swaps[0]).toMatchObject({ itemId: 'b2', pinned: true });
+    expect(r.swaps).toHaveLength(2);
+  });
+  it('two pinned swaps leave no open slot', () => {
+    const r = plan({ items, candidates, pinnedSwaps: [{ itemId: 'bread', candidateRef: 'kroger:b1' }, { itemId: 'b2', candidateRef: 'kroger:b3' }] });
+    expect(r.swaps.map((s) => s.itemId)).toEqual(['bread', 'b2']);
+    expect(r.budget.openSlots).toBe(0);
+  });
+  it('a pinned swap that no longer qualifies is reported, not silently kept', () => {
+    const r = plan({ items, candidates, pinnedSwaps: [{ itemId: 'bread', candidateRef: 'kroger:gone' }] });
+    expect(r.pinnedDropped).toEqual([{ itemId: 'bread', candidateRef: 'kroger:gone', reason: 'no longer available for this item' }]);
+  });
+});
+
+describe('M3 A2: the budget covers the whole trip', () => {
+  // Coke-like saver (-$2.01) and a bread swap (+$0.50) with a $0 budget
+  const soda = (id: string, desc: string, cents: number, sugar: number, brand: string) =>
+    resolved(prod(id, desc, '12 pk / 12 fl oz', { categories: ['Beverages'], brand }), cents, { addedSugars_g: sugar }, { nutr: { basis: 'ml' } });
+  const items = [item('coke', soda('c', 'Cola Soda Cans', 1199, 11, 'Cola')), item('bread', resolved(prod('w', 'Classic White Bread', '20 oz'), 329, { addedSugars_g: 8.8 }))];
+  const candidates = {
+    coke: [soda('bubly', 'Bubly Lime Sparkling Water Cans', 998, 0, 'Bubly')],
+    bread: [resolved(prod('sl', 'White Made With Whole Grain Bread', '20 oz'), 379, { addedSugars_g: 3.5 })],
+  };
+  it('$0: a saving on one swap can pay for a cost on another', () => {
+    const r = plan({ items, candidates, primaryGoal: 'less_added_sugar', maxExtraSpendCents: 0 });
+    expect(r.swaps.map((s) => s.cost.regular.differenceCents).sort((a, b) => a - b)).toEqual([-201, 50]);
+    expect(r.combined!.differenceCents).toBe(-151);
+    expect(budgetSentence(r)).toBe('Your $0.00 budget covers the whole trip: the Bubly swap saves $2.01, which pays for the $0.50 bread swap.');
+  });
+  it('without the saving, the +$0.50 swap does not fit a $0 budget', () => {
+    const r = plan({ items: [items[1]!], candidates: { bread: candidates.bread }, primaryGoal: 'less_added_sugar', maxExtraSpendCents: 0 });
+    expect(r.swaps).toHaveLength(0);
+    expect(budgetSentence(r)).toBeNull();
   });
 });

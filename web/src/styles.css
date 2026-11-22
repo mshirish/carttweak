@@ -210,6 +210,7 @@ details.sources ul { margin: 6px 0 0; padding-left: 18px; }
 }
 .total-bar .t-main { font-size: 18px; font-weight: 900; }
 .total-bar .t-sub { font-size: 14px; opacity: 0.85; }
+.total-bar .t-sentence { font-size: 15px; margin: 2px 0; max-width: 70ch; }
 .total-bar.over { background: var(--bad-ink); }
 .total-bar .btn { margin-left: auto; border-color: var(--paper); }
 

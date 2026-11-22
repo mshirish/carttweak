@@ -1,7 +1,7 @@
 /**
  * Display helpers shared by the server and the web UI. Pure.
  */
-import type { ItemOutcome, PlanResult } from './engine.ts';
+import type { ItemOutcome, PlanResult, SwapOption } from './engine.ts';
 import type { Size } from './model.ts';
 import { dollars, shortName } from './explain.ts';
 
@@ -104,6 +104,39 @@ const GROUP_LABEL: Record<string, string> = {
   cheese: 'cheese',
   eggs: 'egg',
 };
+
+/** Short name for a swap in a sentence: the replacement's brand, else its swap group. */
+function swapName(s: SwapOption, useGroup: boolean): string {
+  if (!useGroup && s.replacement.brand) return s.replacement.brand;
+  return GROUP_LABEL[s.group] ?? s.group.replace(/_/g, ' ');
+}
+
+/**
+ * Plain-English sentence about how the trip budget is used. The budget
+ * applies to the whole trip, so a saving on one swap can pay for another.
+ *   "Your $0.00 budget covers the whole trip: the Bubly swap saves $2.01, which pays for the $0.50 bread swap."
+ */
+export function budgetSentence(r: PlanResult): string | null {
+  if (!r.swaps.length) return null;
+  const budget = dollars(r.maxExtraSpendCents);
+  const total = r.swaps.reduce((s, o) => s + o.cost.regular.differenceCents, 0);
+  const savers = r.swaps.filter((s) => s.cost.regular.differenceCents < 0);
+  const costs = r.swaps.filter((s) => s.cost.regular.differenceCents > 0);
+  if (savers.length && costs.length) {
+    const sv = savers[0]!;
+    const c = costs[0]!;
+    const saved = -sv.cost.regular.differenceCents;
+    const cost = c.cost.regular.differenceCents;
+    const head = `Your ${budget} budget covers the whole trip: the ${swapName(sv, false)} swap saves ${dollars(saved)}`;
+    if (saved >= cost) return `${head}, which pays for the ${dollars(cost)} ${swapName(c, true)} swap.`;
+    return `${head}, which covers part of the ${dollars(cost)} ${swapName(c, true)} swap; together they add ${dollars(total)}, within your budget.`;
+  }
+  if (costs.length) {
+    return `These swaps add ${dollars(total)} to the trip, within your ${budget} budget for the whole trip.`;
+  }
+  if (savers.length) return `These swaps save ${dollars(-total)} on the trip.`;
+  return 'These swaps cost the same as what you buy now.';
+}
 
 /** "3 hours ago" style, relative to `now` (both ISO). */
 export function relativeTime(iso: string | null | undefined, now: string): string {

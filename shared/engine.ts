@@ -110,6 +110,12 @@ export interface PlanInput {
   maxSwaps?: number;
   /** candidate product refs the shopper rejected; never suggested again (reason 'excluded') */
   excludedCandidateIds?: string[];
+  /**
+   * Swaps the shopper accepted. They stay in the plan (if still eligible);
+   * only the open slots are re-planned, with remaining budget =
+   * budget - pinned swaps' combined regular-price difference.
+   */
+  pinnedSwaps?: Array<{ itemId: string; candidateRef: string }>;
 }
 
 // ---------- output ----------
@@ -232,6 +238,8 @@ export interface SwapOption {
   oldestLabelDate: string | null;
   /** replacement's label date (tie-break: newer wins) */
   replacementLabelDate: string | null;
+  /** accepted by the shopper and kept fixed while re-planning */
+  pinned?: boolean;
 }
 
 export type ItemOutcomeCode =
@@ -266,7 +274,19 @@ export interface ItemOutcome {
   eligibleCount?: number;
 }
 
+export interface BudgetUse {
+  maxExtraSpendCents: number;
+  /** combined regular difference of pinned (accepted) swaps */
+  pinnedCents: number;
+  /** budget left for the open slots */
+  remainingCents: number;
+  openSlots: number;
+}
+
 export interface PlanResult {
+  budget: BudgetUse;
+  /** pinned swaps that no longer qualify (e.g. price or label changed) */
+  pinnedDropped: Array<{ itemId: string; candidateRef: string; reason: string }>;
   primaryGoal: Goal;
   secondaryGoal: Goal | null;
   maxExtraSpendCents: number;
@@ -631,6 +651,7 @@ function makeSet(options: SwapOption[]): SetChoice {
 
 /** Exhaustive: every single option and every pair on different items. */
 export function chooseBestSet(options: SwapOption[], budgetCents: number, maxSwaps = MAX_SWAPS): SwapOption[] {
+  if (maxSwaps <= 0) return [];
   let best: SetChoice | null = null;
   const consider = (opts: SwapOption[]) => {
     const s = makeSet(opts);
@@ -752,7 +773,34 @@ export function planSwaps(input: PlanInput): PlanResult {
     outcomes.set(item.id, { ...common, code: 'not_selected', detail: 'qualifying swaps exist' });
   }
 
-  const swaps = chooseBestSet(allOptions, input.maxExtraSpendCents, input.maxSwaps ?? MAX_SWAPS);
+  // pinned (accepted) swaps stay; only the open slots are re-planned with the remaining budget
+  const maxSwaps = input.maxSwaps ?? MAX_SWAPS;
+  const pinned: SwapOption[] = [];
+  const pinnedDropped: PlanResult['pinnedDropped'] = [];
+  for (const p of input.pinnedSwaps ?? []) {
+    if (pinned.length >= maxSwaps || pinned.some((x) => x.itemId === p.itemId)) {
+      pinnedDropped.push({ ...p, reason: 'only one pinned swap per item and at most the maximum number of swaps' });
+      continue;
+    }
+    const opt = allOptions.find((o) => o.itemId === p.itemId && o.replacement.ref === p.candidateRef);
+    if (opt) pinned.push({ ...opt, pinned: true });
+    else {
+      const rej = outcomes.get(p.itemId)?.rejections?.find((r) => r.candidateRef === p.candidateRef);
+      pinnedDropped.push({ ...p, reason: rej ? rej.detail : 'no longer available for this item' });
+    }
+  }
+  const pinnedItems = new Set(pinned.map((x) => x.itemId));
+  const pinnedCents = pinned.reduce((s, o) => s + o.cost.regular.differenceCents, 0);
+  const remainingCents = input.maxExtraSpendCents - pinnedCents;
+  const openSlots = maxSwaps - pinned.length;
+  const swaps = [
+    ...pinned,
+    ...chooseBestSet(
+      allOptions.filter((o) => !pinnedItems.has(o.itemId)),
+      remainingCents,
+      openSlots,
+    ),
+  ];
   const chosenItems = new Set(swaps.map((s) => s.itemId));
   for (const [itemId, opts] of optionsByItem) {
     if (!opts.length) continue;
@@ -769,11 +817,11 @@ export function planSwaps(input: PlanInput): PlanResult {
       tripImpact: cheapest.goal.tripImpact,
       group: cheapest.group,
     };
-    if (cheapest.cost.regular.differenceCents > input.maxExtraSpendCents) {
+    if (cheapest.cost.regular.differenceCents > remainingCents) {
       outcomes.set(itemId, {
         ...o,
         code: 'over_budget',
-        detail: `cheapest qualifying swap costs ${cq.differenceCents} cents more; budget ${input.maxExtraSpendCents}`,
+        detail: `cheapest qualifying swap costs ${cq.differenceCents} cents more; budget left ${remainingCents} of ${input.maxExtraSpendCents}`,
         cheapestQualifying: cq,
       });
     } else {
@@ -792,6 +840,8 @@ export function planSwaps(input: PlanInput): PlanResult {
     primaryGoal: input.primaryGoal,
     secondaryGoal: input.secondaryGoal ?? null,
     maxExtraSpendCents: input.maxExtraSpendCents,
+    budget: { maxExtraSpendCents: input.maxExtraSpendCents, pinnedCents, remainingCents, openSlots },
+    pinnedDropped,
     swaps,
     combined: swaps.length
       ? {

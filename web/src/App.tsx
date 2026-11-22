@@ -151,7 +151,7 @@ export default function App() {
     }
   }
 
-  async function plan(excludedIds = excluded) {
+  async function plan(excludedIds = excluded, pinned: Array<{ itemId: string; candidateRef: string }> = []) {
     if (!branch || !goals.primary) return;
     const seq = ++planSeq.current;
     setPlanning(true);
@@ -167,6 +167,7 @@ export default function App() {
       goals: { primary: goals.primary, secondary: goals.secondary },
       budget: { maxExtraSpendCents: budgetCents },
       excludedCandidateIds: excludedIds,
+      pinnedSwaps: pinned,
     };
     try {
       const r = await runPlan(body, (p) => seq === planSeq.current && setProgress(p));
@@ -188,7 +189,11 @@ export default function App() {
       const { [s.itemId]: _drop, ...rest } = a;
       return rest;
     });
-    void plan(next);
+    // accepted swaps stay fixed; only the rejected slot is re-planned with what's left of the budget
+    const pins = Object.entries(accepted)
+      .filter(([itemId]) => itemId !== s.itemId)
+      .map(([itemId, candidateRef]) => ({ itemId, candidateRef }));
+    void plan(next, pins);
   }
 
   function toggleAccept(s: SwapOption) {

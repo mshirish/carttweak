@@ -1,4 +1,4 @@
-import { dollars, explainOutcome, GOALS, groupOutcomes, NUTRIENT_UNIT, suggestChange } from '@carttweak/shared';
+import { budgetSentence, dollars, explainOutcome, GOALS, groupOutcomes, NUTRIENT_UNIT, suggestChange } from '@carttweak/shared';
 import { SwapCard } from '../components/SwapCard.tsx';
 import type { PlanProgress, PlanResponse, SwapOption } from '../types.ts';
 
@@ -74,6 +74,11 @@ export function TripTotal({ resp, budgetCents, acceptedCount, onSave }: { resp: 
         <div className="t-main num">
           Trip: {diff === 0 ? 'same price' : diff > 0 ? `${dollars(diff)} more` : `saves ${dollars(-diff)}`} · budget {dollars(budgetCents)}
         </div>
+        {budgetSentence(resp.plan) ? (
+          <div className="t-sentence" data-testid="budget-sentence">
+            {budgetSentence(resp.plan)}
+          </div>
+        ) : null}
         <div className="t-sub num">
           {c && c.tripImpact > 0 ? `${goal.better === 'higher' ? '+' : '−'}${c.tripImpact.toFixed(1)} ${NUTRIENT_UNIT[GOALS[resp.plan.primaryGoal].nutrient]} ${goal.label} across what you buy` : ''}
           {c && c.tripImpactUnknown ? `${c.tripImpact > 0 ? ' · ' : ''}${c.tripImpactUnknown} swap${c.tripImpactUnknown === 1 ? '' : 's'} per-100 only` : ''}
