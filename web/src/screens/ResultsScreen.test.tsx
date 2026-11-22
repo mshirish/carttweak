@@ -42,3 +42,20 @@ describe('TripTotal', () => {
     expect(screen.getByTestId('trip-total').textContent).toMatch(/Trip: saves \$1\.51 · budget \$0\.00/);
   });
 });
+
+describe('P3 projected haul score', () => {
+  it('replacement score + spend adjusted by the price difference; accepted swaps only once any are accepted', async () => {
+    const { projectedLine } = await import('./ResultsScreen.tsx');
+    const res = (score100: number) => ({ scored: true as const, category: 'food' as const, points: 0, grade: 'C' as const, score100, components: { energy: 0, sugars: 0, satFat: 0, sodium: 0, fvl: 0, fiber: 0, protein: 0, proteinCounted: true }, energyKj: 0 });
+    const haul = [
+      { id: 'a', name: 'A', spendCents: 300, result: res(40) },
+      { id: 'b', name: 'B', spendCents: 300, result: res(60) },
+    ];
+    const swap = (itemId: string, ref: string, diff: number) => ({ itemId, replacement: { ref }, cost: { regular: { differenceCents: diff } } });
+    const resp = { plan: { swaps: [swap('a', 'k:x', 100), swap('b', 'k:y', 0)] }, replacementScores: { 'k:x': res(80), 'k:y': res(90) } } as any;
+    // both suggested swaps: (80*400 + 90*300) / 700 = 84.3
+    expect(projectedLine(haul, resp, {})!.text).toBe('Haul score: 50 → 84 if you make these swaps (projected)');
+    // only the accepted one: (80*400 + 60*300) / 700 = 71.4
+    expect(projectedLine(haul, resp, { a: 'k:x' })!.text).toBe('Haul score: 50 → 71 if you make the swap you accepted (projected)');
+  });
+});

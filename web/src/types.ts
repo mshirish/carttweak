@@ -67,6 +67,8 @@ export interface PlanResponse {
   chain: 'kroger' | 'walmart';
   /** what the shopper paid, from their receipt (context only; never used for cost math) */
   paid?: Record<string, import('@carttweak/shared').PriceObservation>;
+  /** P3: Nutri-Score of each suggested replacement (by product ref) */
+  replacementScores?: Record<string, import('@carttweak/shared').NutriResult | import('@carttweak/shared').NotScored>;
 }
 
 export interface Store extends Branch {

@@ -1,4 +1,23 @@
-import { budgetSentence, dollars, explainOutcome, GOALS, groupOutcomes, NUTRIENT_UNIT, suggestChange } from '@carttweak/shared';
+import { budgetSentence, dollars, explainOutcome, GOALS, groupOutcomes, haulScore, NUTRIENT_UNIT, projectHaul, suggestChange, type HaulItem } from '@carttweak/shared';
+
+/**
+ * "Haul score: 64 -> 71 if you make these swaps (projected)": each swap's item takes the
+ * replacement's score, and its spend changes by the swap's regular-price difference.
+ * Uses the accepted swaps once any are accepted, otherwise all suggested swaps.
+ */
+export function projectedLine(haul: HaulItem[], resp: PlanResponse, accepted: Record<string, string>): { before: number | null; after: number | null; text: string } | null {
+  if (!haul.length || !resp.plan.swaps.length) return null;
+  const acceptedSwaps = resp.plan.swaps.filter((s) => accepted[s.itemId] === s.replacement.ref);
+  const use = acceptedSwaps.length ? acceptedSwaps : resp.plan.swaps;
+  const before = haulScore(haul).score;
+  const after = projectHaul(
+    haul,
+    use.map((s) => ({ itemId: s.itemId, result: resp.replacementScores?.[s.replacement.ref] ?? null, differenceCents: s.cost.regular.differenceCents })),
+  ).score;
+  if (before == null || after == null) return null;
+  const which = acceptedSwaps.length ? `the ${acceptedSwaps.length === 1 ? 'swap' : 'swaps'} you accepted` : 'these swaps';
+  return { before, after, text: `Haul score: ${before} → ${after} if you make ${which} (projected)` };
+}
 import { SwapCard } from '../components/SwapCard.tsx';
 import type { PlanProgress, PlanResponse, SwapOption } from '../types.ts';
 
@@ -106,6 +125,7 @@ export function ResultsScreen({
   onRetry,
   excludedCount,
   keptUnmatched = [],
+  haul = [],
   differentStore = null,
 }: {
   resp: PlanResponse | null;
@@ -120,6 +140,8 @@ export function ResultsScreen({
   onSave: () => void;
   onRetry: () => void;
   excludedCount: number;
+  /** P3: the scored haul, for the projected score */
+  haul?: HaulItem[];
   /** receipt lines that were not matched: kept on the list, never swapped */
   keptUnmatched?: string[];
   /** receipt planned at a different store (Walmart unavailable) */
@@ -151,6 +173,11 @@ export function ResultsScreen({
   return (
     <section>
       <h1>Your swaps</h1>
+      {resp && projectedLine(haul, resp, accepted) ? (
+        <p className="projected num" data-testid="projected">
+          {projectedLine(haul, resp, accepted)!.text}
+        </p>
+      ) : null}
       <p className="notice" role="status" data-testid="price-label">
         Prices from {resp?.branch?.name ?? differentStore ?? "Kroger On the Rhine"}; Walmart prices coming soon.
         {differentStore ? " What you paid on your receipt is shown for reference only." : ""}

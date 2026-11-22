@@ -469,6 +469,13 @@ export function createService(cfg: ServiceConfig) {
       groups: SWAP_GROUPS.map((g) => g.id),
       chain: 'kroger' as const,
       paid: paidPrices(items, ids, trip),
+      // P3: Nutri-Score of each suggested replacement, for the projected haul score
+      replacementScores: Object.fromEntries(
+        result.swaps.map((s) => {
+          const cand = (candidates[s.itemId] ?? []).find((c) => c.product.ref === s.replacement.ref);
+          return [s.replacement.ref, cand ? nutriFor(cand) : { scored: false, reason: 'label data missing', missing: [] }];
+        }),
+      ),
     };
   }
 
@@ -699,6 +706,13 @@ export function createService(cfg: ServiceConfig) {
       groups: SWAP_GROUPS.map((g) => g.id),
       chain: 'walmart' as const,
       paid: paidPrices(items, ids, trip),
+      // P3: Nutri-Score of each suggested replacement, for the projected haul score
+      replacementScores: Object.fromEntries(
+        result.swaps.map((s) => {
+          const cand = (candidates[s.itemId] ?? []).find((c) => c.product.ref === s.replacement.ref);
+          return [s.replacement.ref, cand ? nutriFor(cand) : { scored: false, reason: 'label data missing', missing: [] }];
+        }),
+      ),
     };
   }
 

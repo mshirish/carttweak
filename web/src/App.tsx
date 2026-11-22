@@ -591,6 +591,7 @@ export default function App() {
           onSave={save}
           onRetry={() => void plan()}
           excludedCount={excluded.length}
+          haul={haulRows}
           keptUnmatched={tripSource === 'receipt' ? matchRows.filter((r) => r.status !== 'matched').map((r) => r.name) : []}
           differentStore={tripSource === 'receipt' && planTarget === 'kroger' && defaultBranch ? defaultBranch.name : null}
         />
