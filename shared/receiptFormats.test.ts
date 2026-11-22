@@ -112,3 +112,31 @@ describe('self-check against the receipt numbers', () => {
     expect(r.items.map((i) => i.name)).toEqual(['SAMPLE OATS', 'SAMPLE JAM']);
   });
 });
+
+describe('other ways in (synthetic)', () => {
+  it('pasted digital receipt text: tabs and one-cell-per-line tables become rows', async () => {
+    const { normalizePastedText } = await import('./receiptRows.ts');
+    const pasted = 'Sample Store #100\nFeb 3, 2026, 4:05 PM\nItem\tQty\tPrice\nSample Milk, 1 gal\t1\t$3.00\nSample Bananas\n2.00 lb\n$1.20\n2.00 lb @ $0.60/lb\nKroger Savings\n-$0.20\nSubtotal\n$4.00\nTax\n$0.30\nTotal\n$4.30';
+    const r = parseKrogerReceipt(normalizePastedText(pasted));
+    expect(r.format).toBe('kroger_digital');
+    expect(r.items.map((i) => [i.name, i.priceCents, i.weightLb])).toEqual([
+      ['Sample Milk, 1 gal', 300, null],
+      ['Sample Bananas', 120, 2],
+    ]);
+    expect(r.check).toMatchObject({ matches: true, targetCents: 400 });
+  });
+  it('PDF text layer items become rows with column gaps', async () => {
+    const { rowsFromPdfText } = await import('./receiptRows.ts');
+    const rows = rowsFromPdfText(
+      [
+        { str: 'Sample Milk, 1 gal', x: 40, y: 700, w: 120, h: 10 },
+        { str: '1', x: 300, y: 700, w: 6, h: 10 },
+        { str: '$3.00', x: 400, y: 700, w: 30, h: 10 },
+        { str: 'Subtotal', x: 40, y: 680, w: 50, h: 10 },
+        { str: '$3.00', x: 400, y: 680, w: 30, h: 10 },
+      ],
+      792,
+    );
+    expect(rows.map((r) => r.text)).toEqual(['Sample Milk, 1 gal    1    $3.00', 'Subtotal    $3.00']);
+  });
+});

@@ -187,6 +187,34 @@ function rowsOf(all: Placed[]): OcrLine[] {
  * Rows from word boxes. Returns one block of rows per side-by-side column
  * (usually one), plus the skew angle that was corrected.
  */
+/**
+ * Text copied from a digital receipt (kroger.com or an email). Table cells
+ * arrive tab-separated or one per line; put each printed row back together,
+ * keeping columns as wide gaps.
+ */
+export function normalizePastedText(text: string): OcrLine[] {
+  const out: string[] = [];
+  const cellOnly = /^\s*(?:\(?-?\$?\s?\d+[.,]\d{2}\)?-?|\d+(?:[.,]\d+)?\s*(?:lbs?|oz|ct|ea)?)\s*$/i;
+  for (const raw of text.replace(/\r\n?/g, '\n').split('\n')) {
+    const line = raw.replace(/\t+/g, '    ').replace(/ /g, ' ').trimEnd();
+    if (!line.trim()) continue;
+    const prev = out[out.length - 1];
+    // a lone qty or price cell belongs to the row above (unless that row already ends in a price)
+    if (prev != null && cellOnly.test(line) && !/\d[.,]\d{2}\)?-?\s*$/.test(prev)) out[out.length - 1] = `${prev}    ${line.trim()}`;
+    else out.push(line);
+  }
+  return out.map((t) => ({ text: t, confidence: null }));
+}
+
+/** Text items from a PDF text layer (x, y from the bottom, width, height) -> rows. */
+export function rowsFromPdfText(items: Array<{ str: string; x: number; y: number; w: number; h: number }>, pageHeight: number): OcrLine[] {
+  const words: WordBox[] = items
+    .filter((i) => i.str.trim())
+    .map((i) => ({ text: i.str.trim(), confidence: 100, x0: i.x, x1: i.x + Math.max(i.w, 1), y0: pageHeight - i.y - Math.max(i.h, 1), y1: pageHeight - i.y }));
+  if (!words.length) return [];
+  return rowsOf(place(words, 0)).map((r) => ({ ...r, confidence: null }));
+}
+
 export function rowsFromWords(lines: OcrLineBox[]): { blocks: OcrLine[][]; angle: number; bounds: Array<{ x0: number; y0: number; x1: number; y1: number }> } {
   const angle = skewAngle(lines);
   const words = lines.flatMap((l) => l.words).filter((w) => w.text.trim());

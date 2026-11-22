@@ -226,3 +226,21 @@ describe('self-check and grouped check screen (synthetic)', () => {
     expect((within(items[2]!).getByLabelText('Name') as HTMLInputElement).value).toBe('Kroger Savings');
   });
 });
+
+describe('paste receipt text', () => {
+  it('pasted digital receipt text goes through the same parser, no OCR', async () => {
+    const { ReceiptUploadScreen } = await import('./ReceiptScreens.tsx');
+    let got: ReceiptState | null = null;
+    render(<ReceiptUploadScreen onRead={(s) => (got = s)} />);
+    fireEvent.click(screen.getByText('Paste receipt text'));
+    fireEvent.change(screen.getByTestId('receipt-paste'), {
+      target: { value: 'Item\tQty\tPrice\nSample Milk, 1 gal\t1\t$3.00\nSample Pasta\t1\t$2.00\nSubtotal\t$5.00\nTax\t$0.40\nTotal\t$5.40' },
+    });
+    fireEvent.click(screen.getByRole('button', { name: 'Read pasted text' }));
+    expect(got!.rows.map((r) => [r.name, r.price])).toEqual([
+      ['Sample Milk, 1 gal', '3.00'],
+      ['Sample Pasta', '2.00'],
+    ]);
+    expect(got!.numbers).toMatchObject({ targetCents: 500, targetLabel: 'subtotal' });
+  });
+});

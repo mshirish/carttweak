@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { dollars, shortName, type ParsedReceipt } from '@carttweak/shared';
+import { dollars, normalizePastedText, parseReceipt, shortName, type ParsedReceipt } from '@carttweak/shared';
 import { Heart } from '../components/Icons.tsx';
 import { DEFAULT_PREP, preprocess, type Prep } from '../ocr.ts';
 import { readReceiptImage } from '../receiptPipeline.ts';
@@ -17,6 +17,7 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
   const [progress, setProgress] = useState<{ status: string; progress: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [choices, setChoices] = useState<ParsedReceipt[] | null>(null);
+  const [pasted, setPasted] = useState('');
   const canvas = useRef<HTMLCanvasElement>(null);
   const url = useRef<string | null>(null);
 
@@ -25,11 +26,43 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
     if (img && canvas.current) preprocess(img, prep, canvas.current);
   }, [img, prep]);
 
+  function choose(parsed: ParsedReceipt) {
+    // several receipts in one photo: the shopper picks one; they are never merged
+    if (parsed.receipts && parsed.receipts.length > 1) setChoices(parsed.receipts);
+    else finish(parsed);
+  }
+
+  async function readPdf(f: File) {
+    setBusy(true);
+    setError(null);
+    setChoices(null);
+    setImg(null);
+    try {
+      const { readReceiptPdf } = await import('../pdfReceipt.ts');
+      choose((await readReceiptPdf(f, setProgress)).parsed);
+    } catch {
+      setError("That PDF couldn't be read. Try a photo or a screenshot of the receipt instead.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  function readPasted() {
+    setError(null);
+    setChoices(null);
+    if (!pasted.trim()) return;
+    choose(parseReceipt(normalizePastedText(pasted)));
+  }
+
   function pick(f: File | undefined) {
     setError(null);
     if (!f) return;
+    if (f.type === 'application/pdf' || /\.pdf$/i.test(f.name)) {
+      void readPdf(f);
+      return;
+    }
     if (!/^image\//.test(f.type)) {
-      setError('Please choose a photo (JPG or PNG).');
+      setError('Please choose a photo (JPG or PNG) or a PDF.');
       return;
     }
     if (url.current) URL.revokeObjectURL(url.current);
@@ -64,9 +97,7 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
     try {
       const res = await readReceiptImage(img, { prep, autoRotate: !rotatedByHand, onProgress: setProgress });
       if (res.rotation !== prep.rotation) setPrep((x) => ({ ...x, rotation: res.rotation }));
-      // several receipts in one photo: the shopper picks one; they are never merged
-      if (res.parsed.receipts && res.parsed.receipts.length > 1) setChoices(res.parsed.receipts);
-      else finish(res.parsed);
+      choose(res.parsed);
     } catch {
       setError('Reading the receipt failed. Check your connection (the reader downloads once) and try again.');
     } finally {
@@ -82,10 +113,27 @@ export function ReceiptUploadScreen({ onRead }: { onRead: (s: ReceiptState) => v
       <p className="lede">Kroger receipts work best. Your photo stays on this device: we read it here and only send the item lines to check prices. The photo is never saved.</p>
       <div className="panel rule-top">
         <label className="btn primary" style={{ width: '100%' }}>
-          {img ? 'Choose a different photo' : 'Choose a receipt photo'}
-          <input type="file" accept="image/*" capture="environment" className="sr-only" data-testid="receipt-file" onChange={(e) => pick(e.target.files?.[0])} />
+          {img ? 'Choose a different photo' : 'Choose a receipt photo or PDF'}
+          <input type="file" accept="image/*,application/pdf,.pdf" className="sr-only" data-testid="receipt-file" onChange={(e) => pick(e.target.files?.[0])} />
         </label>
         {error ? <p className="error" role="alert">{error}</p> : null}
+        {!img && choices ? <ReceiptChooser receipts={choices} onPick={(r) => finish(r)} /> : null}
+        {!img && busy ? (
+          <div className="progress" role="status" aria-live="polite">
+            <strong>{progress?.status ? progress.status.replace(/^./, (c) => c.toUpperCase()) : 'Reading'}…</strong>
+          </div>
+        ) : null}
+        <details className="paste-receipt" style={{ marginTop: 12 }}>
+          <summary>Paste receipt text</summary>
+          <p className="help">Copy the receipt from kroger.com or your receipt email and paste it here. No photo needed.</p>
+          <label className="field small">
+            <span className="sr-only">Receipt text</span>
+            <textarea rows={8} value={pasted} onChange={(e) => setPasted(e.target.value)} data-testid="receipt-paste" style={{ width: '100%', fontFamily: 'inherit' }} />
+          </label>
+          <button type="button" className="btn small" disabled={!pasted.trim()} onClick={readPasted}>
+            Read pasted text
+          </button>
+        </details>
         {img ? (
           <>
             <div className="receipt-preview">
