@@ -19,3 +19,4 @@ Thumbs.db
 
 # API response cache (server)
 data/cache/
+data/receipts/private/
