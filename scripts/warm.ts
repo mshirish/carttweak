@@ -8,7 +8,7 @@
  * Prices are cached for 12 h: re-run within 12 h of a demo.
  * Uses the server's cache directory (CARTTWEAK_CACHE_DIR overrides it).
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
@@ -17,7 +17,7 @@ import { cacheStats, limiters, setCacheRoot } from '../server/src/cache.ts';
 import { registerSecret } from '../server/src/secrets.ts';
 import { CONCURRENCY, createService } from '../server/src/service.ts';
 import { lookupByUpc } from '../server/src/fdc.ts';
-import { isPlu } from '@carttweak/shared';
+import { isPlu, nonFoodGuess, parseReceipt, produceGuess } from '@carttweak/shared';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 dotenv.config({ path: path.join(root, '.env'), quiet: true } as any);
@@ -111,6 +111,19 @@ async function main() {
     });
     await Promise.all([...rGroups.values()].map((p) => svc.candidatesFor(p, locationId).catch(() => null)));
     console.log(`  private receipts: ${codes.length} barcodes warmed (${atKroger} carried at this Kroger, ${fdcOnly} USDA-only), ${rGroups.size} more swap groups`);
+  }
+  // 5. LOCAL ONLY: Kroger receipt name searches from saved OCR lines (data/receipts/private/ocr-*.json, gitignored).
+  //    Warms the search for every parsed line and the label of every offered candidate. Counts only.
+  const privDir = path.join(root, 'data', 'receipts', 'private');
+  const ocrFiles = existsSync(privDir) ? readdirSync(privDir).filter((f) => /^ocr-.*\.json$/.test(f)) : [];
+  for (const f of ocrFiles) {
+    const parsed = parseReceipt(JSON.parse(readFileSync(path.join(privDir, f), 'utf8')));
+    const items = parsed.items.map((i) => ({ id: i.id, name: i.name, searchTerm: i.searchTerm, quantity: i.quantity, priceCents: i.priceCents, skipSearch: i.weightLb != null || !!produceGuess(i.name, null) || nonFoodGuess(i.name) }));
+    if (!items.length) continue;
+    const m: any = await svc.matchReceipt({ locationId, items }).catch(() => null);
+    const cands: string[] = [...new Set<string>((m?.items ?? []).flatMap((x: any) => (x.candidates ?? []).map((c: any) => c.krogerProductId)).filter(Boolean))];
+    await pool(cands, CONCURRENCY, async (id) => void (await svc.scoreHaul({ locationId, items: [{ id: 'k', krogerProductId: id }] }).catch(() => null)));
+    console.log(`  kroger receipt ${parsed.items.length} lines: ${items.filter((i) => !i.skipSearch).length} searched, ${cands.length} candidates warmed`);
   }
   const t3 = Date.now();
   const fdc = limiters['fdc'];
