@@ -62,6 +62,12 @@ describe('multipack sizes (N x per-unit, inferred)', () => {
     expect(parsePackageSize('2 x 16 oz')!.amount).toBeCloseTo(907.18, 2);
     expect(parsePackageSize('12 \u00d7 12 fl oz')!.basis).toBe('mL');
   });
+  it('live formats (2026-11-22): "5.3 oz., 4 pack", "12 pk / 12 fl oz", "1 ea"', () => {
+    expect(parsePackageSize('5.3 oz., 4 pack')).toMatchObject({ units: 4, basis: 'g', sizeBasis: 'inferred_per_unit' });
+    expect(parsePackageSize('5.3 oz., 4 pack')!.amount).toBeCloseTo(4 * 150.25, 1);
+    expect(parsePackageSize('12 pk / 12 fl oz')!.amount).toBeCloseTo(144 * 29.5735295625, 6);
+    expect(parsePackageSize('1 ea')).toMatchObject({ basis: 'count', amount: 1, sizeBasis: 'explicit' });
+  });
   it('still rejects mixed units and nonsense', () => {
     expect(parsePackageSize('1 lb 4 oz')).toBeNull();
     expect(parsePackageSize('6 ct / 12 ct')).toBeNull();

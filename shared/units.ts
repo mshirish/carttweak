@@ -46,7 +46,7 @@ const UNIT_TABLE: Array<{ re: RegExp; unit: string; basis: Basis; factor: number
   { re: /^(gal\.?|gallons?)$/i, unit: 'gal', basis: 'mL', factor: ML_PER_GAL },
   { re: /^(qt\.?|quarts?)$/i, unit: 'qt', basis: 'mL', factor: ML_PER_QT },
   { re: /^(pt\.?|pints?)$/i, unit: 'pt', basis: 'mL', factor: ML_PER_PT },
-  { re: /^(ct\.?|count|pk|pack)$/i, unit: 'ct', basis: 'count', factor: 1 },
+  { re: /^(ct\.?|count|pk|pack|ea\.?|each)$/i, unit: 'ct', basis: 'count', factor: 1 },
 ];
 
 function parseNumber(s: string): number | null {
@@ -117,10 +117,20 @@ export function parsePackageSize(input: string | null | undefined): ParsedSize |
   let m = /^(\d+)\s*(?:ct\.?|count|pk\.?|pack)\s*(?:\/|-|,)\s*(.+)$/i.exec(s);
   // "N x X unit", "N × X unit"
   if (!m) m = /^(\d+)\s*[x×]\s*(.+)$/i.exec(s);
-  if (!m) return null;
-  const units = Number(m[1]);
+  let unitsStr: string | undefined = m?.[1];
+  let perStr: string | undefined = m?.[2];
+  // "X unit, N pack" (seen live: "5.3 oz., 4 pack")
+  if (!m) {
+    const r = /^(.+?)\s*,\s*(\d+)\s*(?:ct\.?|count|pk\.?|pack)$/i.exec(s);
+    if (r) {
+      unitsStr = r[2];
+      perStr = r[1]!.replace(/\.$/, '');
+    }
+  }
+  if (unitsStr == null || perStr == null) return null;
+  const units = Number(unitsStr);
   if (!Number.isInteger(units) || units < 1) return null;
-  const per = parseSingle(m[2]!);
+  const per = parseSingle(perStr);
   if (!per || per.basis === 'count') return null; // "6 ct / 12 ct" is meaningless
   return {
     original,

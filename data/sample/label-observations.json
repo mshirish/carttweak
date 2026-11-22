@@ -1,0 +1,27 @@
+{
+  "_comment": "SAMPLE DATA. Illustrative label observations for Kroger store-brand items that have no usable USDA record. Values are typical for the product type and were NOT read from the actual package. Every record has isSample: true. Used only by tests and when a request explicitly sets includeSample: true; results that use them carry containsSample: true.",
+  "records": [
+    {
+      "productRef": "kroger:0001111041700",
+      "source": "label_observation",
+      "per100": { "calories": 50, "protein_g": 3.33, "fiber_g": 0, "addedSugars_g": 0, "totalSugars_g": 5, "sodium_mg": 50 },
+      "basis": "ml",
+      "servingSize": { "quantity": 240, "unit": "ml" },
+      "labelDate": "2026-11-20",
+      "sourceRef": "sample-photo-0001",
+      "isSample": true,
+      "method": "label_scaled"
+    },
+    {
+      "productRef": "kroger:0001111013267",
+      "source": "label_observation",
+      "per100": { "calories": 12.5, "protein_g": 0.42, "fiber_g": 0.42, "addedSugars_g": 0, "totalSugars_g": 0, "sodium_mg": 70.8 },
+      "basis": "ml",
+      "servingSize": { "quantity": 240, "unit": "ml" },
+      "labelDate": "2026-11-20",
+      "sourceRef": "sample-photo-0002",
+      "isSample": true,
+      "method": "label_scaled"
+    }
+  ]
+}

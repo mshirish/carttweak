@@ -1,0 +1,32 @@
+# CartTweak demo shopping list - 20 items
+# SAMPLE: a made-up household list for demos and tests, not a real receipt or purchase history.
+# Demo branch: Kroger On the Rhine (locationId 01400513), unless DEMO_LOCATION_ID says otherwise.
+#
+# Format: qty | item as a shopper would type it | tags | why it's on the list
+# Tags:
+#   [exact]  brand + product named; should resolve to one barcode
+#   [vague]  must trigger "which one did you mean?"; never guessed
+#   [lock]   shopper's favorite; must never be swapped
+#   [store]  Kroger store brand; likely no USDA record, so needs a label photo
+#   [nobar]  loose produce with no barcode; should be skipped with a clear reason
+
+1 | Wonder Classic White Bread 20 oz            | [exact]        | bread; the verified fiber pair from Milestone 0
+1 | Yoplait Original Strawberry Yogurt           | [exact]        | yogurt; protein / added sugar
+1 | yogurt                                       | [vague]        | tests the "which one did you mean?" step
+1 | Honey Nut Cheerios                           | [exact] [lock] | cereal; favorite, must never be swapped
+1 | Kellogg's Frosted Flakes                     | [exact]        | cereal; added sugar / fiber
+1 | Barilla Spaghetti 16 oz                      | [exact]        | pasta; protein / fiber
+1 | Ritz Original Crackers                       | [exact]        | crackers; sodium / fiber
+1 | Lay's Classic Potato Chips                   | [exact]        | chips; sodium
+1 | Nature Valley Oats 'n Honey Crunchy Granola Bars | [exact]    | bars; added sugar / fiber
+1 | Kroger 2% Reduced Fat Milk 1 gal             | [exact] [store]| milk; store brand, USDA record likely missing
+1 | Simple Truth Organic Unsweetened Almondmilk  | [exact] [store]| plant milk; store brand, label photo path
+1 | Jif Creamy Peanut Butter 16 oz               | [exact]        | peanut butter; added sugar / sodium
+1 | Campbell's Chicken Noodle Soup 10.75 oz      | [exact]        | soup; sodium
+1 | Stouffer's Macaroni & Cheese frozen meal     | [exact]        | frozen meal; sodium / protein
+1 | Kraft Singles American Cheese Slices         | [exact]        | cheese; sodium / protein
+1 | Coca-Cola 12 pk 12 fl oz cans                | [exact]        | soda; added sugar, multipack size math, mL not g
+1 | Tropicana Pure Premium Orange Juice No Pulp  | [exact]        | juice; added vs total sugar, mL basis
+1 | Prego Traditional Italian Sauce              | [exact]        | pasta sauce; added sugar / sodium
+6 | bananas                                      | [nobar]        | produce; out of scope for barcode swaps
+1 | eggs                                         | [vague]        | vague staple; resolve size/type before matching
