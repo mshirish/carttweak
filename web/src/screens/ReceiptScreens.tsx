@@ -250,8 +250,10 @@ export function ReceiptMatchScreen({
   walmart,
   zip,
   fallbackBranch,
-  onPlanWalmart,
+  onPlanWalmart: _onPlanWalmart,
   onPlanFallback,
+  busy = false,
+  error = null,
 }: {
   rows: MatchRow[];
   setRows: (fn: (r: MatchRow[]) => MatchRow[]) => void;
@@ -260,6 +262,8 @@ export function ReceiptMatchScreen({
   fallbackBranch: Branch | null;
   onPlanWalmart: () => void;
   onPlanFallback: () => void;
+  busy?: boolean;
+  error?: string | null;
 }) {
   const set = (id: string, patch: Partial<MatchRow>) => setRows((rs) => rs.map((r) => (r.id === id ? { ...r, ...patch } : r)));
   const counts = { barcode: 0, shopper_confirmed: 0, unmatched: 0, pending: 0 };
@@ -272,18 +276,8 @@ export function ReceiptMatchScreen({
         {counts.barcode} matched by barcode · {counts.shopper_confirmed} you confirmed · {counts.unmatched} not matched
         {counts.pending ? ` · ${counts.pending} to pick` : ''}. Unmatched items stay on your list and are never swapped.
       </p>
-      {!walmart.available ? (
-        <div className="notice" role="status">
-          <strong>We can't check Walmart's current prices right now.</strong>
-          <br />
-          <span className="small">{walmart.reason}</span>
-          {fallbackBranch ? (
-            <p style={{ margin: '8px 0 0' }}>
-              You can plan the same items at <strong>{fallbackBranch.name}</strong> instead. Prices there will differ from what you paid.
-            </p>
-          ) : null}
-        </div>
-      ) : null}
+      <p className="notice" role="status">Prices from {fallbackBranch?.name ?? "Kroger On the Rhine"}; Walmart prices coming soon.</p>
+      {error ? <p className="error" role="alert">{error}</p> : null}
       <ul className="items">
         {rows.map((r) => (
           <li className="item" key={r.id} data-status={r.status}>
@@ -329,15 +323,9 @@ export function ReceiptMatchScreen({
         ))}
       </ul>
       <div className="actions">
-        {walmart.available ? (
-          <button type="button" className="btn primary" disabled={counts.pending > 0} onClick={onPlanWalmart}>
-            {counts.pending ? `Pick or skip ${counts.pending} item${counts.pending === 1 ? '' : 's'}` : `Continue at Walmart.com (ZIP ${zip})`}
-          </button>
-        ) : fallbackBranch ? (
-          <button type="button" className="btn primary" disabled={!usableForKroger} onClick={onPlanFallback}>
-            Plan at {fallbackBranch.name} instead ({usableForKroger} item{usableForKroger === 1 ? '' : 's'})
-          </button>
-        ) : null}
+        <button type="button" className="btn primary" disabled={busy || counts.pending > 0} onClick={onPlanFallback}>
+          {busy ? "Scoring your haul…" : counts.pending ? `Pick or skip ${counts.pending} item${counts.pending === 1 ? "" : "s"}` : "See your haul score"}
+        </button>
       </div>
     </section>
   );

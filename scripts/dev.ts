@@ -11,7 +11,8 @@ const node = process.execPath;
 const procs: ChildProcess[] = [];
 
 function start(name: string, args: string[], cwd: string) {
-  const p = spawn(node, args, { cwd, stdio: ['ignore', 'pipe', 'pipe'], env: process.env });
+  // the web dev server proxies /api to the API port (PORT, default 8787)
+  const p = spawn(node, args, { cwd, stdio: ['ignore', 'pipe', 'pipe'], env: { ...process.env, API_PORT: process.env.PORT ?? '8787' } });
   const tag = (s: string) => s.split(/\r?\n/).filter(Boolean).map((l) => `[${name}] ${l}`).join('\n');
   p.stdout!.on('data', (d) => console.log(tag(String(d))));
   p.stderr!.on('data', (d) => console.error(tag(String(d))));

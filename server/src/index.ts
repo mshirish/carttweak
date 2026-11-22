@@ -7,7 +7,6 @@ import { createApp } from './app.ts';
 import { setCacheRoot } from './cache.ts';
 import { registerSecret } from './secrets.ts';
 import { createService } from './service.ts';
-import { loadWalmartConfig } from './walmart.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
 dotenv.config({ path: path.join(root, '.env'), quiet: true } as any);
@@ -28,10 +27,9 @@ const svc = createService({
   sampleDir: path.join(root, 'data', 'sample'),
   demoListPath: path.join(root, 'docs', 'demo-list.txt'),
   defaultLocationId: process.env.DEMO_LOCATION_ID?.trim() || undefined,
-  ...(() => {
-    const w = loadWalmartConfig(process.env, path.join(root, 'secrets', 'walmart_private_key.pem'));
-    return { walmart: w.config, walmartReason: w.reason };
-  })(),
+  // Walmart API is out of scope for now: never called. Prices come from the Kroger demo branch.
+  walmart: null,
+  walmartReason: 'Walmart prices coming soon',
 });
 const app = createApp(svc, { kroger: Boolean(env.KROGER_CLIENT_ID && env.KROGER_CLIENT_SECRET), fdc: Boolean(env.FDC_API_KEY) });
 

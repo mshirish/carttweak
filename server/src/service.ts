@@ -6,6 +6,11 @@ import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import path from 'node:path';
 import {
   planSwaps,
+  chooseNutrition,
+  nutriCategory,
+  nutriScore,
+  type NutriResult,
+  type NotScored,
   explainPlan,
   resolveQuery,
   splitSize,
@@ -773,7 +778,62 @@ export function createService(cfg: ServiceConfig) {
     };
   }
 
-  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList, walmartStatus, matchReceipt, planWalmart };
+
+  // ---------- haul scoring ----------
+  /** Nutri-Score of a resolved product from its chosen nutrition record. FVL% = 0 (not on US labels) unless given. */
+  function nutriFor(r: ResolvedItem, fvlPercent = 0): NutriResult | NotScored {
+    const c = chooseNutrition(r.nutrition);
+    if (!c) return { scored: false, reason: 'label data missing: no nutrition record', missing: ['nutrition'] };
+    if (c.used.qualityIssues?.length) return { scored: false, reason: `label data implausible (${c.used.qualityIssues[0]})`, missing: [] };
+    if (!c.used.basis) return { scored: false, reason: 'label data missing: serving size', missing: ['serving size'] };
+    const v = c.used.per100;
+    const category = nutriCategory({ description: r.product.description, swapGroup: swapGroupFor(r.product)?.id ?? null, categories: r.product.categories, basis: c.used.basis, energyKcal: v.calories, totalSugars_g: v.totalSugars_g });
+    return nutriScore({ energyKcal: v.calories, totalSugars_g: v.totalSugars_g, satFat_g: v.satFat_g ?? null, sodium_mg: v.sodium_mg, fiber_g: v.fiber_g, protein_g: v.protein_g, fvlPercent }, category);
+  }
+
+  /**
+   * Score haul lines. Each line: Kroger demo-branch product by id (current price + FDC),
+   * else FDC by barcode (scored, no Kroger price). Unmatched lines come back unscored.
+   */
+  async function scoreHaul(body: any) {
+    const items: any[] = Array.isArray(body?.items) ? body.items : [];
+    if (!items.length) throw new ServiceError(400, 'bad_items', 'items must be a non-empty array');
+    if (items.length > 80) throw new ServiceError(400, 'too_many_items', 'at most 80 lines');
+    const locationId = String(body?.locationId ?? '');
+    const b = await branch(locationId);
+    const out = await mapLimit(items, CONCURRENCY, async (it) => {
+      const id = String(it?.id ?? '');
+      const kid = /^\d{13}$/.test(String(it?.krogerProductId ?? '')) ? String(it.krogerProductId) : null;
+      if (!kid) return { id, matched: false, result: null, product: null, regularCents: null };
+      let e: EnrichedProduct | null = null;
+      try {
+        e = await byUpc(kid, locationId);
+      } catch (err: any) {
+        if (!(err instanceof ServiceError && err.status === 404)) throw err;
+      }
+      if (!e) {
+        // not carried at this Kroger: still score it from its USDA label by barcode
+        const f = await lookupByUpc(cfg.fdcApiKey, kid);
+        if (!f.match || !f.detail?.body) return { id, matched: true, carriedAtKroger: false, result: { scored: false, reason: 'label data missing: no USDA record for this barcode', missing: ['nutrition'] }, product: null, regularCents: null };
+        const rec = normalizeFdcFood(f.detail.body, `gtin:${f.match.gtin14}`);
+        const d = f.detail.body;
+        const product = { ref: `gtin:${f.match.gtin14}`, chain: 'kroger' as const, chainProductId: kid, gtin14: f.match.gtin14, brand: d.brandName ?? d.brandOwner ?? null, description: fdcDisplayName(d.brandName ?? d.brandOwner, d.description), size: null, categories: [String(d.brandedFoodCategory ?? '')].filter(Boolean), flags: [], isSample: false };
+        const r: ResolvedItem = { product, price: null, nutrition: [rec] };
+        return { id, matched: true, carriedAtKroger: false, result: nutriFor(r), product: { description: product.description, sizeLabel: prettyPackageWeight(d.packageWeight), fdcId: f.match.fdcId }, regularCents: null };
+      }
+      return {
+        id,
+        matched: true,
+        carriedAtKroger: true,
+        result: nutriFor(e),
+        product: { description: e.product.description, sizeLabel: e.product.size?.label ?? null, fdcId: e.fdc.fdcId, ref: e.product.ref, swapGroup: swapGroupFor(e.product)?.id ?? null },
+        regularCents: e.price?.regularCents ?? null,
+      };
+    });
+    return { branch: b, items: out, method: 'Nutri-Score, original 2017 algorithm (not an official Nutri-Score label)' };
+  }
+
+  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan, demoList, config, resolveList, walmartStatus, matchReceipt, planWalmart, scoreHaul, nutriFor };
 }
 
 export type Service = ReturnType<typeof createService>;

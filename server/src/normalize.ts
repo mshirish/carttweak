@@ -133,6 +133,7 @@ const FDC_NUMBERS: Record<keyof Per100Values, string> = {
   addedSugars_g: '539',
   totalSugars_g: '269',
   sodium_mg: '307',
+  satFat_g: '606',
 };
 
 function basisOf(unit: unknown): 'g' | 'ml' | null {
@@ -177,6 +178,18 @@ export function normalizeFdcFood(food: any, ref: string): NutritionRecord {
     }
   }
   const servingQty = typeof food?.servingSize === 'number' && food.servingSize > 0 ? food.servingSize : null;
+  // saturated fat (Nutri-Score): label value per serving scaled like the others; else FDC nutrient 606 (id 1258), per 100
+  per100.satFat_g = null;
+  if (outBasis) {
+    const sv = food?.labelNutrients?.saturatedFat?.value;
+    const srv = typeof food?.servingSize === "number" && food.servingSize > 0 ? food.servingSize : null;
+    if (method === "label_scaled" && typeof sv === "number" && sv >= 0 && srv) per100.satFat_g = (sv * 100) / srv;
+    else {
+      const fn = (food?.foodNutrients ?? []).find((x: any) => String(x?.nutrient?.number ?? x?.nutrientNumber) === "606" || x?.nutrient?.id === 1258 || x?.nutrientId === 1258);
+      const amt = fn?.amount ?? fn?.value;
+      if (typeof amt === "number" && Number.isFinite(amt) && amt >= 0) per100.satFat_g = amt;
+    }
+  }
   const qualityIssues = per100QualityIssues(per100);
   return {
     productRef: ref,

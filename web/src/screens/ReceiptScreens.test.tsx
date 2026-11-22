@@ -95,12 +95,11 @@ describe('Match screen labels', () => {
     expect(screen.getByRole('button', { name: /Pick or skip 1 item/ })).toHaveProperty('disabled', true);
     fireEvent.click(screen.getByRole('button', { name: /Sample Bread B/ }));
     expect(screen.getByText('You confirmed')).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Continue at Walmart\.com \(ZIP 45000\)/ })).toHaveProperty('disabled', false);
+    expect(screen.getByRole('button', { name: 'See your haul score' })).toHaveProperty('disabled', false);
   });
   it("Walmart down: says so and offers the Kroger demo branch, clearly a different store", () => {
-    render(<MatchHarness initial={rows} walmart={{ available: false, reason: 'Walmart API returned HTTP 401' }} />);
-    expect(screen.getByText("We can't check Walmart's current prices right now.")).toBeTruthy();
-    expect(screen.getByRole('button', { name: /Plan at Kroger On the Rhine instead \(1 item\)/ })).toBeTruthy();
+    render(<MatchHarness initial={rows} walmart={{ available: false, reason: null }} />);
+    expect(screen.getByText('Prices from Kroger On the Rhine; Walmart prices coming soon.')).toBeTruthy();
   });
 });
 

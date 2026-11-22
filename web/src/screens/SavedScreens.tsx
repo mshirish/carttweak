@@ -79,14 +79,7 @@ export function TripScreen({ trip, now }: { trip: SavedTrip | null; now: string 
           {trip.acceptedSwaps.map((s) => (
             <div key={s.itemId} style={{ marginBottom: 18 }}>
               <SwapCard swap={s} now={now} />
-              <div className="row" style={{ marginTop: 8 }}>
-                <button type="button" className="btn" disabled aria-describedby={`soon-${s.itemId}`}>
-                  Try this swap
-                </button>
-                <span id={`soon-${s.itemId}`} className="small muted">
-                  Challenges arrive in a later update.
-                </span>
-              </div>
+
             </div>
           ))}
         </>

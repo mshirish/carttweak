@@ -151,11 +151,10 @@ export function ResultsScreen({
   return (
     <section>
       <h1>Your swaps</h1>
-      {differentStore ? (
-        <p className="notice" role="status">
-          <strong>Different store: {differentStore}.</strong> We couldn't check Walmart's current prices, so these prices are from {differentStore}. What you paid at Walmart is shown for reference only.
-        </p>
-      ) : null}
+      <p className="notice" role="status" data-testid="price-label">
+        Prices from {resp?.branch?.name ?? differentStore ?? "Kroger On the Rhine"}; Walmart prices coming soon.
+        {differentStore ? " What you paid on your receipt is shown for reference only." : ""}
+      </p>
       <p className="lede">
         {swaps.length ? `Up to two swaps that do the most for ${GOALS[resp.plan.primaryGoal].label} within your budget.` : ''}
         {excludedCount ? ` ${excludedCount} rejected swap${excludedCount === 1 ? '' : 's'} left out.` : ''}

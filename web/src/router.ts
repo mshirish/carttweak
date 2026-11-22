@@ -1,11 +1,11 @@
 // Minimal hash router: #/start, #/saved/<id>, ...
-export type RouteName = 'store' | 'start' | 'receipt' | 'receipt-check' | 'receipt-match' | 'list' | 'check' | 'goals' | 'results' | 'saved' | 'trip' | 'about';
+export type RouteName = 'store' | 'start' | 'receipt' | 'receipt-check' | 'receipt-match' | 'login' | 'overview' | 'list' | 'check' | 'goals' | 'results' | 'saved' | 'trip' | 'about';
 export interface Route {
   name: RouteName;
   id?: string;
 }
 
-const NAMES: RouteName[] = ['store', 'start', 'receipt', 'receipt-check', 'receipt-match', 'list', 'check', 'goals', 'results', 'saved', 'trip', 'about'];
+const NAMES: RouteName[] = ['store', 'start', 'receipt', 'receipt-check', 'receipt-match', 'login', 'overview', 'list', 'check', 'goals', 'results', 'saved', 'trip', 'about'];
 
 export function parseHash(hash: string): Route {
   const parts = hash.replace(/^#\/?/, '').split('/').filter(Boolean);

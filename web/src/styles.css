@@ -255,3 +255,19 @@ details.sources ul { margin: 6px 0 0; padding-left: 18px; }
   .rrow-grid { grid-template-columns: 2.2fr 1.6fr 0.6fr 0.9fr; }
   .rrow-grid .rname, .rrow-grid .rcode { grid-column: auto; }
 }
+
+/* ---------- haul ---------- */
+.haul-hero { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; }
+.haul-score { font-size: 72px; font-weight: 900; line-height: 1; letter-spacing: -2px; }
+.haul-score .out-of { font-size: 24px; font-weight: 700; color: var(--muted); letter-spacing: 0; }
+.haul-verdict { font-size: 24px; font-weight: 900; margin-bottom: 4px; }
+.grade-bar { display: flex; height: 28px; border: 2px solid var(--ink); border-radius: 6px; overflow: hidden; margin: 6px 0; }
+.grade-bar span { display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 13px; min-width: 18px; }
+.score-list { list-style: none; padding: 0; margin: 0; }
+.score-list li { padding: 6px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+.grade { display: inline-flex; width: 24px; height: 24px; border-radius: 4px; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 14px; }
+.grade.gA { background: #0e6b4e; } .grade.gB { background: #5a9a3d; } .grade.gC { background: #c9a227; } .grade.gD { background: #d9822b; } .grade.gE { background: #b3261e; }
+.home-upload { padding: 22px; }
+.btn.big { min-height: 64px; font-size: 20px; width: 100%; }
+.haul-mini { display: inline-flex; width: 48px; height: 48px; border-radius: 8px; background: var(--ink); color: var(--paper); font-weight: 900; font-size: 20px; align-items: center; justify-content: center; flex: none; }
+.projected { font-size: 20px; font-weight: 900; }

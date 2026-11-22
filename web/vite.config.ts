@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [react()],
   server: {
     // browser never sees secrets; it talks to our server
-    proxy: { '/api': 'http://localhost:8787' },
+    proxy: { '/api': `http://localhost:${process.env.API_PORT ?? 8787}` },
   },
 });

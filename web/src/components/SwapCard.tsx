@@ -7,7 +7,7 @@ export function priceSourceLabel(p: { source: string; branch?: string; date: str
     const zip = /ZIP (\d{5})/.exec(p.branch ?? '')?.[1] ?? '';
     return `Walmart.com price for ZIP ${zip} (${checked})`;
   }
-  if (p.source === 'kroger_api') return `Kroger API, ${p.branch}, ${checked}`;
+  if (p.source === 'kroger_api') return `Prices from ${p.branch}; Walmart prices coming soon (${checked})`;
   return `${p.source}, ${p.branch ?? ''}, ${checked}`;
 }
 

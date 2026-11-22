@@ -174,3 +174,35 @@ Every item gets one outcome code, plus candidate rejection counts. `noSwapReason
   - `scripts/receipt-e2e.ts`
 
   Real-receipt screenshots stay in that folder. Committed screenshots use the synthetic `docs/samples/sample-receipt.png`.
+
+## 2026-11-22: Final milestone (haul rater pivot)
+
+- **Product:** a grocery haul rater + swap coach. Flow: "Who's shopping?" (name-only profile, this browser only) → upload a receipt (primary) or type a list → check lines → match → **haul overview** (score out of 100) → goals + budget → swaps → save haul (per profile). The "Try a swap" challenge was removed.
+- **Walmart API is off.** The server no longer loads Walmart config, so nothing calls it. Every swap price is from the Kroger demo branch, labelled "Prices from Kroger On the Rhine; Walmart prices coming soon". The receipt's "You paid $X on <date>" stays as separate context.
+- **Nutrition score** (`shared/nutriscore.ts`):
+  - **Version: the ORIGINAL Nutri-Score algorithm (2017).** Source: Santé publique France, Nutri-Score règlement d'usage (2017), built on the UK FSA/Ofcom nutrient profiling model (FSA, *Nutrient Profiling Technical Guidance*, 2011). The 2023 update was not implemented because its tables could not be verified within the deadline.
+  - **Threshold tables:**
+
+    | Component | Thresholds per 100 g (each one exceeded = 1 point) |
+    |---|---|
+    | Energy (kJ) | 335 / 670 / … / 3350 |
+    | Total sugars (g) | 4.5 / 9 / 13.5 / 18 / 22.5 / 27 / 31 / 36 / 40 / 45 |
+    | Saturated fat (g) | 1 … 10 |
+    | Sodium (mg) | 90 … 900 |
+    | Fruit/veg/legume % | >40 = 1, >60 = 2, >80 = 5 |
+    | Fiber (g) | 0.9 / 1.9 / 2.8 / 3.7 / 4.7 |
+    | Protein (g) | 1.6 / 3.2 / 4.8 / 6.4 / 8.0 |
+
+  - **Beverages** use their own energy table (0 / 30 / … / 270 kJ) and sugar table (0 / 1.5 / … / 13.5 g), and fruit/veg % scores 2 / 4 / 10.
+  - **Protein** is not counted when negative points are 11 or more and fruit/veg points are below the maximum, except for cheese.
+  - **Grades:** foods A ≤ −1, B 0–2, C 3–10, D 11–18, E ≥ 19. Beverages: water A, B ≤ 1, C 2–5, D 6–9, E ≥ 10.
+  - **Inputs:** energy (kJ = kcal × 4.184), total sugars, saturated fat (FDC `labelNutrients.saturatedFat`, else nutrient 606 / id 1258), sodium, fiber, protein, all per 100 g/mL. Fruit/veg % is 0 (not on US labels) and 100 for USDA generic produce.
+  - **Missing data:** any required input null means "not scored (label data missing: …)". Nothing is guessed.
+  - **Categories:** milk is a general food; soda, juice and plant milk are beverages; zero-energy, zero-sugar water is water. The fats/oils special case is NOT handled, because total fat isn't stored; such products are scored as general foods.
+  - **0–100 mapping:** `score100 = round(100 × (40 − points) / 55)`, clamped to 0–100. Best food points −15 give 100, worst 40 give 0. Water gives 100.
+  - **Tests** use examples hand-computed from the tables above. They are not copied from the official documentation's worked examples.
+- **Haul score** (`shared/haul.ts`):
+  - **Score:** the spend-weighted average of product scores over scored food items. The weight is the price paid on the receipt, or for typed lists the Kroger regular price × quantity.
+  - **Coverage:** scored food spend ÷ all food spend. Below 50% shows "Low confidence". Non-food items are excluded from both.
+  - **Verdicts:** 80+ Great haul, 60–79 Solid, 40–59 Room to improve, below 40 Lots of easy wins.
+- **Receipt lines not carried at the Kroger demo branch** are still scored from their USDA label (FDC by barcode). They just can't be swapped, because there's no Kroger price.

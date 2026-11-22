@@ -78,7 +78,7 @@ describe('SwapCard', () => {
   it('sources list price branch + relative time and an FDC link', () => {
     const s = swapFor(resolved('w', 'Classic White Bread', '20 oz', 329, { fiber_g: 3 }), resolved('2032747', 'Whole Grain Bread', '20 oz', 379, { fiber_g: 12 }));
     render(<SwapCard swap={s} now={NOW} />);
-    expect(screen.getAllByText(/Kroger API, Kroger On the Rhine, checked 3 hours ago/)).toHaveLength(2);
+    expect(screen.getAllByText(/Prices from Kroger On the Rhine; Walmart prices coming soon \(checked 3 hours ago\)/)).toHaveLength(2);
     expect(screen.getByRole('link', { name: 'USDA FoodData Central #2032747' }).getAttribute('href')).toBe('https://fdc.nal.usda.gov/food-details/2032747/nutrients');
   });
 });

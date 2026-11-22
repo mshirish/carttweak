@@ -91,6 +91,8 @@ export interface Per100Values {
   addedSugars_g: number | null;
   totalSugars_g: number | null;
   sodium_mg: number | null;
+  /** saturated fat (Nutri-Score input; not shown in swap tables). Optional: absent on older records. */
+  satFat_g?: number | null;
 }
 
 export const PER100_KEYS = ['calories', 'protein_g', 'fiber_g', 'addedSugars_g', 'totalSugars_g', 'sodium_mg'] as const;

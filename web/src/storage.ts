@@ -50,6 +50,18 @@ export interface SavedTrip {
   /** v2 */
   source: 'list' | 'receipt';
   chain: 'kroger' | 'walmart';
+  /** haul fields (optional; older saved trips lack them) */
+  profileId?: string;
+  storeLabel?: string;
+  date?: string | null;
+  totalSpentCents?: number;
+  haul?: {
+    score: number | null;
+    verdict: string | null;
+    coverageLine: string;
+    lowConfidence: boolean;
+    items: Array<{ id: string; name: string; matchMethod: string | null; grade: string | null; score100: number | null; reason: string | null; spendCents: number | null }>;
+  };
 }
 
 /** v1 trips (Milestone 2) were list trips at Kroger. */
