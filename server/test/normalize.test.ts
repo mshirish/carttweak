@@ -74,3 +74,15 @@ describe(`FDC normalization (${RECORDED})`, () => {
     expect(p.size!.label).toBe('22 oz');
   });
 });
+
+describe('krogerTerm (Kroger allows at most 8 words per search, recorded live 2026-11-22)', () => {
+  it('short terms unchanged; long ones drop sizes and "/", capped at 8 words', async () => {
+    const { krogerTerm } = await import('../src/service.ts');
+    expect(krogerTerm('Coca-Cola Soda Cans 12 pk')).toBe('Coca-Cola Soda Cans 12 pk');
+    expect(krogerTerm('Coca-Cola Soda Cans 12 pk / 12 fl oz')).toBe('Coca-Cola Soda Cans');
+    expect(krogerTerm('Simple Truth Plant Based Non Dairy Unsweetened Almondmilk Half Gallon')).toBe('Simple Truth Plant Based Non Dairy Unsweetened Almondmilk');
+    for (const t of ['Nature Valley Oats n Honey Crunchy Granola Bars 6 ct / 1.49 oz', 'a b c d e f g h i j k']) {
+      expect(krogerTerm(t).split(' ').length).toBeLessThanOrEqual(8);
+    }
+  });
+});

@@ -8,6 +8,7 @@ import {
   planSwaps,
   explainPlan,
   resolveQuery,
+  splitSize,
   sameKind,
   swapGroupFor,
   SWAP_GROUPS,
@@ -79,6 +80,20 @@ export const GOAL_VALUES: Goal[] = ['more_protein', 'more_fiber', 'less_added_su
 
 /** Lookups run with this concurrency; the per-service AdaptiveLimiter (cache.ts) also caps live HTTP at 6 and backs off on 429. */
 export const CONCURRENCY = 6;
+
+/**
+ * Kroger rejects search terms with more than 8 words (HTTP 400 PRODUCT-2019,
+ * seen live 2026-11-22; "/" counts as a word). Short terms go as typed; longer
+ * ones drop size expressions and lone punctuation, then keep the first 8 words.
+ * The resolver still matches against the full query, size included.
+ */
+export function krogerTerm(query: string): string {
+  const words = (q: string) => q.split(/\s+/).filter(Boolean);
+  const q = query.trim();
+  if (words(q).length <= 8) return q;
+  const trimmed = words(splitSize(q).rest.replace(/(^|\s)[^\w\s]+(?=\s|$)/g, ' '));
+  return (trimmed.length ? trimmed : words(q)).slice(0, 8).join(' ');
+}
 
 export interface PlanProgress {
   phase: 'store' | 'resolve' | 'candidates' | 'plan' | 'done';
@@ -155,7 +170,7 @@ export function createService(cfg: ServiceConfig) {
   async function search(term: string, locationId: string, opts: { enrich?: boolean; limit?: number } = {}) {
     if (!term.trim()) throw new ServiceError(400, 'bad_term', 'term is required');
     const b = await branch(locationId);
-    let r = await kroger.productSearch(cfg.kroger, term, locationId, opts.limit ?? 10);
+    let r = await kroger.productSearch(cfg.kroger, krogerTerm(term), locationId, opts.limit ?? 10);
     if (!r.ok) throw new ServiceError(502, 'kroger_error', `Kroger product search failed: HTTP ${r.status}`);
     let usedTerm = term;
     // zero results: retry once with the first three words (seen live: "Prego Traditional Italian Sauce" -> 0)

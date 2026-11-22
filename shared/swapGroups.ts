@@ -92,8 +92,10 @@ export const SWAP_GROUPS: SwapGroup[] = [
     id: 'pasta_sauce',
     label: 'pasta sauce',
     krogerCategories: ['Pasta, Sauces, Grain'],
-    include: /\b(pasta sauce|marinara|italian sauce|tomato basil sauce|spaghetti sauce|arrabbiata|vodka sauce)\b/i,
-    exclude: /\b(alfredo|pesto|pizza sauce)\b/i,
+    // Prego names its jars "Traditional Sauce", "Marinara Sauce" (seen live 2026-11-22): any sauce in the pasta aisle
+    include: /\b(sauce|marinara)\b/i,
+    exclude: /\b(alfredo|pesto|pizza|soy|bbq|barbecue|hot sauce|teriyaki|worcestershire|enchilada|taco|curry|stir fry|cooking sauces)\b/i,
+    categoryRequired: /pasta/i,
     searchTerms: ['marinara sauce', 'no sugar added pasta sauce', 'low sodium pasta sauce'],
   },
   {
