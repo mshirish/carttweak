@@ -132,3 +132,18 @@ Yogurt pairs: 56 candidate pairs qualified overall (yogurt + bread). Added sugar
   | Warm, through the UI (job + 300 ms polling) | 1.2–2.0 s | none |
 
   The FDC key reported about 2,300–2,650 requests remaining per hour (`X-RateLimit-Remaining`).
+
+### 2026-11-22: Walmart Affiliate API (`npm run probe:walmart`)
+
+- **Docs read** 2026-11-22 at walmart.io/docs/affiliates/v1. The pages are client-rendered, so they were read in a headless browser.
+- **Signing:** `WM_SEC.AUTH_SIGNATURE` = base64 RSA-SHA256 over the header values sorted by header name, each followed by `\n`, which gives `consumerId\ntimestamp(ms)\nkeyVersion\n`. A signature lives 180 s.
+- **Endpoints** (base `https://developer.api.walmart.com/api-proxy/service/affil/product/v2`):
+  - `/items?upc=|gtin=|ids=` (up to 20 ids), with optional `zipCode` (and `storeId`, which needs Walmart business approval).
+  - `/search?query=&numItems<=25&start&sort&categoryId&responseGroup`. No ZIP parameter is documented.
+  - `/stores?zip=|lat=&lon=`.
+- **Price by ZIP:** the docs say "Price and availability is also dependent on zipCode and storeId. If no zipCode or storeId is passed then default zipCode of San Bruno is being used."
+- **Documented item fields:** `itemId`, `upc`, `name`, `brandName`, `salePrice`, `msrp`, `size`, `stock` (Available / Limited Supply / Last few items / Not available), `availableOnline`, `offerType` (ONLINE_ONLY / ONLINE_AND_STORE / STORE_ONLY), `marketplace`, `sellerInfo`, `categoryPath`, `thumbnailImage`.
+- **Live result 2026-11-22T16:19Z: auth failed.** Every call (5 UPC lookups × no ZIP / 45202 / 10001, 2 searches × 2, stores for 45202) returned **HTTP 401** with this body (consumer id redacted):
+  `{"details":{"Description":"Public Key not found for  Consumer id : [REDACTED]","wm_svc.version":"2.0.0","wm_svc.name":"affil-product","wm_svc.env":"prod"}}`
+  - **Likely cause:** Walmart has no public key on file for this consumer ID and key version. Either `secrets/walmart_public_key.pem` was never uploaded on walmart.io, or it was uploaded under a key version other than `WALMART_KEY_VERSION` (default `1`).
+  - **UNVERIFIED** until auth works: which fields actually come back, whether `salePrice` changes with `zipCode`, whether search honours `zipCode`, and the store-locator fields.

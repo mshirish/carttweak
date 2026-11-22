@@ -15,6 +15,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p web/tsconfig.json --noEmit",
     "gen:walmart-keys": "tsx scripts/gen-walmart-keys.ts",
     "probe:kroger-fdc": "tsx scripts/probe-kroger-fdc.ts",
+    "probe:walmart": "tsx scripts/probe-walmart.ts",
     "smoke:plan": "tsx scripts/smoke-plan.ts",
     "warm": "tsx scripts/warm.ts",
     "add-label": "tsx scripts/add-label.ts",
