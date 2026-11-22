@@ -35,7 +35,7 @@ function Header({ branch, route, note }: { branch: Branch | null; route: Route; 
         {branch ? (
           <>
             <strong>{branch.name}</strong>
-            {note ? <span className="badge warn" style={{ marginLeft: 6 }}>{note}</span> : null}
+            {note ? <span className="badge warn" style={{ margin: '0 6px' }}>{note}</span> : null}
             <span className="addr">{branch.address}</span> ·{' '}
             <a href={hrefFor({ name: 'store' })} className="small">
               Change

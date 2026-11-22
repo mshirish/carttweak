@@ -185,3 +185,15 @@ describe('Walmart plan + Walmart-down fallback', () => {
     expect(r.json.paid.r01).toMatchObject({ source: 'receipt', regularCents: 248, branch: { name: 'Walmart #1711' } });
   });
 });
+
+describe('display helpers for FDC matches and receipt prices', () => {
+  it('no repeated brand; GS1 units made readable; store "00000" is not lost', async () => {
+    const { fdcDisplayName, prettyPackageWeight } = await import('../src/normalize.ts');
+    expect(fdcDisplayName('Jif', 'Jif 16 Ounce Creamy Peanut Butter')).toBe('Jif 16 Ounce Creamy Peanut Butter');
+    expect(fdcDisplayName('WONDER', 'CLASSIC WHITE BREAD')).toBe('WONDER CLASSIC WHITE BREAD');
+    expect(prettyPackageWeight('144.0 OZA')).toBe('144 fl oz');
+    expect(prettyPackageWeight('16 ONZ')).toBe('16 oz');
+    expect(receiptPrice('x', { cents: 1, date: null, storeNumber: '00000', quantity: 1 }).branch.name).toBe('Walmart #0');
+    expect(receiptPrice('x', { cents: 1, date: null, storeNumber: '01711', quantity: 1 }).branch.name).toBe('Walmart #1711');
+  });
+});

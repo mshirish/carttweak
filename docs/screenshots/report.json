@@ -72,10 +72,32 @@
         }
       ],
       "sugarNoSwap": null,
+      "receiptNeedLook": "0 of 7 lines need a look.",
+      "receiptMatch": [
+        "Matched by barcode",
+        "Matched by barcode",
+        "Matched by barcode",
+        "Matched by barcode",
+        "Matched by barcode",
+        "Not matched",
+        "Not matched"
+      ],
+      "receiptSwaps": [
+        {
+          "label": "Swap Jif Creamy Peanut Butter for Crazy Richard's 100% Peanuts Creamy Natural Peanut Butter",
+          "impact": "−1924.3 mg sodium across what you buy",
+          "regular": "$1.00 more",
+          "promo": "With current promo, may require Kroger card: $0.40 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        }
+      ],
       "timingsMs": {
-        "resolveMs": 131,
-        "planMs": 1495,
-        "replanMs": 802
+        "resolveMs": 198,
+        "planMs": 835,
+        "replanMs": 727,
+        "receiptOcrMs": 2915
       },
       "shots": [
         "docs/screenshots/375-01-start.png",
@@ -91,8 +113,13 @@
         "docs/screenshots/375-11-goals-sugar.png",
         "docs/screenshots/375-12-results-sugar.png",
         "docs/screenshots/375-13-receipt.png",
-        "docs/screenshots/375-14-store.png",
-        "docs/screenshots/375-15-about.png"
+        "docs/screenshots/375-14-receipt-prepare.png",
+        "docs/screenshots/375-15-receipt-reading.png",
+        "docs/screenshots/375-16-receipt-check.png",
+        "docs/screenshots/375-17-receipt-match.png",
+        "docs/screenshots/375-18-receipt-results.png",
+        "docs/screenshots/375-19-store.png",
+        "docs/screenshots/375-20-about.png"
       ],
       "consoleErrors": []
     },
@@ -167,10 +194,32 @@
         }
       ],
       "sugarNoSwap": null,
+      "receiptNeedLook": "0 of 7 lines need a look.",
+      "receiptMatch": [
+        "Matched by barcode",
+        "Matched by barcode",
+        "Matched by barcode",
+        "Matched by barcode",
+        "Matched by barcode",
+        "Not matched",
+        "Not matched"
+      ],
+      "receiptSwaps": [
+        {
+          "label": "Swap Jif Creamy Peanut Butter for Crazy Richard's 100% Peanuts Creamy Natural Peanut Butter",
+          "impact": "−1924.3 mg sodium across what you buy",
+          "regular": "$1.00 more",
+          "promo": "With current promo, may require Kroger card: $0.40 more",
+          "badges": [
+            "Label may be outdated"
+          ]
+        }
+      ],
       "timingsMs": {
-        "resolveMs": 162,
-        "planMs": 839,
-        "replanMs": 763
+        "resolveMs": 158,
+        "planMs": 855,
+        "replanMs": 802,
+        "receiptOcrMs": 2924
       },
       "shots": [
         "docs/screenshots/1280-01-start.png",
@@ -186,8 +235,13 @@
         "docs/screenshots/1280-11-goals-sugar.png",
         "docs/screenshots/1280-12-results-sugar.png",
         "docs/screenshots/1280-13-receipt.png",
-        "docs/screenshots/1280-14-store.png",
-        "docs/screenshots/1280-15-about.png"
+        "docs/screenshots/1280-14-receipt-prepare.png",
+        "docs/screenshots/1280-15-receipt-reading.png",
+        "docs/screenshots/1280-16-receipt-check.png",
+        "docs/screenshots/1280-17-receipt-match.png",
+        "docs/screenshots/1280-18-receipt-results.png",
+        "docs/screenshots/1280-19-store.png",
+        "docs/screenshots/1280-20-about.png"
       ],
       "consoleErrors": []
     }

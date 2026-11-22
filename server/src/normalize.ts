@@ -246,9 +246,31 @@ export function normalizeWalmartItem(raw: any, zip: string, meta: { observedAt: 
   return { product, price, upc, noBarcode: false, packageSizeRaw: raw?.size ?? null };
 }
 
+/** FDC packageWeight for display: GS1 unit codes -> plain units ("16 ONZ" -> "16 oz", "144.0 OZA" -> "144 fl oz"). */
+export function prettyPackageWeight(pw: string | null | undefined): string | null {
+  if (!pw) return null;
+  return String(pw)
+    .replace(/(\d+)\.0+\b/g, '$1')
+    .replace(/\bONZ\b/gi, 'oz')
+    .replace(/\bOZA\b/gi, 'fl oz')
+    .replace(/\bGRM\b/gi, 'g')
+    .replace(/\bMLT\b/gi, 'mL')
+    .replace(/\bLBR\b/gi, 'lb');
+}
+
+/** Product name from an FDC record without repeating the brand ("Jif Jif 16 Ounce ..."). */
+export function fdcDisplayName(brand: string | null | undefined, description: string | null | undefined): string {
+  const d = String(description ?? '').trim();
+  const b = String(brand ?? '').trim();
+  if (!b || d.toLowerCase().startsWith(b.toLowerCase())) return d || b;
+  return `${b} ${d}`;
+}
+
 /** A price the shopper actually paid, read from their receipt (context only; never used for swap cost math). */
 export function receiptPrice(itemRef: string, paid: { cents: number; date: string | null; storeNumber: string | null; quantity: number }): PriceObservation {
-  const store = paid.storeNumber ? `Walmart #${paid.storeNumber.replace(/^0+/, '')}` : 'Walmart';
+  // keep at least one digit: store "00000" must not become "Walmart #"
+  const num = paid.storeNumber ? paid.storeNumber.replace(/^0+(?=\d)/, '') : null;
+  const store = num ? `Walmart #${num}` : 'Walmart';
   return {
     productRef: itemRef,
     branch: { chain: 'walmart', locationId: `store:${paid.storeNumber ?? 'unknown'}`, name: store, address: '' },

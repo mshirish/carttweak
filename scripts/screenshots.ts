@@ -156,9 +156,37 @@ async function run(width: number, height: number) {
   report.runs[width].sugarNoSwap = await page.locator('[data-testid=suggestion]').textContent().catch(() => null);
   shots.push(await shot(page, width, ++n, 'results-sugar'));
 
+  // Receipt flow with the SYNTHETIC sample receipt (docs/samples/sample-receipt.png) - never a real receipt
   await page.goto(`${BASE}/#/receipt`);
   await page.getByRole('heading', { name: 'Upload a receipt' }).waitFor();
   shots.push(await shot(page, width, ++n, 'receipt'));
+  await page.getByTestId('receipt-file').setInputFiles(path.join(root, 'docs', 'samples', 'sample-receipt.png'));
+  await page.getByRole('button', { name: 'Read receipt' }).waitFor({ timeout: 60_000 });
+  shots.push(await shot(page, width, ++n, 'receipt-prepare'));
+  t0 = Date.now();
+  await page.getByRole('button', { name: 'Read receipt' }).click();
+  await page.waitForTimeout(400);
+  shots.push(await shot(page, width, ++n, 'receipt-reading', false));
+  await page.getByRole('heading', { name: 'Check what we read' }).waitFor({ timeout: 180_000 });
+  t.receiptOcrMs = Date.now() - t0;
+  report.runs[width].receiptNeedLook = await page.getByTestId('need-look').textContent();
+  shots.push(await shot(page, width, ++n, 'receipt-check'));
+  await page.getByRole('button', { name: 'Match products' }).click();
+  await page.getByRole('heading', { name: 'Match your items' }).waitFor({ timeout: 120_000 });
+  report.runs[width].receiptMatch = await page.$$eval('li.item .chip', (els) => els.map((e) => e.textContent?.trim()));
+  shots.push(await shot(page, width, ++n, 'receipt-match'));
+  const fallback = page.getByRole('button', { name: /Plan at .* instead/ });
+  const toWalmart = page.getByRole('button', { name: /Continue at Walmart\.com/ });
+  if (await fallback.isVisible().catch(() => false)) await fallback.click();
+  else await toWalmart.click();
+  await page.getByRole('heading', { name: 'Goals and budget' }).waitFor();
+  await page.locator('label.radio-card', { hasText: 'Less sodium' }).first().click();
+  await page.getByLabel('Maximum extra spend in dollars').fill('2');
+  await page.getByText('$0 means only swaps').click();
+  await page.getByRole('button', { name: /Find swaps/ }).click();
+  await waitResults(page);
+  report.runs[width].receiptSwaps = await swapsOnPage(page);
+  shots.push(await shot(page, width, ++n, 'receipt-results'));
   await page.goto(`${BASE}/#/store`);
   await page.getByRole('textbox', { name: /ZIP/ }).fill('45202');
   await page.getByRole('button', { name: 'Find stores' }).click();

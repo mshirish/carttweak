@@ -118,7 +118,7 @@ label.field { display: block; font-weight: 700; margin-bottom: 6px; }
 .item-head { display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; }
 @media (max-width: 520px) {
   /* narrow screens: the lock toggle goes under the product so the name keeps its width */
-  .item-head .lock { margin-left: 66px; }
+  .item-head:has(.thumb) .lock { margin-left: 66px; }
   .item-head .item-main { flex: 1 1 calc(100% - 66px); }
 }
 .item-head .thumb { width: 56px; height: 56px; object-fit: contain; background: #fff; border: 1px solid var(--line); border-radius: 6px; flex: none; }

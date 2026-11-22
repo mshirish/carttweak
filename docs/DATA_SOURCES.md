@@ -175,3 +175,21 @@ Yogurt pairs: 56 candidate pairs qualified overall (yogurt + bread). Added sugar
 
   - **Why PSM 3 failed:** it reads the price column as a separate block.
   - **Receipt 4:** a low-resolution image; it needs upscaling (see the browser numbers below).
+
+### 2026-11-22: receipt flow end to end (browser, local, the shopper's 4 private receipt photos)
+
+`scripts/receipt-e2e.ts` ran the real UI in Edge, using tesseract.js in the browser (PSM 6, automatic upscaling, default contrast). Walmart auth is still 401, so every receipt was planned at the Kroger demo branch, labelled "Different store". Counts only:
+
+| Receipt | Item lines read correctly (code + price) | Needed a look | Header (store / ZIP / date) | Matched by barcode | Confirmed | Not matched | OCR time | Match time | Plan time |
+|---|---|---|---|---|---|---|---|---|---|
+| 1 (540 px) | 38/38 | 0 | ok / none printed / ok | 26 | 0 | 12 | 6.3 s | 0.2 s | 1.5 s |
+| 2 (540 px) | 6/6 | 0 | ok / ok / ok | 1 | 0 | 5 | 4.1 s | 0.1 s | 0.1 s |
+| 3 (540 px) | 28/28 | 1 | ok / ok / ok | 19 | 0 | 9 | 4.6 s | 0.1 s | 1.1 s |
+| 4 (300 px, generator-style) | 0/4 | 6/6 | store misread / ok / ok | 0 | 0 | 6 | 3.1 s | 0.1 s | n/a |
+
+- **Matching:** all barcode matches came via USDA FDC by GTIN (Walmart lookup unavailable).
+- **"Confirmed":** 0 because confirming needs Walmart search candidates, which require Walmart auth.
+- **"Not matched"** covers produce (PLU codes), non-food items (FDC is food-only), and codes not in FDC.
+- **Receipt 4:** 300 px wide; still unreadable with black & white on. The shopper can type or fix its lines on the check screen.
+- **Match and plan times** above are with a warm cache. The first match on receipts 1 and 3 took about 3 s.
+- **Example plans:** reported privately to the shopper; not recorded here because they would reveal what was bought.

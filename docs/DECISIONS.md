@@ -150,3 +150,27 @@ Every item gets one outcome code, plus candidate rejection counts. `noSwapReason
 - **Saved trips:** stored in `localStorage` under `carttweak.trips` (`schemaVersion: 1`). Accepted swaps are stored in full, including source snapshots. If storage fails, trips are kept in memory for the tab and a warning is shown.
 - **Dev setup:** `npm run dev` starts the API (:8787) and Vite (:5173, proxying `/api`).
 - **Screenshots:** `scripts/screenshots.ts` drives installed Edge via `playwright-core` (no browser download).
+
+## 2026-11-22: Milestone 3 (pinned swaps, Walmart, receipts)
+
+- **Accepted swaps are pinned** (`pinnedSwaps`). Rejecting a swap re-plans only the open slot(s). The remaining budget is the budget minus the pinned swaps' combined regular difference. A pinned swap that no longer qualifies is reported in `pinnedDropped`, never silently kept.
+- **The budget is for the trip total.** Each card shows its own difference, and the trip bar says how the budget is used, e.g. "Your $0.00 budget covers the whole trip: the Bubly swap saves $2.01, which pays for the $0.50 bread swap." (`budgetSentence`).
+- **Walmart (`server/src/walmart.ts`):**
+  - **Signing:** RSA-SHA256 over `consumerId\ntimestamp\nkeyVersion\n` (base64). It is generated per live call, after a cache miss, because a signature is valid for only 180 s. Key and headers are never logged.
+  - **Configuration:** `WALMART_KEY_VERSION` defaults to 1, `WALMART_PRIVATE_KEY_PATH` to `secrets/walmart_private_key.pem`.
+  - **Prices:** Walmart prices are `walmart_api` observations for a ZIP, labelled "Walmart.com price for ZIP xxxxx (checked …)". They are never called a shelf price.
+  - **Candidates:** found with the swap groups' `WALMART_SEARCH_TERMS`, then re-priced for the ZIP with `items?ids=`, because search results aren't ZIP-specific.
+  - **Availability:** checked live (uncached) by `/api/walmart/status`. When unavailable, a Walmart plan returns 503 "We can't check Walmart's current prices right now", and the UI offers the Kroger demo branch, labelled "Different store".
+- **Receipts:**
+  - **OCR in the browser:** tesseract.js (Web Worker), PSM 6, with photos narrower than 1400 px upscaled. The image never leaves the browser, is released after reading, and is never saved. The language data downloads once from tesseract.js's default CDN and carries no image data.
+  - **Parser** (`shared/receipt.ts`): its printed codes are the UPC without check digit (verified, see DATA_SOURCES). Card digits, approval/ref/AID/AAC/terminal ids, TC#, staff names, survey ids and barcodes are dropped (counts only). Unreadable data lines become rows for the shopper; nothing is dropped silently.
+  - **Match methods:** `barcode` (Walmart lookup by UPC, else FDC by GTIN-14), `shopper_confirmed` (picked from Walmart search candidates; never auto-picked), `unmatched` (kept on the list, never swapped, and not sent for planning).
+  - **Duplicate lines:** the same matched product on several lines becomes one plan item, with quantity and paid amounts added up.
+  - **Paid vs current prices:** what the shopper paid is a separate `receipt` PriceObservation ("You paid $X for N on <date> at Walmart #<store>"). It is context only. Swap cost math always uses current prices from one source for both products.
+- **Saved trips v2:** add `source` (list/receipt), `chain`, and per-item `matchMethod` plus `paidCents`. v1 trips migrate on read.
+- **Local-only tools** that read `data/receipts/private/` (gitignored) print counts only:
+  - `scripts/verify-receipt-codes.ts`
+  - `scripts/receipt-accuracy.ts`
+  - `scripts/receipt-e2e.ts`
+
+  Real-receipt screenshots stay in that folder. Committed screenshots use the synthetic `docs/samples/sample-receipt.png`.
