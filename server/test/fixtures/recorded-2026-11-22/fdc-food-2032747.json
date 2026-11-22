@@ -1,0 +1,657 @@
+{
+ "recorded": "recorded live 2026-11-22",
+ "source": "data/raw/2026-11-22T05-14-24-045Z/197-fdc-food-2032747.json",
+ "url": "https://api.nal.usda.gov/fdc/v1/food/2032747?api_key=[REDACTED]",
+ "status": 200,
+ "retrievedAt": "2026-11-22T05:15:14.891Z",
+ "body": {
+  "discontinuedDate": "",
+  "foodComponents": [],
+  "foodAttributes": [
+   {
+    "id": 2228449,
+    "value": 9,
+    "name": "Added Package Weight",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   }
+  ],
+  "foodPortions": [],
+  "fdcId": 2032747,
+  "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+  "publicationDate": "10/28/2021",
+  "foodNutrients": [
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1004,
+     "number": "204",
+     "name": "Total lipid (fat)",
+     "rank": 800,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768480,
+    "amount": 1.06
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1292,
+     "number": "645",
+     "name": "Fatty acids, total monounsaturated",
+     "rank": 11400,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768497,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1093,
+     "number": "307",
+     "name": "Sodium, Na",
+     "rank": 5800,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768488,
+    "amount": 362
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1166,
+     "number": "405",
+     "name": "Riboflavin",
+     "rank": 6500,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768492,
+    "amount": 0.072
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1008,
+     "number": "208",
+     "name": "Energy",
+     "rank": 300,
+     "unitName": "kcal"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768482,
+    "amount": 149
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1104,
+     "number": "318",
+     "name": "Vitamin A, IU",
+     "rank": 7500,
+     "unitName": "IU"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768489,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1167,
+     "number": "406",
+     "name": "Niacin",
+     "rank": 6600,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768493,
+    "amount": 0.851
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1293,
+     "number": "646",
+     "name": "Fatty acids, total polyunsaturated",
+     "rank": 12900,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768498,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1089,
+     "number": "303",
+     "name": "Iron, Fe",
+     "rank": 5400,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768486,
+    "amount": 2.3
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1258,
+     "number": "606",
+     "name": "Fatty acids, total saturated",
+     "rank": 9700,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768496,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1162,
+     "number": "401",
+     "name": "Vitamin C, total ascorbic acid",
+     "rank": 6300,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768490,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 2000,
+     "number": "269",
+     "name": "Total Sugars",
+     "rank": 1510,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768483,
+    "amount": 2.13
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1005,
+     "number": "205",
+     "name": "Carbohydrate, by difference",
+     "rank": 1110,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768481,
+    "amount": 36.17
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1257,
+     "number": "605",
+     "name": "Fatty acids, total trans",
+     "rank": 15400,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768495,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1003,
+     "number": "203",
+     "name": "Protein",
+     "rank": 600,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768479,
+    "amount": 8.51
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1253,
+     "number": "601",
+     "name": "Cholesterol",
+     "rank": 15700,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768494,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1092,
+     "number": "306",
+     "name": "Potassium, K",
+     "rank": 5700,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768487,
+    "amount": 106
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1079,
+     "number": "291",
+     "name": "Fiber, total dietary",
+     "rank": 1200,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768484,
+    "amount": 12.8
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1165,
+     "number": "404",
+     "name": "Thiamin",
+     "rank": 6400,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768491,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1087,
+     "number": "301",
+     "name": "Calcium, Ca",
+     "rank": 5300,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 75,
+     "code": "LCCD",
+     "description": "Calculated from a daily value percentage per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 24768485,
+    "amount": 213
+   }
+  ],
+  "dataType": "Branded",
+  "foodClass": "Branded",
+  "modifiedDate": "4/8/2020",
+  "availableDate": "4/8/2020",
+  "brandOwner": "Perfection Bakeries, Inc.",
+  "brandName": "AUNT MILLIE'S",
+  "subbrandName": "HEALTHY GOODNESS",
+  "dataSource": "LI",
+  "brandedFoodCategory": "Breads & Buns",
+  "gtinUpc": "071314001854",
+  "householdServingFullText": "2 SLICES",
+  "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+  "marketCountry": "United States",
+  "servingSize": 47,
+  "servingSizeUnit": "g",
+  "packageWeight": "20 oz/567 g",
+  "foodUpdateLog": [
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 2032747,
+    "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+    "publicationDate": "10/28/2021",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "4/8/2020",
+    "availableDate": "4/8/2020",
+    "brandOwner": "Perfection Bakeries, Inc.",
+    "brandName": "AUNT MILLIE'S",
+    "subbrandName": "HEALTHY GOODNESS",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "071314001854",
+    "householdServingFullText": "2 SLICES",
+    "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+    "marketCountry": "United States",
+    "servingSize": 47,
+    "servingSizeUnit": "g",
+    "packageWeight": "20 oz/567 g"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 1502196,
+    "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+    "publicationDate": "3/19/2021",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "4/8/2020",
+    "availableDate": "4/8/2020",
+    "brandOwner": "Perfection Bakeries, Inc.",
+    "brandName": "AUNT MILLIE'S",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "071314001854",
+    "householdServingFullText": "2 SLICES",
+    "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+    "marketCountry": "United States",
+    "servingSize": 47,
+    "servingSizeUnit": "g"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 1210140,
+    "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+    "publicationDate": "2/26/2021",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "4/8/2020",
+    "availableDate": "4/8/2020",
+    "brandOwner": "Perfection Bakeries, Inc.",
+    "brandName": "AUNT MILLIE'S",
+    "subbrandName": "",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "071314001854",
+    "householdServingFullText": "2 SLICES",
+    "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+    "marketCountry": "United States",
+    "servingSize": 47,
+    "servingSizeUnit": "g",
+    "packageWeight": "",
+    "notaSignificantSourceOf": ""
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 1109442,
+    "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+    "publicationDate": "11/13/2020",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "4/8/2020",
+    "availableDate": "4/8/2020",
+    "brandOwner": "Perfection Bakeries, Inc.",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "071314001854",
+    "householdServingFullText": "2 SLICES",
+    "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+    "marketCountry": "United States",
+    "servingSize": 47,
+    "servingSizeUnit": "g"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 825546,
+    "description": "LIGHT WHOLE GRAIN BREAD, LIGHT WHOLE GRAIN",
+    "publicationDate": "5/28/2020",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "4/8/2020",
+    "availableDate": "4/8/2020",
+    "brandOwner": "Perfection Bakeries, Inc.",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "071314001854",
+    "householdServingFullText": "2 SLICES",
+    "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+    "marketCountry": "United States",
+    "servingSize": 47,
+    "servingSizeUnit": "g"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "modifiedDate": "9/6/2018",
+    "availableDate": "9/6/2018",
+    "brandOwner": "Perfection Bakeries, Inc.",
+    "dataSource": "LI",
+    "gpcCategoryGroup": "Breads & Buns",
+    "gtinUpc": "071314001854",
+    "householdServingFullText": "2 SLICES",
+    "ingredients": "WATER, WHOLE GRAIN WHEAT FLOUR, WHEAT GLUTEN, YEAST, OAT FIBER, RESISTANT CORN STARCH, SOLUBLE CORN FIBER, SUGAR, SALT, MOLASSES, VINEGAR, WHEAT PROTEIN ISOLATE, CALCIUM SULFATE, DATEM, CALCIUM PROPIONATE (A PRESERVATIVE), CELLULOSE GUM, WHEAT STARCH, MONOGLYCERIDES, ETHOXYLATED MONO- AND DIGLYCERIDES, POTASSIUM CHLORIDE, MONOCALCIUM PHOSPHATE, SOYBEAN OIL, MALTODEXTRIN, CARRAGEENAN, NATURAL AND ARTIFICIAL FLAVOR, CITRIC ACID, ASCORBIC ACID, SOY LECITHIN; TOPPED WITH OAT BRAN.",
+    "marketCountry": "United States",
+    "servingSize": 47,
+    "servingSizeUnit": "g",
+    "fdcId": 400725,
+    "description": "LIGHT WHOLE GRAIN BREAD",
+    "publicationDate": "4/1/2019",
+    "workingFoodId": 45101077,
+    "dataType": "Branded",
+    "foodClass": "Branded"
+   }
+  ],
+  "labelNutrients": {
+   "fat": {
+    "value": 0.498
+   },
+   "saturatedFat": {
+    "value": 0
+   },
+   "transFat": {
+    "value": 0
+   },
+   "cholesterol": {
+    "value": 0
+   },
+   "sodium": {
+    "value": 170
+   },
+   "carbohydrates": {
+    "value": 17
+   },
+   "fiber": {
+    "value": 6.02
+   },
+   "sugars": {
+    "value": 1
+   },
+   "protein": {
+    "value": 4
+   },
+   "calcium": {
+    "value": 100
+   },
+   "iron": {
+    "value": 1.08
+   },
+   "potassium": {
+    "value": 49.8
+   },
+   "calories": {
+    "value": 70
+   }
+  }
+ }
+}

@@ -1,0 +1,4643 @@
+{
+ "recorded": "recorded live 2026-11-22",
+ "source": "data/raw/2026-11-22T05-14-24-045Z/115-kroger-products-white-bread.json",
+ "url": "https://api.kroger.com/v1/products?filter.term=white%20bread&filter.locationId=01400513&filter.limit=10",
+ "status": 200,
+ "retrievedAt": "2026-11-22T05:14:53.835Z",
+ "body": {
+  "data": [
+   {
+    "productId": "0001111008485",
+    "upc": "0001111008485",
+    "productPageURI": "/p/kroger-white-bread/0001111008485?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "6",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "4",
+      "side": "R",
+      "shelfNumber": "4",
+      "shelfPositionInBay": "1"
+     },
+     {
+      "bayNumber": "6",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "5",
+      "side": "R",
+      "shelfNumber": "3",
+      "shelfPositionInBay": "1"
+     }
+    ],
+    "brand": "Kroger",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Kroger® White Bread",
+    "snapEligible": true,
+    "manufacturerDeclarations": [
+     "Vegan"
+    ],
+    "sweeteningMethods": [
+     {
+      "code": "SUGAR",
+      "name": "SUGAR"
+     }
+    ],
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Soybean and its Derivatives,Barley  and Barley Products.",
+    "nonGmoClaimName": "NO NON-GMO CLAIM",
+    "organicClaimName": "NO",
+    "receiptDescription": "KRO WHITE ROUND TO",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0001111008485"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0001111008485"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0001111008485"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0001111008485"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0001111008485"
+       }
+      ]
+     },
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0001111008485"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0001111008485"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0001111008485"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0001111008485"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0001111008485"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0001111008485"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0001111008485"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0001111008485"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0001111008485"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0001111008485"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0001111008485"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0001111008485"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0001111008485"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0001111008485"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0001111008485"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0001111008485",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 1.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-21T12:14:14.595Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "20 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "12.65",
+     "height": "4.75",
+     "width": "5.65",
+     "grossWeight": "1.25 [lb_av]",
+     "netWeight": "1.25 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 4.15,
+     "totalReviewCount": 158
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Flour (Wheat Flour, Malted Barley, Niacin, Reduced Iron, Thiamine Mononitrate, Riboflavin, Folic Acid), Water, Sugar, Yeast, Contains 2% or Less of: Soybean Oil, Salt, Sodium Stearoyl Lactylate, Ammonium Sulfate, Calcium Propionate (Preservative), Fumaric Acid.",
+      "dailyValueIntakeReference": "The % Daily Value tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 27,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 6,
+        "quantity": 0.9,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 70,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 3,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 10,
+        "quantity": 0.1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 2,
+        "quantity": 1,
+        "precision": {
+         "code": "LESS_THAN",
+         "name": "Less than"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 6,
+        "quantity": 140,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 2,
+        "quantity": 20,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 5,
+        "quantity": 14,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 6,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "21.0",
+       "value": 21
+      },
+      "nutritionalRating": "36"
+     }
+    ]
+   },
+   {
+    "productId": "0007225001137",
+    "upc": "0007225001137",
+    "productPageURI": "/p/wonder-classic-white-bread/0007225001137?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "5",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "2",
+      "side": "R",
+      "shelfNumber": "6",
+      "shelfPositionInBay": "1"
+     }
+    ],
+    "brand": "Wonder",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Wonder Classic White Bread",
+    "snapEligible": true,
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Cereals and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "May contain",
+      "name": "Sesame Seeds and their derivates"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Cereals and Their Derivatives,Soybean and its Derivatives,Barley  and Barley Products. May contain Sesame Seeds and their derivates.",
+    "organicClaimName": "NO",
+    "receiptDescription": "WNDR WHITE BREAD",
+    "restrictions": {},
+    "warnings": "NONE",
+    "images": [
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0007225001137"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0007225001137"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0007225001137"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0007225001137"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0007225001137"
+       }
+      ]
+     },
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0007225001137"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0007225001137"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0007225001137"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0007225001137"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0007225001137"
+       }
+      ]
+     },
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0007225001137"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0007225001137"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0007225001137"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0007225001137"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0007225001137"
+       }
+      ]
+     },
+     {
+      "perspective": "bottom",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/bottom/0007225001137"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/bottom/0007225001137"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/bottom/0007225001137"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/bottom/0007225001137"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/bottom/0007225001137"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0007225001137"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0007225001137"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0007225001137"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0007225001137"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0007225001137"
+       }
+      ]
+     },
+     {
+      "perspective": "top",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/top/0007225001137"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/top/0007225001137"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/top/0007225001137"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/top/0007225001137"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/top/0007225001137"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0007225001137",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 3.29,
+       "promo": 2.79,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.239Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "20 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "5.8",
+     "height": "4.55",
+     "width": "12.7",
+     "grossWeight": "1.3 [lb_av]",
+     "netWeight": "1.25 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 4.58,
+     "totalReviewCount": 309
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Unbleached Enriched Flour (Wheat Flour, Malted Barley Flour, Niacin, Reduced Iron, Thiamin Mononitrate, Riboflavin, Folic Acid), Water, Sugar, Yeast, Contains 2% or Less of Each of the Following: Calcium Carbonate, Wheat Gluten, Soybean Oil, Salt, Dough Conditioners (Contains One or More of the Following: Sodium Stearoyl Lactylate, Calcium Stearoyl Lactylate, Monoglycerides, Mono- and Diglycerides, Distilled Monoglycerides, Calcium Peroxide, Calcium Iodate, DATEM, Ethoxylated Mono- and Diglycerides, Enzymes, Ascorbic Acid), Vinegar, Monocalcium Phosphate, Citric Acid, Cholecalciferol (Vitamin D3), Soy Lecithin, Calcium Propionate (to Retard Spoilage).",
+      "dailyValueIntakeReference": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 57,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 10,
+        "quantity": 3,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 70,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAMS",
+        "description": "fatty acids, total monounsaturated",
+        "displayName": "Monounsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 8,
+        "quantity": 180,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 2,
+        "quantity": 1.5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 140,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 35,
+        "quantity": 480,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 40,
+        "quantity": 0.46,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 10,
+        "quantity": 1.9,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 60,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 15,
+        "quantity": 2.6,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAPU",
+        "description": "fatty acids, total polyunsaturated",
+        "displayName": "Polyunsaturated Fat",
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 11,
+        "quantity": 5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "percentDailyIntake": 20,
+        "quantity": 3.7,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "RIBF",
+        "description": "riboflavin",
+        "displayName": "Riboflavin",
+        "percentDailyIntake": 15,
+        "quantity": 0.19,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FOL",
+        "description": "folate, total",
+        "displayName": "Folate, total",
+        "percentDailyIntake": 25,
+        "quantity": 100,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 11,
+        "quantity": 29,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "10.0",
+       "value": 10
+      },
+      "nutritionalRating": "30"
+     }
+    ]
+   },
+   {
+    "productId": "0001111008486",
+    "upc": "0001111008486",
+    "productPageURI": "/p/kroger-white-sandwich-bread/0001111008486?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "7",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "7",
+      "side": "R",
+      "shelfNumber": "4",
+      "shelfPositionInBay": "1"
+     },
+     {
+      "bayNumber": "7",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "6",
+      "side": "R",
+      "shelfNumber": "3",
+      "shelfPositionInBay": "1"
+     }
+    ],
+    "brand": "Kroger",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Kroger® White Sandwich Bread",
+    "snapEligible": true,
+    "manufacturerDeclarations": [
+     "Vegan"
+    ],
+    "sweeteningMethods": [
+     {
+      "code": "SUGAR",
+      "name": "SUGAR"
+     }
+    ],
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Barley  and Barley Products.",
+    "organicClaimName": "NO",
+    "receiptDescription": "KRO WHITE SANDWICH",
+    "restrictions": {},
+    "warnings": "NONE",
+    "images": [
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0001111008486"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0001111008486"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0001111008486"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0001111008486"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0001111008486"
+       }
+      ]
+     },
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0001111008486"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0001111008486"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0001111008486"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0001111008486"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0001111008486"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0001111008486"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0001111008486"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0001111008486"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0001111008486"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0001111008486"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0001111008486"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0001111008486"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0001111008486"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0001111008486"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0001111008486"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0001111008486",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 1.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-21T12:14:15.758Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "20 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "13.5",
+     "height": "4.25",
+     "width": "5.0",
+     "grossWeight": "1.27 [lb_av]",
+     "netWeight": "1.25 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 4.29,
+     "totalReviewCount": 151
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Flour (Wheat Flour, Malted Barley, Niacin, Reduced Iron, Thiamine Mononitrate, Riboflavin, Folic Acid), Water, Sugar, Yeast, Contains 2% or Less of: Soybean Oil, Salt, Sodium Stearoyl Lactylate, Ammonium Sulfate, Calcium Propionate (Preservative), Fumaric Acid.",
+      "dailyValueIntakeReference": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 43,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 10,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 8,
+        "quantity": 1.5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 3,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 3,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 15,
+        "quantity": 0.2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 40,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 8,
+        "quantity": 23,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 120,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 5,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 10,
+        "quantity": 220,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 2,
+        "quantity": 1.5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 40,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 2,
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "13.0 About",
+       "value": 13
+      },
+      "nutritionalRating": "32"
+     }
+    ]
+   },
+   {
+    "productId": "0007130104737",
+    "upc": "0007130104737",
+    "productPageURI": "/p/sunbeam-giant-white-bread/0007130104737?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "5",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "4",
+      "side": "R",
+      "shelfNumber": "3",
+      "shelfPositionInBay": "3"
+     },
+     {
+      "bayNumber": "5",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "5",
+      "side": "R",
+      "shelfNumber": "2",
+      "shelfPositionInBay": "2"
+     },
+     {
+      "bayNumber": "5",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "4",
+      "side": "R",
+      "shelfNumber": "1",
+      "shelfPositionInBay": "3"
+     }
+    ],
+    "brand": "Sunbeam",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Sunbeam Giant White Bread",
+    "snapEligible": true,
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Sesame Seeds and their derivates"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Milk and its derivates"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Sesame Seeds and their derivates,Milk and its derivates.",
+    "organicClaimName": "NO",
+    "receiptDescription": "SNBM GIANT BREAD",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0007130104737"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0007130104737"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0007130104737"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0007130104737"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0007130104737"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0007130104737"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0007130104737"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0007130104737"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0007130104737"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0007130104737"
+       }
+      ]
+     },
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0007130104737"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0007130104737"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0007130104737"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0007130104737"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0007130104737"
+       }
+      ]
+     },
+     {
+      "perspective": "bottom",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/bottom/0007130104737"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/bottom/0007130104737"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/bottom/0007130104737"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/bottom/0007130104737"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/bottom/0007130104737"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0007130104737"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0007130104737"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0007130104737"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0007130104737"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0007130104737"
+       }
+      ]
+     },
+     {
+      "perspective": "top",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/top/0007130104737"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/top/0007130104737"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/top/0007130104737"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/top/0007130104737"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/top/0007130104737"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0007130104737",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 2.59,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:28.098Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "22 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "5.8",
+     "height": "4.9",
+     "width": "12.9",
+     "grossWeight": "1.52 [lb_av]",
+     "netWeight": "1.38 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 3.25,
+     "totalReviewCount": 4
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Flour [Unbleached Wheat Flour, Malted Barley Flour, Reduced Iron, Thiamine Mononitrate (Vitamin B1), Riboflavin, (Vitamin B2), Niacin (Vitamin B3), Folic Acid], Water, High Fructose Corn Syrup, Yeast, Contains 2% or Less of Soybean Oil, Salt, Monoglycerides, Modified Whey, Calcium Phosphate, Ascorbic Acid, Wheat Gluten, Calcium Propionate (a Preservative), Wheat Starch, Wheat Protein Isolate, Lactic Acid, Natural Flavors, Sodium Stearoyl Lactylate, Calcium Sulfate, Vinegar, Sesame Flour.",
+      "dailyValueIntakeReference": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 28,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "FAPU",
+        "description": "fatty acids, total polyunsaturated",
+        "displayName": "Polyunsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 80,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 2,
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 6,
+        "quantity": 130,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 4,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 25,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAMS",
+        "description": "fatty acids, total monounsaturated",
+        "displayName": "Monounsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FIBSOL",
+        "description": "fibre, water-soluble",
+        "displayName": "Fiber, Water Soluble",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 2,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 5,
+        "quantity": 15,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 6,
+        "quantity": 1.1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FIBINS",
+        "description": "fibre, water-insoluble",
+        "displayName": "Fiber, Water-Insoluble",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 6,
+        "quantity": 0.9,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "READY_TO_EAT",
+       "name": "Ready to Eat"
+      },
+      "servingsPerPackage": {
+       "description": "22.0",
+       "value": 22
+      },
+      "nutritionalRating": "32"
+     }
+    ]
+   },
+   {
+    "productId": "0001111008415",
+    "upc": "0001111008415",
+    "productPageURI": "/p/private-selection-white-bread-rustic-wide-pan/0001111008415?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "20",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "2",
+      "side": "L",
+      "shelfNumber": "5",
+      "shelfPositionInBay": "4"
+     }
+    ],
+    "brand": "Private Selection",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Private Selection® White Bread Rustic Wide Pan",
+    "snapEligible": true,
+    "sweeteningMethods": [
+     {
+      "code": "SUGAR",
+      "name": "SUGAR"
+     }
+    ],
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Cereals and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Cereals and Their Derivatives,Soybean and its Derivatives,Barley  and Barley Products.",
+    "organicClaimName": "NO",
+    "receiptDescription": "PRSL WHITE WP BREA",
+    "restrictions": {},
+    "warnings": "NONE",
+    "images": [
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0001111008415"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0001111008415"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0001111008415"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0001111008415"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0001111008415"
+       }
+      ]
+     },
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0001111008415"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0001111008415"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0001111008415"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0001111008415"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0001111008415"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0001111008415"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0001111008415"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0001111008415"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0001111008415"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0001111008415"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0001111008415"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0001111008415"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0001111008415"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0001111008415"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0001111008415"
+       }
+      ]
+     },
+     {
+      "perspective": "top",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/top/0001111008415"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/top/0001111008415"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/top/0001111008415"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/top/0001111008415"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/top/0001111008415"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0001111008415",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 3.49,
+       "promo": 3,
+       "expirationDate": {
+        "value": "2027-02-03T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:40.153Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "24 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "9.25",
+     "height": "4.8",
+     "width": "6.25",
+     "grossWeight": "1.52 [lb_av]",
+     "netWeight": "1.5 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 2.42,
+     "totalReviewCount": 24
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Flour (Wheat Flour, Malted Barley, Niacin, Reduced Iron, Thiamine Mononitrate, Riboflavin, Folic Acid), Water, Sugar, Soybean Oil. Contains 2% or Less of: Salt, Yeast, Wheat Gluten, Monocalcium Phosphate, Sodium Stearoyl Lactylate, Ammonium Sulfate, Calcium Propionate (Preservative), Fumaric Acid.",
+      "dailyValueIntakeReference": "The % Daily Value tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 45,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 130,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 13,
+        "quantity": 290,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 8,
+        "quantity": 4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 15,
+        "quantity": 0.2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 3,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 8,
+        "quantity": 22,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 8,
+        "quantity": 1.4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 4,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 40,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 4,
+        "quantity": 50,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 40,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "RIBF",
+        "description": "riboflavin",
+        "displayName": "Riboflavin",
+        "percentDailyIntake": 8,
+        "quantity": 0.1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FOL",
+        "description": "folate, total",
+        "displayName": "Folate, total",
+        "percentDailyIntake": 20,
+        "quantity": 80,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 15,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "15.0 About",
+       "value": 15
+      },
+      "nutritionalRating": "24"
+     }
+    ]
+   },
+   {
+    "productId": "0001111015290",
+    "upc": "0001111015290",
+    "productPageURI": "/p/smart-way-enriched-white-bread/0001111015290?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "7",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "6",
+      "side": "R",
+      "shelfNumber": "2",
+      "shelfPositionInBay": "2"
+     },
+     {
+      "bayNumber": "7",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "6",
+      "side": "R",
+      "shelfNumber": "1",
+      "shelfPositionInBay": "1"
+     }
+    ],
+    "brand": "Smart Way",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Smart Way™ Enriched White Bread",
+    "snapEligible": true,
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Cereals and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Cereals and Their Derivatives,Soybean and its Derivatives,Barley  and Barley Products.",
+    "nonGmoClaimName": "NO NON-GMO CLAIM",
+    "organicClaimName": "NO",
+    "receiptDescription": "SMRTWY WHITE BREAD",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0001111015290"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0001111015290"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0001111015290"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0001111015290"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0001111015290"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0001111015290"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0001111015290"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0001111015290"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0001111015290"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0001111015290"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0001111015290",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 1.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-04T11:55:27.400Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "16 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "11.0",
+     "height": "4.25",
+     "width": "4.69",
+     "grossWeight": "1.02 [lb_av]",
+     "netWeight": "1.0 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 3.75,
+     "totalReviewCount": 4
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Flour (Wheat Flour, Malted Barley Flour, Niacin, Iron, Thiamin Mononitrate, Riboflavin, Folic Acid), Water, Sugar, Yeast, Contains 2% or Less of: Soybean Oil, Salt, Wheat Gluten, Calcium Propionate (Preservative), Sodium Stearoyl Lactylate, Fumaric Acid, Enzymes, Ascorbic Acid.",
+      "dailyValueIntakeReference": "The % Daily Value tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 30,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 7,
+        "quantity": 160,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 3,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 2,
+        "quantity": 30,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 4,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 6,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 90,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 6,
+        "quantity": 17,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "15.0",
+       "value": 15
+      },
+      "nutritionalRating": "31"
+     }
+    ]
+   },
+   {
+    "productId": "0001410007083",
+    "upc": "0001410007083",
+    "productPageURI": "/p/pepperidge-farm-farmhouse-hearty-white-bread/0001410007083?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "20",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "1",
+      "side": "L",
+      "shelfNumber": "2",
+      "shelfPositionInBay": "1"
+     }
+    ],
+    "brand": "Pepperidge Farm",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Pepperidge Farm Farmhouse Hearty White Bread",
+    "snapEligible": true,
+    "manufacturerDeclarations": [
+     "Vegetarian"
+    ],
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Milk and its derivates"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Eggs and their derivates"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Eggs and their derivates,Soybean and its Derivatives,Milk and its derivates.",
+    "organicClaimName": "NO",
+    "receiptDescription": "PFRM WHITE BREAD",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0001410007083"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0001410007083"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0001410007083"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0001410007083"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0001410007083"
+       }
+      ]
+     },
+     {
+      "perspective": "back",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/back/0001410007083"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/back/0001410007083"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/back/0001410007083"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/back/0001410007083"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/back/0001410007083"
+       }
+      ]
+     },
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0001410007083"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0001410007083"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0001410007083"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0001410007083"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0001410007083"
+       }
+      ]
+     },
+     {
+      "perspective": "bottom",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/bottom/0001410007083"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/bottom/0001410007083"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/bottom/0001410007083"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/bottom/0001410007083"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/bottom/0001410007083"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0001410007083"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0001410007083"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0001410007083"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0001410007083"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0001410007083"
+       }
+      ]
+     },
+     {
+      "perspective": "top",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/top/0001410007083"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/top/0001410007083"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/top/0001410007083"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/top/0001410007083"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/top/0001410007083"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0001410007083",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 4.69,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-14T11:22:36.271Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "24 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "6.2",
+     "height": "4.4",
+     "width": "9.8",
+     "grossWeight": "1.5 [lb_av]",
+     "netWeight": "1.49 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 4.73,
+     "totalReviewCount": 226
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Made from: Enriched Wheat Flour (Flour, Niacin, Reduced Iron, Thiamine Mononitrate, Riboflavin, Folic Acid), Water, Yeast, Sugar, Contains 2% or Less of: Salt, Vegetable Oil (Soybean and/or Canola), Calcium Propionate and Sorbic Acid to Extend Freshness, Monoglycerides, Malted Barley Flour, Whey, Soy Lecithin, DATEM, Wheat Gluten.",
+      "dailyValueIntakeReference": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 49,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "FAMS",
+        "description": "fatty acids, total monounsaturated",
+        "displayName": "Monounsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 50,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 9,
+        "quantity": 26,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 8,
+        "quantity": 1.6,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 6,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "RIBF",
+        "description": "riboflavin",
+        "displayName": "Riboflavin",
+        "percentDailyIntake": 6,
+        "quantity": 0.09,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 40,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 12,
+        "quantity": 6,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 15,
+        "quantity": 0.19,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 10,
+        "quantity": 230,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "FOL",
+        "description": "folate, total",
+        "displayName": "Folate, total",
+        "percentDailyIntake": 25,
+        "quantity": 95,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 15,
+        "quantity": 2.4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 130,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FAPU",
+        "description": "fatty acids, total polyunsaturated",
+        "displayName": "Polyunsaturated Fat",
+        "quantity": 0.5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 4,
+        "quantity": 40,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 4,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "14.0",
+       "value": 14
+      },
+      "nutritionalRating": "28"
+     }
+    ]
+   },
+   {
+    "productId": "0007294576610",
+    "upc": "0007294576610",
+    "productPageURI": "/p/sara-lee-half-loaf-white-bread/0007294576610?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "5",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "1",
+      "side": "R",
+      "shelfNumber": "8",
+      "shelfPositionInBay": "6"
+     }
+    ],
+    "brand": "Sara Lee",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Sara Lee Half Loaf White Bread",
+    "snapEligible": true,
+    "manufacturerDeclarations": [
+     "Kosher"
+    ],
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "May contain",
+      "name": "Milk and its derivates"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Cereals and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Cereals and Their Derivatives,Soybean and its Derivatives,Barley  and Barley Products. May contain Milk and its derivates.",
+    "organicClaimName": "NO",
+    "receiptDescription": "SARA WHITE BREAD",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0007294576610"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0007294576610"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0007294576610"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0007294576610"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0007294576610"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0007294576610"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0007294576610"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0007294576610"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0007294576610"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0007294576610"
+       }
+      ]
+     },
+     {
+      "perspective": "bottom",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/bottom/0007294576610"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/bottom/0007294576610"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/bottom/0007294576610"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/bottom/0007294576610"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/bottom/0007294576610"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0007294576610"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0007294576610"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0007294576610"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0007294576610"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0007294576610"
+       }
+      ]
+     },
+     {
+      "perspective": "top",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/top/0007294576610"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/top/0007294576610"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/top/0007294576610"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/top/0007294576610"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/top/0007294576610"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0007294576610",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 2.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:54.289Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "12 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "4.38",
+     "height": "7.5",
+     "width": "4.38",
+     "grossWeight": "0.75 [lb_av]",
+     "netWeight": "0.75 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 1.57,
+     "totalReviewCount": 7
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Wheat Flour [Flour, Malted Barley Flour, Reduced Iron, Niacin, Thiamin Mononitrate (Vitamin B1), Riboflavin (Vitamin B2), Folic Acid], Water, Sugar, Yeast, Vegetable Oil (Soybean), Salt, Calcium Sulfate, Wheat Gluten, Enrichment (Calcium Sulfate, Vitamin E Acetate, Vitamin A Palmitate, Vitamin D3), Preservatives (Calcium Propionate, Sorbic Acid), Monoglycerides, DATEM, Citric Acid, Soy Lecithin, Grain Vinegar.",
+      "dailyValueIntakeReference": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 28,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "VITA",
+        "description": "vitamin A; calculated by summation of the vitamin A activities of retinol and the active carotenoids",
+        "displayName": "Vitamin A",
+        "percentDailyIntake": 10,
+        "quantity": 90,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FAMS",
+        "description": "fatty acids, total monounsaturated",
+        "displayName": "Monounsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITE-",
+        "description": "vitamin E, method of determination unknown or variable; expressed as alpha- tocopherol equivalents.",
+        "displayName": "Vitamin E",
+        "percentDailyIntake": 10,
+        "quantity": 1.7,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 4,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FAPU",
+        "description": "fatty acids, total polyunsaturated",
+        "displayName": "Polyunsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 4,
+        "quantity": 0.8,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 70,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 25,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 3,
+        "quantity": 1,
+        "precision": {
+         "code": "LESS_THAN",
+         "name": "Less than"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 8,
+        "quantity": 1.1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 5,
+        "quantity": 13,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 5,
+        "quantity": 125,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 25,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 8,
+        "quantity": 120,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 8,
+        "quantity": 0.11,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "percentDailyIntake": 10,
+        "quantity": 1.9,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "12.0",
+       "value": 12
+      },
+      "nutritionalRating": "28"
+     }
+    ]
+   },
+   {
+    "productId": "0007882110008",
+    "upc": "0007882110008",
+    "productPageURI": "/p/nickles-toastmaster-giant-white-bread/0007882110008?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [],
+    "brand": "Nickles",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Nickles Toastmaster® Giant White Bread",
+    "snapEligible": true,
+    "manufacturerDeclarations": [
+     "Vegan"
+    ],
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives.",
+    "organicClaimName": "NO",
+    "receiptDescription": "NCKL GIANT BREAD",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0007882110008"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0007882110008"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0007882110008"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0007882110008"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0007882110008"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0007882110008",
+      "favorite": false,
+      "fulfillment": {
+       "curbside": false,
+       "delivery": false,
+       "inStore": false,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 2.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:55:10.569Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "20 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "12.0",
+     "height": "4.25",
+     "width": "4.33",
+     "grossWeight": "1.25 [lb_av]",
+     "netWeight": "1.25 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 3.5,
+     "totalReviewCount": 2
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Flour (Wheat Flour, Malted Barley Flour, Niacin, Iron, Thiamin Mononitrate, Riboflavin, Folic Acid), Water, Yeast, Contains 2% or less of the following: High Fructose Corn Syrup, Soybean Oil, Salt, Monoglcerides, Calcium Propionate (Preservative), Calcium Sulfate, Calcium Phosphate, Monocalcium Phosphate, Corn Starch, Ammonium Sulfate, Asorbic Acid, Soy Lecithin.",
+      "servingSize": {
+       "quantity": 25,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 4,
+        "quantity": 12,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 6,
+        "quantity": 1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 5,
+        "quantity": 115,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "percentDailyIntake": 3,
+        "quantity": 60,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "D70",
+         "name": "Calorie - International Table (IT)"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FOL",
+        "description": "folate, total",
+        "displayName": "Folate, total",
+        "percentDailyIntake": 10,
+        "quantity": 38,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 8,
+        "quantity": 0.1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "RIBF",
+        "description": "riboflavin",
+        "displayName": "Riboflavin",
+        "percentDailyIntake": 8,
+        "quantity": 0.1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 24,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 1,
+        "quantity": 1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 2,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 6,
+        "quantity": 1,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "percentDailyIntake": 4,
+        "quantity": 41,
+        "precision": {
+         "code": "ABOUT",
+         "name": "About"
+        },
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "READY_TO_EAT",
+       "name": "Ready to Eat"
+      },
+      "servingsPerPackage": {
+       "description": "23.0 Exact",
+       "value": 23
+      },
+      "nutritionalRating": "33"
+     }
+    ]
+   },
+   {
+    "productId": "0007016295870",
+    "upc": "0007016295870",
+    "productPageURI": "/p/artesano-white-bread/0007016295870?cid=dis.api.tpi_products-api_20240521_b:all_c:p_t:[REDACTED]",
+    "aisleLocations": [
+     {
+      "bayNumber": "20",
+      "description": "AISLE 1",
+      "number": "1",
+      "numberOfFacings": "1",
+      "side": "L",
+      "shelfNumber": "8",
+      "shelfPositionInBay": "7"
+     }
+    ],
+    "brand": "Artesano",
+    "categories": [
+     "Bakery"
+    ],
+    "countryOrigin": "UNITED STATES",
+    "description": "Artesano® White Bread",
+    "snapEligible": true,
+    "allergens": [
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Cereals and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "May contain",
+      "name": "Hazelnut And Hazelnut Products"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Barley  and Barley Products"
+     },
+     {
+      "levelOfContainmentName": "May contain",
+      "name": "Milk and its derivates"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Wheat and Their Derivatives"
+     },
+     {
+      "levelOfContainmentName": "Contains",
+      "name": "Soybean and its Derivatives"
+     },
+     {
+      "levelOfContainmentName": "May contain",
+      "name": "Sesame Seeds and their derivates"
+     }
+    ],
+    "allergensDescription": "Contains Wheat and Their Derivatives,Cereals and Their Derivatives,Soybean and its Derivatives,Barley  and Barley Products. May contain Sesame Seeds and their derivates,Hazelnut And Hazelnut Products,Milk and its derivates.",
+    "organicClaimName": "NO",
+    "receiptDescription": "ARTESANO ORG BRD",
+    "restrictions": {},
+    "images": [
+     {
+      "perspective": "right",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/right/0007016295870"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/right/0007016295870"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/right/0007016295870"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/right/0007016295870"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/right/0007016295870"
+       }
+      ]
+     },
+     {
+      "perspective": "front",
+      "featured": true,
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/front/0007016295870"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/front/0007016295870"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/front/0007016295870"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/front/0007016295870"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/front/0007016295870"
+       }
+      ]
+     },
+     {
+      "perspective": "bottom",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/bottom/0007016295870"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/bottom/0007016295870"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/bottom/0007016295870"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/bottom/0007016295870"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/bottom/0007016295870"
+       }
+      ]
+     },
+     {
+      "perspective": "left",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/left/0007016295870"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/left/0007016295870"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/left/0007016295870"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/left/0007016295870"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/left/0007016295870"
+       }
+      ]
+     },
+     {
+      "perspective": "top",
+      "sizes": [
+       {
+        "size": "xlarge",
+        "url": "https://www.kroger.com/product/images/xlarge/top/0007016295870"
+       },
+       {
+        "size": "large",
+        "url": "https://www.kroger.com/product/images/large/top/0007016295870"
+       },
+       {
+        "size": "medium",
+        "url": "https://www.kroger.com/product/images/medium/top/0007016295870"
+       },
+       {
+        "size": "small",
+        "url": "https://www.kroger.com/product/images/small/top/0007016295870"
+       },
+       {
+        "size": "thumbnail",
+        "url": "https://www.kroger.com/product/images/thumbnail/top/0007016295870"
+       }
+      ]
+     }
+    ],
+    "items": [
+     {
+      "itemId": "0007016295870",
+      "inventory": {
+       "stockLevel": "HIGH"
+      },
+      "favorite": false,
+      "fulfillment": {
+       "curbside": true,
+       "delivery": true,
+       "inStore": true,
+       "shipToHome": false
+      },
+      "price": {
+       "regular": 4.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-21T12:14:14.912Z",
+        "timezone": "Z"
+       }
+      },
+      "size": "20 oz",
+      "soldBy": "UNIT"
+     }
+    ],
+    "itemInformation": {
+     "depth": "10.0",
+     "height": "4.25",
+     "width": "4.33",
+     "grossWeight": "1.3 [lb_av]",
+     "netWeight": "1.25 [lb_av]"
+    },
+    "temperature": {
+     "indicator": "Ambient",
+     "heatSensitive": false
+    },
+    "ratingsAndReviews": {
+     "averageOverallRating": 2.75,
+     "totalReviewCount": 8
+    },
+    "nutritionInformation": [
+     {
+      "ingredientStatement": "Enriched Wheat Flour [Flour, Malted Barley Flour, Reduced Iron, Niacin, Thiamin Mononitrate (Vitamin B1), Riboflavin (Vitamin B2), Folic Acid], Water, Yeast, Sugar, Vegetable Oil (Soybean), Wheat Gluten, Salt. Contains 0.5% or Less of Each of the Following: Cultured Wheat Flour, Soy Lecithin, Citric Acid, Enzymes.",
+      "dailyValueIntakeReference": "The % Daily Value (DV) tells you how much a nutrient in a serving of food contributes to a daily diet. 2,000 calories a day is used for general nutrition advice.",
+      "servingSize": {
+       "quantity": 38,
+       "unitOfMeasure": {
+        "abbreviation": "g",
+        "code": "GRM",
+        "name": "Gram"
+       }
+      },
+      "nutrients": [
+       {
+        "code": "FIBTSW",
+        "description": "fibre, total dietary; Wenlock modification",
+        "displayName": "Dietary Fiber",
+        "percentDailyIntake": 4,
+        "quantity": 1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "VITD",
+        "description": "vitamin D; calculated by summation of ergocalciferol and cholecalciferol",
+        "displayName": "Vitamin D",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "FAT",
+        "description": "fat, total",
+        "displayName": "Total Fat",
+        "percentDailyIntake": 2,
+        "quantity": 1.5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FOLAC",
+        "description": "folic acid, synthetic folic acid",
+        "displayName": "Folic Acid",
+        "quantity": 35,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "SUGAR",
+        "description": "sugars, total",
+        "displayName": "Sugar",
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "CA",
+        "description": "calcium",
+        "displayName": "Calcium",
+        "quantity": 6,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "ENER-",
+        "description": "energy; method of determination unknown or variable",
+        "displayName": "Calories",
+        "quantity": 100,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "E14",
+         "name": "Kilocalorie (international table)"
+        }
+       },
+       {
+        "code": "PRO-",
+        "description": "protein, total; method of determination unknown or variable",
+        "displayName": "Protein",
+        "quantity": 4,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "RIBF",
+        "description": "riboflavin",
+        "displayName": "Riboflavin",
+        "percentDailyIntake": 8,
+        "quantity": 0.11,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FASAT",
+        "description": "fatty acids, total saturated",
+        "displayName": "Saturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "K",
+        "description": "potassium",
+        "displayName": "Potassium",
+        "quantity": 35,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHOL-",
+        "description": "cholesterol; method of determination unknown or variable",
+        "displayName": "Cholesterol",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "NA",
+        "description": "sodium",
+        "displayName": "Sodium",
+        "percentDailyIntake": 9,
+        "quantity": 200,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "CHO-",
+        "description": "carbohydrate, total; method of determination unknown or variable",
+        "displayName": "Total Carbohydrate",
+        "percentDailyIntake": 7,
+        "quantity": 19,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FAMS",
+        "description": "fatty acids, total monounsaturated",
+        "displayName": "Monounsaturated Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "SUGAD",
+        "description": "sugar, added",
+        "displayName": "Added Sugar",
+        "percentDailyIntake": 4,
+        "quantity": 2,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "THIA",
+        "description": "thiamin",
+        "displayName": "Thiamin",
+        "percentDailyIntake": 15,
+        "quantity": 0.15,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "NIA",
+        "description": "niacin, preformed",
+        "displayName": "Niacin",
+        "percentDailyIntake": 10,
+        "quantity": 1.6,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FE",
+        "description": "iron, total",
+        "displayName": "Iron",
+        "percentDailyIntake": 6,
+        "quantity": 1.1,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MGM",
+         "name": "Milligram"
+        }
+       },
+       {
+        "code": "FOL",
+        "description": "folate, total",
+        "displayName": "Folate, total",
+        "percentDailyIntake": 20,
+        "quantity": 80,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "MC",
+         "name": "Microgram"
+        }
+       },
+       {
+        "code": "FAPU",
+        "description": "fatty acids, total polyunsaturated",
+        "displayName": "Polyunsaturated Fat",
+        "quantity": 0.5,
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       },
+       {
+        "code": "FATRN",
+        "description": "fatty acids, total trans",
+        "displayName": "Trans Fat",
+        "precision": {},
+        "unitOfMeasure": {
+         "code": "GRM",
+         "name": "Gram"
+        }
+       }
+      ],
+      "preparationState": {
+       "code": "UNSPECIFIED",
+       "name": "Unspecified"
+      },
+      "servingsPerPackage": {
+       "description": "15.0",
+       "value": 15
+      },
+      "nutritionalRating": "33"
+     }
+    ]
+   }
+  ],
+  "meta": {
+   "pagination": {
+    "start": 0,
+    "limit": 10,
+    "total": 94
+   }
+  }
+ }
+}

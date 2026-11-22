@@ -1,0 +1,316 @@
+{
+ "recorded": "recorded live 2026-11-22",
+ "source": "data/raw/2026-11-22T05-14-24-045Z/001-kroger-locations.json",
+ "url": "https://api.kroger.com/v1/locations?filter.zipCode.near=45202&filter.limit=5",
+ "status": 200,
+ "retrievedAt": "2026-11-22T05:14:24.683Z",
+ "body": {
+  "data": [
+   {
+    "locationId": "01400513",
+    "storeNumber": "00513",
+    "divisionNumber": "014",
+    "chain": "KROGER",
+    "address": {
+     "addressLine1": "100 E Court St",
+     "city": "Cincinnati",
+     "state": "OH",
+     "zipCode": "45202",
+     "county": "HAMILTON COUNTY"
+    },
+    "geolocation": {
+     "latitude": 39.10682,
+     "longitude": -84.51253,
+     "latLng": "39.10682,-84.51253"
+    },
+    "name": "Kroger - Kroger On the Rhine",
+    "hours": {
+     "timezone": "America/New_York",
+     "gmtOffset": "(UTC-05:00) Eastern Time (US Canada)",
+     "open24": false,
+     "monday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     },
+     "tuesday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     },
+     "wednesday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     },
+     "thursday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     },
+     "friday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     },
+     "saturday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     },
+     "sunday": {
+      "open": "06:00",
+      "close": "22:00",
+      "open24": false
+     }
+    },
+    "phone": "5132635900",
+    "departments": [
+     {
+      "departmentId": "0G",
+      "name": "Meal Kits"
+     },
+     {
+      "departmentId": "88",
+      "name": "Perishables"
+     },
+     {
+      "departmentId": "AF",
+      "name": "Account Funding"
+     },
+     {
+      "departmentId": "0J",
+      "name": "Home Chef"
+     },
+     {
+      "departmentId": "0K",
+      "name": "Full Strength Beer"
+     },
+     {
+      "departmentId": "32",
+      "name": "Natural And Organics"
+     },
+     {
+      "departmentId": "63",
+      "name": "I-wireless"
+     },
+     {
+      "departmentId": "LY",
+      "name": "Lottery Tickets"
+     },
+     {
+      "departmentId": "54",
+      "name": "Chef"
+     },
+     {
+      "departmentId": "65",
+      "name": "Money Services"
+     },
+     {
+      "departmentId": "76",
+      "name": "Rotisserie Chicken"
+     },
+     {
+      "departmentId": "89",
+      "name": "Western Union"
+     },
+     {
+      "departmentId": "01",
+      "name": "Deli"
+     },
+     {
+      "departmentId": "08",
+      "name": "Floral"
+     },
+     {
+      "departmentId": "24",
+      "name": "Franchise Restaurant"
+     },
+     {
+      "departmentId": "02",
+      "name": "Bakery"
+     },
+     {
+      "departmentId": "30",
+      "name": "Salad Bar"
+     },
+     {
+      "departmentId": "48",
+      "name": "Starbucks"
+     },
+     {
+      "departmentId": "66",
+      "name": "Murray's Cheese"
+     },
+     {
+      "departmentId": "72",
+      "name": "Expresslane"
+     },
+     {
+      "departmentId": "77",
+      "name": "Fried Chicken"
+     },
+     {
+      "departmentId": "TL",
+      "name": "Tobacco"
+     },
+     {
+      "departmentId": "12",
+      "name": "Cosmetics"
+     },
+     {
+      "departmentId": "23",
+      "name": "Drug & General Merchandise"
+     },
+     {
+      "departmentId": "46",
+      "name": "Sushi"
+     },
+     {
+      "departmentId": "MO",
+      "name": "Money Orders"
+     },
+     {
+      "departmentId": "07",
+      "name": "Restaurant"
+     },
+     {
+      "departmentId": "13",
+      "name": "Cell Phone"
+     },
+     {
+      "departmentId": "21",
+      "name": "Self Checkout"
+     },
+     {
+      "departmentId": "44",
+      "name": "Beer"
+     },
+     {
+      "departmentId": "58",
+      "name": "Free Wireless Access"
+     },
+     {
+      "departmentId": "40",
+      "name": "Coffee Bar"
+     },
+     {
+      "departmentId": "45",
+      "name": "Wine"
+     },
+     {
+      "departmentId": "90",
+      "name": "Snap"
+     },
+     {
+      "departmentId": "99",
+      "name": "Check Cashing"
+     }
+    ]
+   },
+   {
+    "locationId": "542FC807",
+    "storeNumber": "FC807",
+    "divisionNumber": "542",
+    "chain": "HART",
+    "address": {
+     "addressLine1": "1014 Vine St",
+     "city": "Cincinnati",
+     "state": "OH",
+     "zipCode": "45202",
+     "county": "HAMILTON COUNTY"
+    },
+    "geolocation": {
+     "latitude": 39.106752,
+     "longitude": -84.513889,
+     "latLng": "39.106752,-84.513889"
+    },
+    "name": "Harris Teeter - - Unused Spoke",
+    "hours": {
+     "timezone": "America/New_York",
+     "gmtOffset": "(UTC-05:00) Eastern Time (US Canada)",
+     "open24": false
+    }
+   },
+   {
+    "locationId": "542FC200",
+    "storeNumber": "FC200",
+    "divisionNumber": "542",
+    "chain": "HART",
+    "address": {
+     "addressLine1": "1014 Vine St",
+     "city": "Cincinnati",
+     "state": "OH",
+     "zipCode": "45202",
+     "county": "HAMILTON COUNTY"
+    },
+    "geolocation": {
+     "latitude": 39.106752,
+     "longitude": -84.513889,
+     "latLng": "39.106752,-84.513889"
+    },
+    "name": "Harris Teeter - Spoke Forecast - HT Trans",
+    "hours": {
+     "timezone": "America/New_York",
+     "gmtOffset": "(UTC-05:00) Eastern Time (US Canada)",
+     "open24": false
+    }
+   },
+   {
+    "locationId": "542FC500",
+    "storeNumber": "FC500",
+    "divisionNumber": "542",
+    "chain": "HART",
+    "address": {
+     "addressLine1": "1014 Vine St",
+     "city": "Cincinnati",
+     "state": "OH",
+     "zipCode": "45202",
+     "county": "HAMILTON COUNTY"
+    },
+    "geolocation": {
+     "latitude": 39.106752,
+     "longitude": -84.513889,
+     "latLng": "39.106752,-84.513889"
+    },
+    "name": "Harris Teeter - Forecast Shed - HT Trans",
+    "hours": {
+     "timezone": "America/New_York",
+     "gmtOffset": "(UTC-05:00) Eastern Time (US Canada)",
+     "open24": false
+    }
+   },
+   {
+    "locationId": "540FC200",
+    "storeNumber": "FC200",
+    "divisionNumber": "540",
+    "chain": "KROGER",
+    "address": {
+     "addressLine1": "1014 Vine St",
+     "city": "Cincinnati",
+     "state": "OH",
+     "zipCode": "45202",
+     "county": "HAMILTON COUNTY"
+    },
+    "geolocation": {
+     "latitude": 39.106758,
+     "longitude": -84.513951,
+     "latLng": "39.106758,-84.513951"
+    },
+    "name": "Kroger - Spoke Forecast",
+    "hours": {
+     "timezone": "America/New_York",
+     "gmtOffset": "(UTC-05:00) Eastern Time (US Canada)",
+     "open24": false
+    }
+   }
+  ],
+  "meta": {
+   "pagination": {
+    "start": 1,
+    "limit": 5,
+    "total": 5
+   }
+  }
+ }
+}

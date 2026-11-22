@@ -1,0 +1,736 @@
+{
+ "recorded": "recorded live 2026-11-22",
+ "source": "data/raw/2026-11-22T05-14-24-045Z/127-fdc-food-2569016.json",
+ "url": "https://api.nal.usda.gov/fdc/v1/food/2569016?api_key=[REDACTED]",
+ "status": 200,
+ "retrievedAt": "2026-11-22T05:14:56.745Z",
+ "body": {
+  "discontinuedDate": "",
+  "foodComponents": [],
+  "foodAttributes": [
+   {
+    "id": 3017721,
+    "value": 3,
+    "name": "Ingredients",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   },
+   {
+    "id": 3017718,
+    "value": 6,
+    "name": "Nutrient Removed",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   },
+   {
+    "id": 3017720,
+    "value": 2,
+    "name": "Description",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   },
+   {
+    "id": 3017717,
+    "value": 5,
+    "name": "Nutrient Added",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   },
+   {
+    "id": 3017719,
+    "value": 4,
+    "name": "Nutrient Updated",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   },
+   {
+    "id": 3017722,
+    "value": 9,
+    "name": "Added Package Weight",
+    "foodAttributeType": {
+     "id": 998,
+     "name": "Update Log",
+     "description": "Changes that were made to this food"
+    }
+   }
+  ],
+  "foodPortions": [],
+  "fdcId": 2569016,
+  "description": "CLASSIC WHITE BREAD",
+  "publicationDate": "6/29/2023",
+  "foodNutrients": [
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1257,
+     "number": "605",
+     "name": "Fatty acids, total trans",
+     "rank": 15400,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014121,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1087,
+     "number": "301",
+     "name": "Calcium, Ca",
+     "rank": 5300,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014109,
+    "amount": 632
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1093,
+     "number": "307",
+     "name": "Sodium, Na",
+     "rank": 5800,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014112,
+    "amount": 316
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 2000,
+     "number": "269",
+     "name": "Total Sugars",
+     "rank": 1510,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014107,
+    "amount": 8.77
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1092,
+     "number": "306",
+     "name": "Potassium, K",
+     "rank": 5700,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014111,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1004,
+     "number": "204",
+     "name": "Total lipid (fat)",
+     "rank": 800,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014104,
+    "amount": 2.63
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1005,
+     "number": "205",
+     "name": "Carbohydrate, by difference",
+     "rank": 1110,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014105,
+    "amount": 50.88
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1003,
+     "number": "203",
+     "name": "Protein",
+     "rank": 600,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014103,
+    "amount": 7.02
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1167,
+     "number": "406",
+     "name": "Niacin",
+     "rank": 6600,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014116,
+    "amount": 3.86
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1235,
+     "number": "539",
+     "name": "Sugars, added",
+     "rank": 1540,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014119,
+    "amount": 8.8
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1253,
+     "number": "601",
+     "name": "Cholesterol",
+     "rank": 15700,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014120,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1258,
+     "number": "606",
+     "name": "Fatty acids, total saturated",
+     "rank": 9700,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014122,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1293,
+     "number": "646",
+     "name": "Fatty acids, total polyunsaturated",
+     "rank": 12900,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014124,
+    "amount": 0.88
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1079,
+     "number": "291",
+     "name": "Fiber, total dietary",
+     "rank": 1200,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014108,
+    "amount": 3.5
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1166,
+     "number": "405",
+     "name": "Riboflavin",
+     "rank": 6500,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014115,
+    "amount": 0.351
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1089,
+     "number": "303",
+     "name": "Iron, Fe",
+     "rank": 5400,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014110,
+    "amount": 4.04
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1165,
+     "number": "404",
+     "name": "Thiamin",
+     "rank": 6400,
+     "unitName": "mg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014114,
+    "amount": 1
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1008,
+     "number": "208",
+     "name": "Energy",
+     "rank": 300,
+     "unitName": "kcal"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014106,
+    "amount": 246
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1114,
+     "number": "328",
+     "name": "Vitamin D (D2 + D3)",
+     "rank": 8700,
+     "unitName": "µg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014113,
+    "amount": 6
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1292,
+     "number": "645",
+     "name": "Fatty acids, total monounsaturated",
+     "rank": 11400,
+     "unitName": "g"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014123,
+    "amount": 0
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1177,
+     "number": "417",
+     "name": "Folate, total",
+     "rank": 6900,
+     "unitName": "µg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014117,
+    "amount": 202
+   },
+   {
+    "type": "FoodNutrient",
+    "nutrient": {
+     "id": 1186,
+     "number": "431",
+     "name": "Folic acid",
+     "rank": 7000,
+     "unitName": "µg"
+    },
+    "foodNutrientDerivation": {
+     "id": 70,
+     "code": "LCCS",
+     "description": "Calculated from value per serving size measure",
+     "foodNutrientSource": {
+      "id": 9,
+      "code": "12",
+      "description": "Manufacturer's analytical; partial documentation"
+     }
+    },
+    "id": 32014118,
+    "amount": 96
+   }
+  ],
+  "dataType": "Branded",
+  "foodClass": "Branded",
+  "shortDescription": "",
+  "modifiedDate": "5/23/2023",
+  "availableDate": "5/23/2023",
+  "brandOwner": "Flowers Foods, Inc.",
+  "brandName": "WONDER",
+  "dataSource": "LI",
+  "brandedFoodCategory": "Breads & Buns",
+  "gtinUpc": "0072250011372",
+  "householdServingFullText": "2 Slices (57g/2.0oz)",
+  "ingredients": "UNBLEACHED ENRICHED FLOUR (WHEAT FLOUR, MALTED BARLEY FLOUR, NIACIN, REDUCED IRON, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID), WATER, HIGH FRUCTOSE CORN SYRUP, YEAST, CONTAINS 2% OR LESS OF EACH OF THE FOLLOWING: CALCIUM CARBONATE, SOYBEAN OIL, WHEAT GLUTEN, SALT, DOUGH CONDITIONERS (CONTAINS ONE OR MORE OF THE FOLLOWING: SODIUM STEAROYL LACTYLATE, CALCIUM STEAROYL LACTYLATE, MONOGLYCERIDES, MONO- AND DIGLYCERIDES, DISTILLED MONOGLYCERIDES, CALCIUM PEROXIDE, CALCIUM IODATE, DATEM, ETHOXYLATED MONO- AND DIGLYCERIDES, ENZYMES, ASCORBIC ACID), VINEGAR, MONOCALCIUM PHOSPHATE, YEAST EXTRACT, MODIFIED CORN STARCH, SUCROSE, SUGAR, SOY LECITHIN, CHOLECALCIFEROL (VITAMIN D3), SOY FLOUR, AMMONIUM SULFATE, CALCIUM SULFATE, CALCIUM PROPIONATE (TO RETARD SPOILAGE)",
+  "marketCountry": "United States",
+  "servingSize": 57,
+  "servingSizeUnit": "GRM",
+  "packageWeight": "20 oz",
+  "foodUpdateLog": [
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 2569016,
+    "description": "CLASSIC WHITE BREAD",
+    "publicationDate": "6/29/2023",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "shortDescription": "",
+    "modifiedDate": "5/23/2023",
+    "availableDate": "5/23/2023",
+    "brandOwner": "Flowers Foods, Inc.",
+    "brandName": "WONDER",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "0072250011372",
+    "householdServingFullText": "2 Slices (57g/2.0oz)",
+    "ingredients": "UNBLEACHED ENRICHED FLOUR (WHEAT FLOUR, MALTED BARLEY FLOUR, NIACIN, REDUCED IRON, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID), WATER, HIGH FRUCTOSE CORN SYRUP, YEAST, CONTAINS 2% OR LESS OF EACH OF THE FOLLOWING: CALCIUM CARBONATE, SOYBEAN OIL, WHEAT GLUTEN, SALT, DOUGH CONDITIONERS (CONTAINS ONE OR MORE OF THE FOLLOWING: SODIUM STEAROYL LACTYLATE, CALCIUM STEAROYL LACTYLATE, MONOGLYCERIDES, MONO- AND DIGLYCERIDES, DISTILLED MONOGLYCERIDES, CALCIUM PEROXIDE, CALCIUM IODATE, DATEM, ETHOXYLATED MONO- AND DIGLYCERIDES, ENZYMES, ASCORBIC ACID), VINEGAR, MONOCALCIUM PHOSPHATE, YEAST EXTRACT, MODIFIED CORN STARCH, SUCROSE, SUGAR, SOY LECITHIN, CHOLECALCIFEROL (VITAMIN D3), SOY FLOUR, AMMONIUM SULFATE, CALCIUM SULFATE, CALCIUM PROPIONATE (TO RETARD SPOILAGE)",
+    "marketCountry": "United States",
+    "servingSize": 57,
+    "servingSizeUnit": "GRM",
+    "packageWeight": "20 oz"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "modifiedDate": "2/14/2023",
+    "availableDate": "2/14/2023",
+    "brandOwner": "",
+    "dataSource": "LI",
+    "gpcCategoryGroup": "Breads & Buns",
+    "gtinUpc": "0072250011372",
+    "householdServingFullText": "",
+    "ingredients": "UNBLEACHED ENRICHED FLOUR (WHEAT FLOUR, MALTED BARLEY FLOUR, NIACIN, REDUCED IRON, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID), WATER, HIGH FRUCTOSE CORN SYRUP, YEAST, CONTAINS 2% OR LESS OF EACH OF THE FOLLOWING: CALCIUM CARBONATE, SOYBEAN OIL, WHEAT GLUTEN, SALT, DOUGH CONDITIONERS (CONTAINS ONE OR MORE OF THE FOLLOWING: SODIUM STEAROYL LACTYLATE, CALCIUM STEAROYL LACTYLATE, MONOGLYCERIDES, MONO- AND DIGLYCERIDES, DISTILLED MONOGLYCERIDES, CALCIUM PEROXIDE, CALCIUM IODATE, DATEM, ETHOXYLATED MONO- AND DIGLYCERIDES, ENZYMES, ASCORBIC ACID), VINEGAR, MONOCALCIUM PHOSPHATE, YEAST EXTRACT, MODIFIED CORN STARCH, SUCROSE, SUGAR, SOY LECITHIN, CHOLECALCIFEROL (VITAMIN D3), SOY FLOUR, AMMONIUM SULFATE, CALCIUM SULFATE, CALCIUM PROPIONATE (TO RETARD SPOILAGE)",
+    "marketCountry": "United States",
+    "servingSize": 57,
+    "servingSizeUnit": "GRM",
+    "fdcId": 2531605,
+    "description": "CLASSIC WHITE BREAD",
+    "publicationDate": "4/27/2023",
+    "dataType": "Branded",
+    "foodClass": "Branded"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 1869709,
+    "description": "WONDER, CALCIUM FORTIFIED ENRICHED BREAD, CLASSIC WHITE, CLASSIC WHITE",
+    "publicationDate": "7/29/2021",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "7/21/2018",
+    "availableDate": "7/21/2018",
+    "brandOwner": "Flowers Foods, Inc.",
+    "brandName": "WONDER",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "072250011372",
+    "householdServingFullText": "2 ONZ",
+    "ingredients": "UNBLEACHED ENRICHED FLOUR (WHEAT FLOUR, MALTED BARLEY FLOUR, NIACIN, REDUCED IRON, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID), WATER, HIGH FRUCTOSE CORN SYRUP, YEAST, CONTAINS 2% OR LESS OF THE EACH OF THE FOLLOWING: CALCIUM CARBONATE, SOYBEAN OIL, WHEAT GLUTEN, SALT, DOUGH CONDITIONERS (CONTAINS ONE OR MORE OF THE FOLLOWING: SODIUM STEAROYL LACTYLATE, CALCIUM STEAROYL LACTYLATE, MONOGLYCERIDES, MONO- AND DIGLYCERIDES, DISTILLED MONOGLYCERIDES, CALCIUM PEROXIDE, CALCIUM IODATE, DATEM, ETHOXYLATED MONO- AND DIGLYCERIDES, ENZYMES, ASCORBIC ACID), VINEGAR, MONOCALCIUM PHOSPHATE, YEAST EXTRACT, MODIFIED CORN STARCH, SUCROSE, SUGAR, SOY LECITHIN, CHOLECALCIFEROL (VITAMIN D3), SOY FLOUR, AMMONIUM SULFATE, CALCIUM SULFATE, CALCIUM PROPIONATE (TO RETARD SPOILAGE).",
+    "marketCountry": "United States",
+    "servingSize": 57,
+    "servingSizeUnit": "g",
+    "packageWeight": "20 oz/567 g"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "fdcId": 1768880,
+    "description": "WONDER, CALCIUM FORTIFIED ENRICHED BREAD, CLASSIC WHITE, CLASSIC WHITE",
+    "publicationDate": "6/17/2021",
+    "dataType": "Branded",
+    "foodClass": "Branded",
+    "modifiedDate": "7/21/2018",
+    "availableDate": "7/21/2018",
+    "brandOwner": "Flowers Foods, Inc.",
+    "brandName": "WONDER",
+    "dataSource": "LI",
+    "brandedFoodCategory": "Breads & Buns",
+    "gtinUpc": "072250011372",
+    "householdServingFullText": "2 ONZ",
+    "ingredients": "UNBLEACHED ENRICHED FLOUR (WHEAT FLOUR, MALTED BARLEY FLOUR, NIACIN, REDUCED IRON, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID), WATER, HIGH FRUCTOSE CORN SYRUP, YEAST, CONTAINS 2% OR LESS OF THE EACH OF THE FOLLOWING: CALCIUM CARBONATE, SOYBEAN OIL, WHEAT GLUTEN, SALT, DOUGH CONDITIONERS (CONTAINS ONE OR MORE OF THE FOLLOWING: SODIUM STEAROYL LACTYLATE, CALCIUM STEAROYL LACTYLATE, MONOGLYCERIDES, MONO- AND DIGLYCERIDES, DISTILLED MONOGLYCERIDES, CALCIUM PEROXIDE, CALCIUM IODATE, DATEM, ETHOXYLATED MONO- AND DIGLYCERIDES, ENZYMES, ASCORBIC ACID), VINEGAR, MONOCALCIUM PHOSPHATE, YEAST EXTRACT, MODIFIED CORN STARCH, SUCROSE, SUGAR, SOY LECITHIN, CHOLECALCIFEROL (VITAMIN D3), SOY FLOUR, AMMONIUM SULFATE, CALCIUM SULFATE, CALCIUM PROPIONATE (TO RETARD SPOILAGE).",
+    "marketCountry": "United States",
+    "servingSize": 57,
+    "servingSizeUnit": "g",
+    "packageWeight": "567 g"
+   },
+   {
+    "discontinuedDate": "",
+    "foodAttributes": [],
+    "modifiedDate": "7/21/2018",
+    "availableDate": "7/21/2018",
+    "brandOwner": "WONDER",
+    "dataSource": "LI",
+    "gpcCategoryGroup": "Breads & Buns",
+    "gtinUpc": "072250011372",
+    "householdServingFullText": "2 ONZ",
+    "ingredients": "UNBLEACHED ENRICHED FLOUR (WHEAT FLOUR, MALTED BARLEY FLOUR, NIACIN, REDUCED IRON, THIAMIN MONONITRATE, RIBOFLAVIN, FOLIC ACID), WATER, HIGH FRUCTOSE CORN SYRUP, YEAST, CONTAINS 2% OR LESS OF THE EACH OF THE FOLLOWING: CALCIUM CARBONATE, SOYBEAN OIL, WHEAT GLUTEN, SALT, DOUGH CONDITIONERS (CONTAINS ONE OR MORE OF THE FOLLOWING: SODIUM STEAROYL LACTYLATE, CALCIUM STEAROYL LACTYLATE, MONOGLYCERIDES, MONO- AND DIGLYCERIDES, DISTILLED MONOGLYCERIDES, CALCIUM PEROXIDE, CALCIUM IODATE, DATEM, ETHOXYLATED MONO- AND DIGLYCERIDES, ENZYMES, ASCORBIC ACID), VINEGAR, MONOCALCIUM PHOSPHATE, YEAST EXTRACT, MODIFIED CORN STARCH, SUCROSE, SUGAR, SOY LECITHIN, CHOLECALCIFEROL (VITAMIN D3), SOY FLOUR, AMMONIUM SULFATE, CALCIUM SULFATE, CALCIUM PROPIONATE (TO RETARD SPOILAGE).",
+    "marketCountry": "United States",
+    "servingSize": 57,
+    "servingSizeUnit": "g",
+    "fdcId": 406271,
+    "description": "WONDER, CALCIUM FORTIFIED ENRICHED BREAD, CLASSIC WHITE",
+    "publicationDate": "4/1/2019",
+    "workingFoodId": 45112438,
+    "dataType": "Branded",
+    "foodClass": "Branded"
+   }
+  ],
+  "labelNutrients": {
+   "fat": {
+    "value": 1.5
+   },
+   "saturatedFat": {
+    "value": 0
+   },
+   "transFat": {
+    "value": 0
+   },
+   "cholesterol": {
+    "value": 0
+   },
+   "sodium": {
+    "value": 180
+   },
+   "carbohydrates": {
+    "value": 29
+   },
+   "fiber": {
+    "value": 2
+   },
+   "sugars": {
+    "value": 5
+   },
+   "protein": {
+    "value": 4
+   },
+   "vitaminD": {
+    "value": 3.42
+   },
+   "calcium": {
+    "value": 360
+   },
+   "iron": {
+    "value": 2.3
+   },
+   "potassium": {
+    "value": 0
+   },
+   "addedSugar": {
+    "value": 5.02
+   },
+   "calories": {
+    "value": 140
+   }
+  }
+ }
+}

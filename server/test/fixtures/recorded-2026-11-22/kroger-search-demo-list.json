@@ -1,0 +1,2082 @@
+{
+ "recorded": "recorded live 2026-11-22 (demo-list exploration, locationId 01400513, filter.limit=8; trimmed to fields used)",
+ "queries": {
+  "Ritz Original Crackers": [
+   {
+    "productId": "0004400003111",
+    "upc": "0004400003111",
+    "brand": "Nabisco",
+    "description": "RITZ Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "13.7 oz",
+      "price": {
+       "regular": 4.49,
+       "promo": 3.49,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:54.057Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400005832",
+    "upc": "0004400005832",
+    "brand": "Ritz",
+    "description": "RITZ Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "27.4 oz",
+      "price": {
+       "regular": 7.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:24.758Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400004575",
+    "upc": "0004400004575",
+    "brand": "Ritz",
+    "description": "RITZ Fresh Stacks Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "17.8 oz",
+      "price": {
+       "regular": 6.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:27:13.981Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400005824",
+    "upc": "0004400005824",
+    "brand": "Nabisco",
+    "description": "RITZ Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "20.5 oz",
+      "price": {
+       "regular": 6.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:27:00.680Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400006377",
+    "upc": "0004400006377",
+    "brand": "Ritz",
+    "description": "RITZ Fresh Stacks Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "23.7 oz",
+      "price": {
+       "regular": 7.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:53:22.002Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400003113",
+    "upc": "0004400003113",
+    "brand": "Nabisco",
+    "description": "RITZ Fresh Stacks Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "11.8 oz",
+      "price": {
+       "regular": 4.49,
+       "promo": 3.49,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:56.229Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400005104",
+    "upc": "0004400005104",
+    "brand": "Nabisco",
+    "description": "RITZ Toasted Chips Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "8.1 oz",
+      "price": {
+       "regular": 4.99,
+       "promo": 3.49,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:23.820Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004400007547",
+    "upc": "0004400007547",
+    "brand": "Nabisco",
+    "description": "RITZ Toasted Chips Original Crackers",
+    "categories": [
+     "Snacks"
+    ],
+    "items": [
+     {
+      "size": "11.4 oz",
+      "price": {
+       "regular": 6.49,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:53.797Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Jif Creamy Peanut Butter 16 oz": [
+   {
+    "productId": "0005150025516",
+    "upc": "0005150025516",
+    "brand": "Jif",
+    "description": "Jif Creamy Peanut Butter",
+    "categories": [
+     "Condiment & Sauces",
+     "Condiment & Sauces"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 3.19,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-16T12:51:55.172Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0005150025565",
+    "upc": "0005150025565",
+    "brand": "Jif",
+    "description": "Jif Creamy Natural Peanut Butter",
+    "categories": [
+     "Condiment & Sauces",
+     "Condiment & Sauces"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 3.19,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-16T12:51:55.335Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0005150025518",
+    "upc": "0005150025518",
+    "brand": "Jif",
+    "description": "Jif Creamy Reduced Fat Peanut Butter",
+    "categories": [
+     "Condiment & Sauces",
+     "Condiment & Sauces"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 3.19,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-16T12:51:55.726Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Yoplait Original Strawberry Yogurt": [
+   {
+    "productId": "0007047040387",
+    "upc": "0007047040387",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry Yogurt Cups",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "8 ct / 6 oz",
+      "price": {
+       "regular": 5.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:53:57.226Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047000300",
+    "upc": "0007047000300",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry Yogurt Cup",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 oz",
+      "price": {
+       "regular": 0.8,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.548Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047000313",
+    "upc": "0007047000313",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry Banana Yogurt Cup",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 oz",
+      "price": {
+       "regular": 0.8,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.225Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047000430",
+    "upc": "0007047000430",
+    "brand": "Yoplait",
+    "description": "Yoplait® Original Smooth Style Strawberry Low Fat Yogurt Tub",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "32 oz",
+      "price": {
+       "regular": 3.49,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:08.192Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047040389",
+    "upc": "0007047040389",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry and Harvest Peach Yogurt Cups",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "8 ct / 6 oz",
+      "price": {
+       "regular": 5.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:16.109Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047040391",
+    "upc": "0007047040391",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry and Strawberry Banana Yogurt Cups",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "8 ct / 6 oz",
+      "price": {
+       "regular": 5.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:23.859Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047029062",
+    "upc": "0007047029062",
+    "brand": "Yoplait",
+    "description": "Yoplait® Original Smooth Style Strawberry Banana Low Fat Yogurt Tub",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "32 oz",
+      "price": {
+       "regular": 3.49,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:08.296Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "bananas": [
+   {
+    "productId": "0000000004011",
+    "upc": "0000000004011",
+    "brand": "Fresh Bananas",
+    "description": "Fresh Bunch of Bananas – 5-7 Bananas",
+    "categories": [
+     "Produce",
+     "Produce"
+    ],
+    "items": [
+     {
+      "size": "1 lb",
+      "price": {
+       "regular": 0.55,
+       "regularPerUnitEstimate": 0.0138,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-14T10:43:34.744Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0000000094011",
+    "upc": "0000000094011",
+    "brand": "Fresh Bananas",
+    "description": "Fresh Bunch of Organic Bananas – 5-7 Bananas",
+    "categories": [
+     "Natural & Organic",
+     "Produce",
+     "Produce"
+    ],
+    "items": [
+     {
+      "size": "1 lb",
+      "price": {
+       "regular": 0.79,
+       "regularPerUnitEstimate": 0.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-14T10:43:31.135Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0000000004235",
+    "upc": "0000000004235",
+    "description": "Fresh Plantain - Single",
+    "categories": [
+     "Produce",
+     "International"
+    ],
+    "items": [
+     {
+      "size": "1 ea",
+      "price": {
+       "regular": 0.75,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:03.777Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111011379",
+    "upc": "0001111011379",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Freeze-Dried Bananas",
+    "categories": [
+     "Produce",
+     "Produce"
+    ],
+    "items": [
+     {
+      "size": "1.5 oz",
+      "price": {
+       "regular": 4.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-21T09:47:01.559Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0008259219415",
+    "upc": "0008259219415",
+    "brand": "Naked",
+    "description": "Naked Boosted Smoothie Strawberry Banana Machine",
+    "categories": [
+     "Produce",
+     "Produce"
+    ],
+    "items": [
+     {
+      "size": "15.2 fl oz",
+      "price": {
+       "regular": 3.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-21T12:14:17.279Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111063660",
+    "upc": "0001111063660",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Berries and Banana Trail Mix",
+    "categories": [
+     "Produce"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 8.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-28T12:38:22.991Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007146402124",
+    "upc": "0007146402124",
+    "brand": "Bolthouse Farms",
+    "description": "BH Protein Plus Dutch Chocolate Banana",
+    "categories": [
+     "Produce"
+    ],
+    "items": [
+     {
+      "size": "15.2 fl oz",
+      "price": {
+       "regular": 3.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:07.994Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "eggs": [
+   {
+    "productId": "0001111060903",
+    "upc": "0001111060903",
+    "brand": "Kroger",
+    "description": "Kroger® Grade A Large White Eggs",
+    "categories": [
+     "Dairy",
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "12 ct",
+      "price": {
+       "regular": 1.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:33.942Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111060933",
+    "upc": "0001111060933",
+    "brand": "Kroger",
+    "description": "Kroger® Grade A Large White Eggs",
+    "categories": [
+     "Breakfast",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "18 ct",
+      "price": {
+       "regular": 2.65,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:30.223Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111079770",
+    "upc": "0001111079770",
+    "brand": "Simple Truth",
+    "description": "Simple Truth™ Natural Cage Free Grade A Large Brown Eggs",
+    "categories": [
+     "Breakfast",
+     "Dairy",
+     "Natural & Organic"
+    ],
+    "items": [
+     {
+      "size": "12 ct / 24 oz",
+      "price": {
+       "regular": 3.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:52:26.783Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111060904",
+    "upc": "0001111060904",
+    "brand": "Kroger",
+    "description": "Kroger® Grade A Extra Large White Eggs",
+    "categories": [
+     "Dairy",
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "12 ct",
+      "price": {
+       "regular": 1.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:27.393Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111060914",
+    "upc": "0001111060914",
+    "brand": "Kroger",
+    "description": "Kroger® Grade A Large White Eggs",
+    "categories": [
+     "Dairy",
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "60 ct",
+      "price": {
+       "regular": 8.75,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:19.044Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111015097",
+    "upc": "0001111015097",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Cage Free Grade A Large Brown Eggs",
+    "categories": [
+     "Natural & Organic",
+     "Breakfast",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "24 ct",
+      "price": {
+       "regular": 6.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-21T12:14:14.881Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111060906",
+    "upc": "0001111060906",
+    "brand": "Kroger",
+    "description": "Kroger® Grade A Large White Eggs",
+    "categories": [
+     "Breakfast",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 ct",
+      "price": {
+       "regular": 1.15,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:25.209Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111060980",
+    "upc": "0001111060980",
+    "brand": "Kroger",
+    "description": "Kroger® Medium Grade A White Eggs",
+    "categories": [
+     "Breakfast",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "30 ct",
+      "price": {
+       "regular": 4.19,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:18.661Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "yogurt": [
+   {
+    "productId": "0007047000300",
+    "upc": "0007047000300",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry Yogurt Cup",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 oz",
+      "price": {
+       "regular": 0.8,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.548Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007835557010",
+    "upc": "0007835557010",
+    "brand": "The Greek Gods",
+    "description": "The Greek Gods® Honey Vanilla Greek Style Yogurt Tub",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "24 oz",
+      "price": {
+       "regular": 4.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:55:10.501Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0003663201953",
+    "upc": "0003663201953",
+    "brand": "Oikos",
+    "description": "Oikos Triple Zero Vanilla High Protein Nonfat Greek Yogurt Cups",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "5.3 oz., 4 pack",
+      "price": {
+       "regular": 5.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.104Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047040389",
+    "upc": "0007047040389",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Strawberry and Harvest Peach Yogurt Cups",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "8 ct / 6 oz",
+      "price": {
+       "regular": 5.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:16.109Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047000307",
+    "upc": "0007047000307",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Harvest Peach Yogurt Cup",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 oz",
+      "price": {
+       "regular": 0.8,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:58.079Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047000323",
+    "upc": "0007047000323",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat French Vanilla Yogurt Cup",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 oz",
+      "price": {
+       "regular": 0.8,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:53.801Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111010760",
+    "upc": "0001111010760",
+    "brand": "Simple Truth Organic",
+    "description": "Simple Truth Organic® Plain Nonfat Greek Yogurt Tub",
+    "categories": [
+     "Dairy",
+     "Natural & Organic"
+    ],
+    "items": [
+     {
+      "size": "32 oz",
+      "price": {
+       "regular": 4.69,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:09.848Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007047000310",
+    "upc": "0007047000310",
+    "brand": "Yoplait",
+    "description": "Yoplait™ Original Low Fat Mixed Berry Yogurt Cup",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "6 oz",
+      "price": {
+       "regular": 0.8,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:56.073Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Coca-Cola 12 pk 12 fl oz cans": [
+   {
+    "productId": "0004900002890",
+    "upc": "0004900002890",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Soda Cans",
+    "categories": [
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:05.540Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900004255",
+    "upc": "0004900004255",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Zero Sugar Soda Cans",
+    "categories": [
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:02.076Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900004751",
+    "upc": "0004900004751",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Zero Sugar Cherry Soda Cans",
+    "categories": [
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:01.311Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900003103",
+    "upc": "0004900003103",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Cherry Soda Cans",
+    "categories": [
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:51:56.301Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900056167",
+    "upc": "0004900056167",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Zero Sugar Cherry Float Soda Cans",
+    "categories": [
+     "Beverages",
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:51:41.621Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900003124",
+    "upc": "0004900003124",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Vanilla Soda Cans",
+    "categories": [
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:40.937Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900056132",
+    "upc": "0004900056132",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Zero Sugar Holiday Creamy Vanilla Soda Cans",
+    "categories": [
+     "Beverages",
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:41.152Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0004900056164",
+    "upc": "0004900056164",
+    "brand": "Coca-Cola",
+    "description": "Coca-Cola® Cherry Float Soda Cans",
+    "categories": [
+     "Beverages",
+     "Beverages"
+    ],
+    "items": [
+     {
+      "size": "12 pk / 12 fl oz",
+      "price": {
+       "regular": 11.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:54:37.365Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Barilla Spaghetti 16 oz": [
+   {
+    "productId": "0007680828008",
+    "upc": "0007680828008",
+    "brand": "Barilla",
+    "description": "Barilla Spaghetti Pasta, Quality Non-GMO and Kosher Certified Pasta",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:11.689Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680828009",
+    "upc": "0007680828009",
+    "brand": "Barilla",
+    "description": "Barilla Thin Spaghetti Pasta Quality Non-GMO and Kosher Certified Pasta",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:15.256Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680851504",
+    "upc": "0007680851504",
+    "brand": "Barilla",
+    "description": "Barilla Thick Spaghetti Pasta, Quality Non-GMO and Kosher Certified Pasta",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:14.559Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680800584",
+    "upc": "0007680800584",
+    "brand": "Barilla",
+    "description": "Barilla Whole Grain Spaghetti Non-GMO and Kosher Pasta Made With Whole Wheat",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:47.271Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680800649",
+    "upc": "0007680800649",
+    "brand": "Barilla",
+    "description": "Barilla Whole Grain Thin Spaghetti Non-GMO and Kosher Pasta Made With Whole Wheat",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:17.369Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680800073",
+    "upc": "0007680800073",
+    "brand": "Barilla",
+    "description": "Barilla Fideo Cut Spaghetti Pasta Quality Non-GMO and Kosher Certified Pasta",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:22.623Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680801328",
+    "upc": "0007680801328",
+    "brand": "Barilla",
+    "description": "Al Bronzo by Barilla Organic Spaghetti Pasta, Bronze Cut Pasta, Non GMO, Kosher",
+    "categories": [
+     "Pasta, Sauces, Grain",
+     "Natural & Organic"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 2.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:53:24.551Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0007680828073",
+    "upc": "0007680828073",
+    "brand": "Barilla",
+    "description": "Barilla Penne Pasta, Quality Non-GMO and Kosher Certified Pasta",
+    "categories": [
+     "Pasta, Sauces, Grain"
+    ],
+    "items": [
+     {
+      "size": "16 oz",
+      "price": {
+       "regular": 1.99,
+       "promo": 1.25,
+       "expirationDate": {
+        "value": "2026-11-27T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-20T13:20:22.129Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Wonder Classic White Bread 20 oz": [
+   {
+    "productId": "0007225001137",
+    "upc": "0007225001137",
+    "brand": "Wonder",
+    "description": "Wonder Classic White Bread",
+    "categories": [
+     "Bakery"
+    ],
+    "items": [
+     {
+      "size": "20 oz",
+      "price": {
+       "regular": 3.29,
+       "promo": 2.79,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.239Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Simple Truth Organic Unsweetened Almondmilk": [
+   {
+    "productId": "0001111013267",
+    "upc": "0001111013267",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Plant Based Non Dairy Unsweetened Almondmilk Half Gallon",
+    "categories": [
+     "Natural & Organic",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 2.69,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:57.650Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111016590",
+    "upc": "0001111016590",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Dairy Free Unsweetened Almondmilk Half Gallon",
+    "categories": [
+     "Natural & Organic",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "64 fl oz",
+      "price": {
+       "regular": 2.69,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:53.244Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111013268",
+    "upc": "0001111013268",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Dairy Free Unsweetened Vanilla Almond Milk Half Gallon",
+    "categories": [
+     "Natural & Organic",
+     "Dairy",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 2.69,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:53.005Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111078505",
+    "upc": "0001111078505",
+    "brand": "Simple Truth",
+    "description": "Simple Truth™ Dairy Free Shelf Stable Unsweetened Plain Almond Milk Quart",
+    "categories": [
+     "Natural & Organic",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1 qt",
+      "price": {
+       "regular": 1.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:55:01.166Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111016591",
+    "upc": "0001111016591",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Dairy Free Unsweetened Vanilla Almond Milk Half Gallon",
+    "categories": [
+     "Dairy",
+     "Natural & Organic"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 2.69,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:55.929Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111014208",
+    "upc": "0001111014208",
+    "brand": "Simple Truth",
+    "description": "Simple Truth® Unsweetened Vanilla Almond Milk",
+    "categories": [
+     "Natural & Organic"
+    ],
+    "items": [
+     {
+      "size": "32 fl oz",
+      "price": {
+       "regular": 1.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:53:55.320Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Honey Nut Cheerios": [
+   {
+    "productId": "0001600012495",
+    "upc": "0001600012495",
+    "brand": "Cheerios",
+    "description": "General Mills Honey Nut Cheerios™ Giant Size Cereal",
+    "categories": [
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "27.2 oz",
+      "price": {
+       "regular": 7.49,
+       "promo": 7.49,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:53.503Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001600012479",
+    "upc": "0001600012479",
+    "brand": "Cheerios",
+    "description": "General Mills® Honey Nut Cheerios™ Cereal",
+    "categories": [
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "10.8 oz",
+      "price": {
+       "regular": 3.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-18T12:26:56.251Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111014932",
+    "upc": "0001111014932",
+    "brand": "Kroger",
+    "description": "Kroger® Honey Nut Toasted Oats Cereal Giant Size",
+    "categories": [
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "27.2 oz",
+      "price": {
+       "regular": 3.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:56:01.070Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001600012506",
+    "upc": "0001600012506",
+    "brand": "Cheerios",
+    "description": "General Mills® Honey Nut Cheerios™ Large Size Cereal",
+    "categories": [
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "15.4 oz",
+      "price": {
+       "regular": 5,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:53:10.058Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001600023661",
+    "upc": "0001600023661",
+    "brand": "Cheerios",
+    "description": "General Mills® Honey Nut Cheerios™ Protein Large Size Cereal",
+    "categories": [
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "11.2 oz",
+      "price": {
+       "regular": 5,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:53:47.349Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001600015643",
+    "upc": "0001600015643",
+    "brand": "Cheerios",
+    "description": "General Mills® Honey Nut Cheerios™ Bag Cereal",
+    "categories": [
+     "Breakfast",
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "32 oz",
+      "price": {
+       "regular": 6.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-07T16:52:39.709Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001600014155",
+    "upc": "0001600014155",
+    "brand": "Cheerios",
+    "description": "General Mills Honey Nut Cheerios™ Cereal Cup",
+    "categories": [
+     "Breakfast",
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "1.8 oz",
+      "price": {
+       "regular": 1.25,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-19T10:13:37.651Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001600023393",
+    "upc": "0001600023393",
+    "brand": "Cheerios",
+    "description": "General Mills Cheerios™ Honey Nut Granola",
+    "categories": [
+     "Breakfast",
+     "Breakfast"
+    ],
+    "items": [
+     {
+      "size": "10.5 oz",
+      "price": {
+       "regular": 5.79,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-10-28T12:38:23.486Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ],
+  "Prego Traditional Italian Sauce": [],
+  "Kroger 2% Reduced Fat Milk 1 gal": [
+   {
+    "productId": "0001111041600",
+    "upc": "0001111041600",
+    "brand": "Kroger",
+    "description": "Kroger® 2% Reduced Fat Milk Half Gallon",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 2.39,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:27.410Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111082556",
+    "upc": "0001111082556",
+    "brand": "Kroger",
+    "description": "Kroger® Lactose Free 2% Reduced Fat Milk Half Gallon",
+    "categories": [
+     "Dairy",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 3.39,
+       "promo": 3,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-04T11:55:21.471Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111008243",
+    "upc": "0001111008243",
+    "brand": "Kroger",
+    "description": "Kroger® Lactose Free 1% Low Fat Milk Half Gallon",
+    "categories": [
+     "Dairy",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 3.39,
+       "promo": 3,
+       "expirationDate": {
+        "value": "2026-12-02T04:59:59.999Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-04T11:55:15.680Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111041700",
+    "upc": "0001111041700",
+    "brand": "Kroger",
+    "description": "Kroger® 2% Reduced Fat Milk Gallon",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1 gal",
+      "price": {
+       "regular": 3.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:23.636Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111050574",
+    "upc": "0001111050574",
+    "brand": "Kroger",
+    "description": "Kroger 1% Lowfat Chocolate Milk Half Gallon",
+    "categories": [
+     "Dairy",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 2.99,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-04T11:55:28.237Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111041661",
+    "upc": "0001111041661",
+    "brand": "Kroger",
+    "description": "Kroger® 1% Lowfat Milk Half Gallon",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1/2 gal",
+      "price": {
+       "regular": 2.39,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:34.359Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111041660",
+    "upc": "0001111041660",
+    "brand": "Kroger",
+    "description": "Kroger® 1% Lowfat Milk Gallon",
+    "categories": [
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1 gal",
+      "price": {
+       "regular": 3.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:35.229Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   },
+   {
+    "productId": "0001111050573",
+    "upc": "0001111050573",
+    "brand": "Kroger",
+    "description": "Kroger® 1% Lowfat Chocolate Milk Gallon",
+    "categories": [
+     "Dairy",
+     "Dairy"
+    ],
+    "items": [
+     {
+      "size": "1 gal",
+      "price": {
+       "regular": 4.29,
+       "expirationDate": {
+        "value": "9999-12-31T00:00:00Z",
+        "timezone": "Z"
+       },
+       "effectiveDate": {
+        "value": "2026-11-11T12:18:39.339Z",
+        "timezone": "Z"
+       }
+      }
+     }
+    ]
+   }
+  ]
+ }
+}
