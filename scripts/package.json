@@ -1,0 +1,10 @@
+{
+  "name": "@carttweak/scripts",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@carttweak/shared": "*",
+    "dotenv": "^16.4.7"
+  }
+}

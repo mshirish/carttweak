@@ -1,0 +1,28 @@
+{
+  "name": "carttweak",
+  "private": true,
+  "version": "0.0.1",
+  "type": "module",
+  "workspaces": [
+    "shared",
+    "server",
+    "web",
+    "scripts"
+  ],
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "gen:walmart-keys": "tsx scripts/gen-walmart-keys.ts",
+    "probe:kroger-fdc": "tsx scripts/probe-kroger-fdc.ts",
+    "dev:server": "npm run dev -w @carttweak/server",
+    "dev:web": "npm run dev -w @carttweak/web"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^3.0.0"
+  }
+}
