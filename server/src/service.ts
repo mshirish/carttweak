@@ -66,10 +66,27 @@ function snapshotStats() {
   return { ...cacheStats };
 }
 function diffStats(a: typeof cacheStats, b: typeof cacheStats) {
-  return { hits: b.hits - a.hits, misses: b.misses - a.misses, liveCalls: b.liveCalls - a.liveCalls, staleServed: b.staleServed - a.staleServed };
+  return {
+    hits: b.hits - a.hits,
+    misses: b.misses - a.misses,
+    liveCalls: b.liveCalls - a.liveCalls,
+    staleServed: b.staleServed - a.staleServed,
+    throttled: b.throttled - a.throttled,
+  };
 }
 
 export const GOAL_VALUES: Goal[] = ['more_protein', 'more_fiber', 'less_added_sugar', 'less_sodium'];
+
+/** Lookups run with this concurrency; the per-service AdaptiveLimiter (cache.ts) also caps live HTTP at 6 and backs off on 429. */
+export const CONCURRENCY = 6;
+
+export interface PlanProgress {
+  phase: 'store' | 'resolve' | 'candidates' | 'plan' | 'done';
+  done: number;
+  total: number;
+  message: string;
+}
+export type ProgressFn = (p: PlanProgress) => void;
 
 export function createService(cfg: ServiceConfig) {
   const branchCache = new Map<string, Branch>();
@@ -174,8 +191,8 @@ export function createService(cfg: ServiceConfig) {
     if (!group) return { group: null, candidates: [] as EnrichedProduct[], searched: [] as string[], skipped: { notSameKind: 0, noPrice: 0, noSize: 0 } };
     const b = await branch(locationId);
     const seen = new Map<string, KrogerNormalized>();
-    for (const term of group.searchTerms) {
-      const r = await kroger.productSearch(cfg.kroger, term, locationId, perTerm);
+    const searches = await Promise.all(group.searchTerms.map((term) => kroger.productSearch(cfg.kroger, term, locationId, perTerm)));
+    for (const r of searches) {
       if (!r.ok) continue;
       for (const n of normalizeAll(r.body, b, r)) if (!seen.has(n.product.ref)) seen.set(n.product.ref, n);
     }
@@ -188,7 +205,7 @@ export function createService(cfg: ServiceConfig) {
       if (!n.product.size) return (skipped.noSize++, false);
       return true;
     });
-    const candidates = await mapLimit(keep, 4, (n) => enrich(n, sample));
+    const candidates = await mapLimit(keep, CONCURRENCY, (n) => enrich(n, sample));
     return { group: group.id, candidates, searched: group.searchTerms, skipped };
   }
 
@@ -214,7 +231,8 @@ export function createService(cfg: ServiceConfig) {
     tags?: string[];
   }
 
-  async function plan(body: any) {
+  /** Synchronous validation, so job submission can fail fast with a 400. */
+  function validatePlan(body: any) {
     const items: PlanItemIn[] = Array.isArray(body?.items) ? body.items : [];
     if (!items.length) throw new ServiceError(400, 'bad_items', 'items must be a non-empty array');
     if (items.length > 40) throw new ServiceError(400, 'too_many_items', 'at most 40 items');
@@ -228,16 +246,35 @@ export function createService(cfg: ServiceConfig) {
     const budget = Number(body?.budget?.maxExtraSpendCents ?? body?.budget);
     if (!Number.isInteger(budget) || budget < 0) throw new ServiceError(400, 'bad_budget', 'budget.maxExtraSpendCents must be a non-negative integer (cents)');
     const locks: string[] = Array.isArray(body?.locks) ? body.locks.map(String) : [];
+    const excluded: string[] = Array.isArray(body?.excludedCandidateIds) ? body.excludedCandidateIds.map(String) : [];
+    if (excluded.length > 200) throw new ServiceError(400, 'bad_excluded', 'at most 200 excludedCandidateIds');
     const includeSample = body?.includeSample === true;
-    const sample = includeSample ? loadSample() : [];
-    const before = snapshotStats();
-    const b = await branch(locationId);
-
     const ids = items.map((it, i) => String(it.id ?? `item${i + 1}`));
     if (new Set(ids).size !== ids.length) throw new ServiceError(400, 'bad_items', 'item ids must be unique');
+    if (!/^[A-Za-z0-9]{8}$/.test(locationId)) throw new ServiceError(400, 'bad_location', 'locationId must be 8 characters');
+    return { items, locationId, primary, secondary, budget, locks, excluded, includeSample, ids };
+  }
+
+  async function plan(body: any, onProgress: ProgressFn = () => {}) {
+    const t0 = Date.now();
+    const { items, locationId, primary, secondary, budget, locks, excluded, includeSample, ids } = validatePlan(body);
+    const sample = includeSample ? loadSample() : [];
+    const before = snapshotStats();
+    onProgress({ phase: 'store', done: 0, total: 1, message: 'Checking your store…' });
+    const b = await branch(locationId);
+    let resolvedCount = 0;
+    onProgress({ phase: 'resolve', done: 0, total: items.length, message: `Checking prices 0/${items.length}…` });
 
     const resolution: any[] = [];
-    const trip: TripItem[] = await mapLimit(items.map((it, i) => ({ it, id: ids[i]! })), 3, async ({ it, id }) => {
+    const trip: TripItem[] = await mapLimit(items.map((it, i) => ({ it, id: ids[i]! })), CONCURRENCY, async ({ it, id }) => {
+      try {
+        return await resolveOne(it, id);
+      } finally {
+        resolvedCount++;
+        onProgress({ phase: 'resolve', done: resolvedCount, total: items.length, message: `Checking prices ${resolvedCount}/${items.length}…` });
+      }
+    });
+    async function resolveOne(it: PlanItemIn, id: string): Promise<TripItem> {
       const quantity = Number.isInteger(it.quantity) && it.quantity! > 0 ? it.quantity! : 1;
       const query = it.query ?? it.upc ?? it.productId ?? '';
       try {
@@ -275,34 +312,53 @@ export function createService(cfg: ServiceConfig) {
         }
         throw e;
       }
-    });
+    }
+    const t1 = Date.now();
 
     const candidates: Record<string, ResolvedItem[]> = {};
     const candidateInfo: Record<string, any> = {};
     const lockSet = new Set(locks);
+    const excludedSet = new Set(excluded);
+    // candidate searches are per swap group, all groups in parallel, reused across items of the same group
     const groupCache = new Map<string, Promise<Awaited<ReturnType<typeof candidatesFor>>>>();
-    for (const t of trip) {
-      if (!t.resolved || lockSet.has(t.id)) continue;
-      const g = swapGroupFor(t.resolved.product);
+    const wanted = trip.filter((t) => t.resolved && !lockSet.has(t.id));
+    for (const t of wanted) {
+      const g = swapGroupFor(t.resolved!.product);
+      if (g && !groupCache.has(g.id)) groupCache.set(g.id, candidatesFor(t.resolved!.product, locationId, sample));
+    }
+    let groupsDone = 0;
+    const groupTotal = groupCache.size;
+    onProgress({ phase: 'candidates', done: 0, total: groupTotal, message: `Finding alternatives 0/${groupTotal}…` });
+    for (const p of groupCache.values()) {
+      p.then(
+        () => onProgress({ phase: 'candidates', done: ++groupsDone, total: groupTotal, message: `Finding alternatives ${groupsDone}/${groupTotal}…` }),
+        () => {},
+      );
+    }
+    await Promise.all(groupCache.values());
+    for (const t of wanted) {
+      const g = swapGroupFor(t.resolved!.product);
       if (!g) {
         candidates[t.id] = [];
         candidateInfo[t.id] = { group: null };
         continue;
       }
-      // candidate searches are per group; reuse across items of the same group
-      if (!groupCache.has(g.id)) groupCache.set(g.id, candidatesFor(t.resolved.product, locationId, sample));
       const c = await groupCache.get(g.id)!;
+      // excluded candidates stay in the list; the engine rejects them with reason 'excluded'
       const mine = c.candidates.filter((x) => x.product.ref !== t.resolved!.product.ref);
       candidates[t.id] = mine;
       candidateInfo[t.id] = {
         group: c.group,
         searched: c.searched,
         found: mine.length,
+        excluded: mine.filter((x) => excludedSet.has(x.product.ref)).length,
         fdcMatched: mine.filter((x) => x.fdc.matched).length,
         skipped: c.skipped,
       };
     }
 
+    const t2 = Date.now();
+    onProgress({ phase: 'plan', done: 0, total: 1, message: 'Comparing labels and prices…' });
     const result: PlanResult = planSwaps({
       items: trip,
       candidates,
@@ -311,8 +367,11 @@ export function createService(cfg: ServiceConfig) {
       lockedItemIds: locks,
       maxExtraSpendCents: budget,
       asOf: now().toISOString().slice(0, 10),
+      excludedCandidateIds: excluded,
     });
     const after = snapshotStats();
+    const t3 = Date.now();
+    onProgress({ phase: 'done', done: 1, total: 1, message: 'Done' });
     return {
       branch: b,
       generatedAt: now().toISOString(),
@@ -322,11 +381,13 @@ export function createService(cfg: ServiceConfig) {
       candidates: candidateInfo,
       containsSample: result.containsSample,
       cache: diffStats(before, after),
+      excludedCandidateIds: excluded,
+      timingsMs: { resolve: t1 - t0, candidates: t2 - t1, engine: t3 - t2, total: t3 - t0 },
       groups: SWAP_GROUPS.map((g) => g.id),
     };
   }
 
-  return { stores, branch, search, byUpc, enrich, candidatesFor, plan };
+  return { stores, branch, search, byUpc, enrich, candidatesFor, plan, validatePlan };
 }
 
 export type Service = ReturnType<typeof createService>;

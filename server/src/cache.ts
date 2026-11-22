@@ -40,7 +40,78 @@ export class UpstreamError extends Error {
   }
 }
 
-export const cacheStats = { hits: 0, misses: 0, liveCalls: 0, staleServed: 0, writes: 0 };
+export const cacheStats = { hits: 0, misses: 0, liveCalls: 0, staleServed: 0, writes: 0, throttled: 0 };
+
+/**
+ * Adaptive concurrency limit per upstream service: starts at `max` (6),
+ * halves on HTTP 429 (min 1), and creeps back up by 1 after 20 straight
+ * successes. Only live calls take a slot; cache hits never wait.
+ */
+export class AdaptiveLimiter {
+  limit: number;
+  private active = 0;
+  private queue: Array<() => void> = [];
+  private streak = 0;
+  /** last X-RateLimit-Remaining seen (api.data.gov sends it for FDC) */
+  remaining: number | null = null;
+  constructor(public readonly max = 6) {
+    this.limit = max;
+  }
+  async run<T>(fn: () => Promise<T>): Promise<T> {
+    if (this.active + this.waking >= this.limit || this.queue.length) {
+      const turn = new Promise<void>((r) => this.queue.push(r));
+      this.next(); // a slot may already be free
+      await turn;
+      this.waking--;
+    }
+    this.active++;
+    try {
+      return await fn();
+    } finally {
+      this.active--;
+      this.next();
+    }
+  }
+  private next() {
+    // wake at most as many waiters as there are free slots
+    let free = this.limit - this.active - this.waking;
+    while (free-- > 0 && this.queue.length) {
+      this.waking++;
+      this.queue.shift()!();
+    }
+  }
+  private waking = 0;
+  on429() {
+    this.limit = Math.max(1, Math.floor(this.limit / 2));
+    this.streak = 0;
+  }
+  onOk() {
+    if (++this.streak >= 20 && this.limit < this.max) {
+      this.limit++;
+      this.streak = 0;
+      this.next();
+    }
+  }
+  get inFlight() {
+    return this.active;
+  }
+}
+
+export const limiters: Record<string, AdaptiveLimiter> = {};
+export function limiterFor(service: string): AdaptiveLimiter {
+  return (limiters[service] ??= new AdaptiveLimiter(6));
+}
+
+/** Backoff for 429: Retry-After (seconds) if given, else 1 s, 2 s, 4 s, 8 s. */
+export function backoffMs(attempt: number, retryAfter: string | null): number {
+  const ra = Number(retryAfter);
+  if (retryAfter && Number.isFinite(ra) && ra >= 0) return Math.min(ra * 1000, 30_000);
+  return Math.min(1000 * 2 ** attempt, 8000);
+}
+let sleepImpl = (ms: number) => new Promise<void>((r) => setTimeout(r, ms));
+export function setSleep(fn: (ms: number) => Promise<void>): void {
+  sleepImpl = fn;
+}
 
 let cacheRoot = path.resolve('data', 'cache');
 export function setCacheRoot(dir: string): void {
@@ -105,6 +176,7 @@ export async function cachedJson<T = any>(
   let res: Response | null = null;
   let text = '';
   const retries = opts.retries ?? 2;
+  const limiter = limiterFor(opts.service);
   let reqInit: RequestInit;
   try {
     reqInit = typeof init === 'function' ? await init() : init;
@@ -116,18 +188,33 @@ export async function cachedJson<T = any>(
     }
     throw new UpstreamError(opts.service, e?.status ?? null, `${opts.service} unavailable (${redact(String(e?.message ?? e))}) and nothing cached`);
   }
-  for (let attempt = 0; attempt <= retries; attempt++) {
+  // 429s get more patience than 5xx: up to 4 retries with backoff
+  const maxAttempts = Math.max(retries, 4);
+  for (let attempt = 0; attempt <= maxAttempts; attempt++) {
+    let throttled = false;
+    let retryAfter: string | null = null;
     try {
       cacheStats.liveCalls++;
-      res = await fetchImpl(url, reqInit);
+      res = await limiter.run(() => fetchImpl(url, reqInit));
       text = await res.text();
-      if (res.status !== 429 && res.status < 500) break;
+      const rem = res.headers?.get?.('x-ratelimit-remaining');
+      if (rem != null && rem !== '') limiter.remaining = Number(rem);
+      if (res.status === 429) {
+        throttled = true;
+        retryAfter = res.headers?.get?.('retry-after') ?? null;
+        limiter.on429();
+        cacheStats.throttled++;
+      } else if (res.status < 500) {
+        limiter.onOk();
+        break;
+      }
       lastErr = `HTTP ${res.status}`;
     } catch (e: any) {
       res = null;
       lastErr = e?.message ?? String(e);
     }
-    if (attempt < retries) await sleep(500 * (attempt + 1));
+    if (!throttled && attempt >= retries) break;
+    if (attempt < maxAttempts) await (throttled ? sleepImpl(backoffMs(attempt, retryAfter)) : sleep(500 * (attempt + 1)));
   }
   const failed = !res || res.status === 429 || res.status >= 500;
   if (failed) {

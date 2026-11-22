@@ -19,7 +19,8 @@ const env = {
 // client id is registered too: Kroger echoes it inside productPageURI
 [env.KROGER_CLIENT_ID, env.KROGER_CLIENT_SECRET, env.FDC_API_KEY, process.env.WALMART_CONSUMER_ID?.trim()].forEach(registerSecret);
 
-setCacheRoot(path.join(root, 'data', 'cache'));
+// CARTTWEAK_CACHE_DIR lets timing runs use an empty cache without touching data/cache/
+setCacheRoot(process.env.CARTTWEAK_CACHE_DIR ? path.resolve(process.env.CARTTWEAK_CACHE_DIR) : path.join(root, 'data', 'cache'));
 const svc = createService({
   kroger: { clientId: env.KROGER_CLIENT_ID, clientSecret: env.KROGER_CLIENT_SECRET },
   fdcApiKey: env.FDC_API_KEY,

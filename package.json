@@ -16,6 +16,7 @@
     "gen:walmart-keys": "tsx scripts/gen-walmart-keys.ts",
     "probe:kroger-fdc": "tsx scripts/probe-kroger-fdc.ts",
     "smoke:plan": "tsx scripts/smoke-plan.ts",
+    "warm": "tsx scripts/warm.ts",
     "dev:server": "npm run dev -w @carttweak/server",
     "dev:web": "npm run dev -w @carttweak/web"
   },

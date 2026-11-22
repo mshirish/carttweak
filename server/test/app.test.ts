@@ -171,6 +171,31 @@ describe(`HTTP API over ${RECORDED} responses`, () => {
     expect(notStore.status).toBeGreaterThanOrEqual(400);
     expect((await call('GET', '/api/nope')).json.error.code).toBe('not_found');
   });
+  it('plan jobs: 202 + job id, progress while running, result when done; bad input fails fast', async () => {
+    const start = await call('POST', '/api/plan/jobs', planBody);
+    expect(start.status).toBe(202);
+    let j: any;
+    for (let i = 0; i < 200; i++) {
+      j = (await call('GET', `/api/plan/jobs/${start.json.jobId}`)).json;
+      expect(j.progress).toHaveProperty('message');
+      if (j.status !== 'running') break;
+      await new Promise((r) => setTimeout(r, 5));
+    }
+    expect(j.status).toBe('done');
+    expect(j.progress).toMatchObject({ phase: 'done' });
+    expect(j.result.plan.swaps[0].replacement.description).toBe("Aunt Millie's Live Light! Whole Grain Bread");
+    expect(j.result.timingsMs.total).toBeGreaterThanOrEqual(0);
+    const bad = await call('POST', '/api/plan/jobs', { ...planBody, goals: { primary: 'nope' } });
+    expect(bad.status).toBe(400);
+    expect((await call('GET', '/api/plan/jobs/not-a-job')).status).toBe(404);
+  });
+  it('excludedCandidateIds: rejected swap is re-planned without it', async () => {
+    const r = await call('POST', '/api/plan', { ...planBody, excludedCandidateIds: ['kroger:0007131400185'] });
+    expect(r.status).toBe(200);
+    expect(r.json.plan.swaps.find((s: any) => s.replacement.ref === 'kroger:0007131400185')).toBeUndefined();
+    const o = r.json.plan.itemOutcomes.find((x: any) => x.itemId === 'bread');
+    expect(o.rejections.find((x: any) => x.candidateRef === 'kroger:0007131400185').reason).toBe('excluded');
+  });
   it('includeSample: true attaches sample label data and marks the result containsSample', async () => {
     const r = await call('POST', '/api/plan', { ...planBody, includeSample: true });
     expect(r.status).toBe(200);
