@@ -147,3 +147,31 @@ Yogurt pairs: 56 candidate pairs qualified overall (yogurt + bread). Added sugar
   `{"details":{"Description":"Public Key not found for  Consumer id : [REDACTED]","wm_svc.version":"2.0.0","wm_svc.name":"affil-product","wm_svc.env":"prod"}}`
   - **Likely cause:** Walmart has no public key on file for this consumer ID and key version. Either `secrets/walmart_public_key.pem` was never uploaded on walmart.io, or it was uploaded under a key version other than `WALMART_KEY_VERSION` (default `1`).
   - **UNVERIFIED** until auth works: which fields actually come back, whether `salePrice` changes with `zipCode`, whether search honours `zipCode`, and the store-locator fields.
+
+### 2026-11-22: Walmart receipt item codes (verified on the shopper's own receipts, locally)
+
+- **What the code is:** the item code printed on Walmart receipts is the **UPC without its check digit, zero-padded to 12 digits**. This is the same convention as Kroger product ids. Produce prints a PLU instead (e.g. `000000004011`).
+- **How it was verified:** `scripts/verify-receipt-codes.ts` read the hand-typed codes of 4 private receipt photos (`data/receipts/private/`, gitignored; only counts recorded here). It tested both readings against USDA FDC.
+- **Result** (69 unique codes, 5 of them PLU, 3 on a generator-style receipt with 9-digit codes):
+
+  | Reading | FDC matches |
+  |---|---|
+  | Check digit appended to the code | **40 of 61** non-produce codes |
+  | Code already includes its check digit | **0** |
+
+  Only 4 of the 64 printed codes even carry a valid GS1 check digit as printed, which is chance level.
+- **Why 21 codes didn't match:**
+  - Non-food items (FDC covers food only): deodorant, a knee brace, wax, hair colour.
+  - The generator-style receipt's 9-digit codes, which aren't UPCs.
+- **Walmart lookup by UPC:** could not be used to confirm, because Walmart auth returns 401 (see above).
+- **OCR** (tesseract.js 5, `eng`, Node, local; per receipt: item lines with code AND price read correctly / total):
+
+  | Receipt | Default page segmentation (PSM 3) | PSM 6, "uniform block" | PSM 6 + parser accepting "1b" for "lb" |
+  |---|---|---|---|
+  | 1 | ~1/38 | — | **38/38** |
+  | 2 | ~3/6 | — | **6/6** |
+  | 3 | ~1/28 | — | **28/28** |
+  | 4 (300 px wide) | — | **0/4** | **0/4** |
+
+  - **Why PSM 3 failed:** it reads the price column as a separate block.
+  - **Receipt 4:** a low-resolution image; it needs upscaling (see the browser numbers below).

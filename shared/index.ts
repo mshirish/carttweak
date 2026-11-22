@@ -11,3 +11,5 @@ export * from './resolve.ts';
 export * from './demoList.ts';
 export * from './labelEntry.ts';
 export * from './display.ts';
+export * from './receipt.ts';
+export * from './ocrRows.ts';
