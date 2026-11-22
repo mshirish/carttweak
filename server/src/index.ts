@@ -1,33 +1,31 @@
 // CartTweak API server. The ONLY runtime place API secrets are read.
-// Milestone 1: health + a shared-code smoke route. Real endpoints come later.
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import dotenv from 'dotenv';
 import { serve } from '@hono/node-server';
-import { Hono } from 'hono';
-import { gtin14Interpretations, upcCandidates } from '@carttweak/shared';
+import { createApp } from './app.ts';
+import { setCacheRoot } from './cache.ts';
+import { registerSecret } from './secrets.ts';
+import { createService } from './service.ts';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..', '..');
-dotenv.config({ path: path.join(root, '.env') });
+dotenv.config({ path: path.join(root, '.env'), quiet: true } as any);
 
-const app = new Hono();
+const env = {
+  KROGER_CLIENT_ID: process.env.KROGER_CLIENT_ID?.trim() ?? '',
+  KROGER_CLIENT_SECRET: process.env.KROGER_CLIENT_SECRET?.trim() ?? '',
+  FDC_API_KEY: process.env.FDC_API_KEY?.trim() ?? '',
+};
+// client id is registered too: Kroger echoes it inside productPageURI
+[env.KROGER_CLIENT_ID, env.KROGER_CLIENT_SECRET, env.FDC_API_KEY, process.env.WALMART_CONSUMER_ID?.trim()].forEach(registerSecret);
 
-app.get('/api/health', (c) =>
-  c.json({
-    ok: true,
-    // report presence only, never values
-    config: {
-      kroger: Boolean(process.env.KROGER_CLIENT_ID && process.env.KROGER_CLIENT_SECRET),
-      fdc: Boolean(process.env.FDC_API_KEY),
-      walmart: Boolean(process.env.WALMART_CONSUMER_ID),
-    },
-  }),
-);
-
-app.get('/api/upc/:code', (c) => {
-  const code = c.req.param('code');
-  return c.json({ code, interpretations: gtin14Interpretations(code), candidates: upcCandidates(code) });
+setCacheRoot(path.join(root, 'data', 'cache'));
+const svc = createService({
+  kroger: { clientId: env.KROGER_CLIENT_ID, clientSecret: env.KROGER_CLIENT_SECRET },
+  fdcApiKey: env.FDC_API_KEY,
+  sampleDir: path.join(root, 'data', 'sample'),
 });
+const app = createApp(svc, { kroger: Boolean(env.KROGER_CLIENT_ID && env.KROGER_CLIENT_SECRET), fdc: Boolean(env.FDC_API_KEY) });
 
 const port = Number(process.env.PORT ?? 8787);
 serve({ fetch: app.fetch, port }, (info) => {

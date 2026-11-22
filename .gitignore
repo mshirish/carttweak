@@ -16,3 +16,6 @@ data/raw/
 .DS_Store
 Thumbs.db
 *.log
+
+# API response cache (server)
+data/cache/

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { fdcDateToIso, latestFdcDate } from './fdc-date.ts';
+import { fdcDateToIso, latestFdcDate } from './fdcDate.ts';
 
 describe('fdcDateToIso', () => {
   it('M/D/YYYY (detail endpoint)', () => {
