@@ -8,7 +8,7 @@
  * Prices are cached for 12 h: re-run within 12 h of a demo.
  * Uses the server's cache directory (CARTTWEAK_CACHE_DIR overrides it).
  */
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import dotenv from 'dotenv';
@@ -16,6 +16,8 @@ import { parseDemoList, swapGroupFor, type Product } from '@carttweak/shared';
 import { cacheStats, limiters, setCacheRoot } from '../server/src/cache.ts';
 import { registerSecret } from '../server/src/secrets.ts';
 import { CONCURRENCY, createService } from '../server/src/service.ts';
+import { lookupByUpc } from '../server/src/fdc.ts';
+import { isPlu } from '@carttweak/shared';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 dotenv.config({ path: path.join(root, '.env'), quiet: true } as any);
@@ -86,6 +88,30 @@ async function main() {
       console.log(`  group ${id}: ${c.candidates.length} candidates (${c.candidates.filter((x) => x.fdc.matched).length} with FDC)`);
     }),
   );
+  // 4. LOCAL ONLY: barcodes from the private receipt ground truth (data/receipts/private/truth.json, gitignored).
+  //    Counts only: item names and codes are never printed.
+  const truthPath = path.join(root, "data", "receipts", "private", "truth.json");
+  if (existsSync(truthPath)) {
+    const truth = JSON.parse(readFileSync(truthPath, "utf8"));
+    const codes = [...new Set<string>(Object.values<any>(truth.receipts ?? {}).flatMap((r: any) => (r.items ?? []).map((i: [string, number]) => i[0])))].filter((c) => !isPlu(c) && c.length === 12);
+    let atKroger = 0;
+    let fdcOnly = 0;
+    const rGroups = new Map<string, Product>();
+    await pool(codes, CONCURRENCY, async (code) => {
+      try {
+        const e = await svc.byUpc(`0${code}`, locationId);
+        atKroger++;
+        const g = swapGroupFor(e.product);
+        if (g && !groups.has(g.id) && !rGroups.has(g.id)) rGroups.set(g.id, e.product);
+        await svc.scoreHaul({ locationId, items: [{ id: "w", krogerProductId: `0${code}` }] });
+      } catch {
+        const f = await lookupByUpc(env.fdc, `0${code}`).catch(() => null);
+        if (f?.match) fdcOnly++;
+      }
+    });
+    await Promise.all([...rGroups.values()].map((p) => svc.candidatesFor(p, locationId).catch(() => null)));
+    console.log(`  private receipts: ${codes.length} barcodes warmed (${atKroger} carried at this Kroger, ${fdcOnly} USDA-only), ${rGroups.size} more swap groups`);
+  }
   const t3 = Date.now();
   const fdc = limiters['fdc'];
   console.log(`\nWarm done in ${((t3 - t0) / 1000).toFixed(1)} s (search ${((t1 - t0) / 1000).toFixed(1)} s, products ${((t2 - t1) / 1000).toFixed(1)} s, candidates ${((t3 - t2) / 1000).toFixed(1)} s)`);

@@ -193,3 +193,21 @@ Yogurt pairs: 56 candidate pairs qualified overall (yogurt + bread). Added sugar
 - **Receipt 4:** 300 px wide; still unreadable with black & white on. The shopper can type or fix its lines on the check screen.
 - **Match and plan times** above are with a warm cache. The first match on receipts 1 and 3 took about 3 s.
 - **Example plans:** reported privately to the shopper; not recorded here because they would reveal what was bought.
+
+### 2026-11-22: haul scores (final milestone; scores and counts only)
+
+Nutri-Score original 2017 algorithm. Prices and swaps from Kroger On the Rhine. Receipt produce lines confirmed as the first USDA candidate in the test run.
+
+| Haul | Score | Coverage | Projected with suggested swaps (More fiber, $2) |
+|---|---|---|---|
+| Private receipt 1 | **66** | 26 of 36 items, 70% of spend | 66 → 67 |
+| Private receipt 2 | **25** | 1 of 3 food items, 26% of spend → Low confidence. Mostly non-food (deodorant, knee brace, bath bomb, marked "Not food") | no swaps |
+| Private receipt 3 | **54** | 13 of 19 items, 55% of spend | 54 → 56 |
+| Demo list (typed) | **54** | 15 of 20 items, 70% of spend | 54 → 58 (54 → 55 with one swap accepted) |
+| Low-res receipt (300 px) | — | unreadable by OCR | — |
+
+- **Why items go unscored:**
+  - No USDA record, mostly store brands.
+  - A label that omits a required value, e.g. soda labels with no fiber.
+  - Produce not confirmed. On typed lists there is no produce confirm step yet.
+- **Generic produce:** USDA Foundation records can lack saturated fat, so SR Legacy candidates are listed first.
